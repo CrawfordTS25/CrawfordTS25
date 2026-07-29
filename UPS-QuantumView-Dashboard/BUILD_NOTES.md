@@ -197,12 +197,81 @@ Visible in the report but not fixable from `Report/definition`. Worst first.
 | Model weight | `QV_Manifest` is **67.7%** of the model and referenced by zero visuals — it feeds one measure needing one column. Trimming it saves **47%**; unloading `Res_Tracker` + `Trace_Active` and killing Auto Date/Time takes the total to **54%**. Six of nine loaded tables are unreferenced | Power Query + options |
 | `Branch_Contacts` load broken | 500 rows, all null, with a column named `X:\hrdi_report_pickup\FA_Roster\` — Flow 2's roster merge has no source | Power Query |
 
-### Cannot be judged from a test extract
+### Confirmed by the process owner — and what each confirmation implies
 
-Re-check these against production data before treating them as defects: run/date
-coverage; whether `Tracker Status` ever reaches `Resolved` or `Escalated`; the empty
-write-back columns (`Root Cause`, `Notes`, `Next Action`, `Closed Date` on Resolutions;
-`PII`, `Tickler`, `Refund Amount` on Trace); `Delivery Status` having one distinct
+**`Trace_Notes` keys on `Exception Key`.** So the merge into `Current_Open_Trace` must
+move off `CASE #` / `Tracking Number` (populated on 1 of 200 rows) and onto
+`Exception Key`, normalising both sides so a stray space or case difference cannot
+break the join:
+
+```m
+Notes  = Table.SelectColumns(Trace_Notes, {
+             "Exception Key","Trace Status","PII","Delivery Confirmed","Last Action",
+             "Next Follow-up Date","Tickler Type","Contents Description","UPS Trace Number",
+             "Claim Required","Claim Status","Refund Amount","Legal Notified",
+             "Assigned To","Notes","Closed Date"}),
+KeyL   = Table.AddColumn(Src,   "_k", each Text.Upper(Text.Trim([Exception Key])), type text),
+KeyR   = Table.AddColumn(Notes, "_k", each Text.Upper(Text.Trim([Exception Key])), type text),
+Joined = Table.NestedJoin(KeyL, {"_k"}, KeyR, {"_k"}, "n", JoinKind.LeftOuter)
+// expand with a "Trace_Notes." prefix, then remove _k
+```
+
+Two consequences. The column list above also closes the *four spec fields captured but
+never merged* row in the table — `Legal Notified` is what `Notify Legal` keys on. And
+because the SharePoint list is now keyed on `Exception Key`, **Step 0 becomes load
+bearing**: the current key is `TrackingNumber|<full UPS description text>`, so if UPS
+rewords a description every note written against it detaches. Re-mint the key per spec
+p.3 *before* real notes accumulate, not after.
+
+**Exceptions do reach a resolved state in the real source.** That activates two latent
+defects invisible in a test extract where nothing resolves — neither aging measure is
+status-aware, so both will keep counting resolved items forever:
+
+```dax
+Aged 8 Plus Days =                          Avg Age (Days) =
+CALCULATE (                                 CALCULATE (
+    COUNTROWS ( 'Resolutions Table' ),          AVERAGE ( 'Resolutions Table'[Age Days] ),
+    'Resolutions Table'[Age Bucket] = "8+ Days",'Resolutions Table'[Tracker Status] <> "Resolved"
+    'Resolutions Table'[Tracker Status] <> "Resolved" )
+)
+```
+
+Confirm the exact resolved/escalated strings the source emits first — the measures
+match on literals and return 0 silently on a mismatch, and the model already spells the
+same state `"Escalated"` (Resolutions measures) and `"Escalate"`
+(`Current_Open_Trace[Review Status]`).
+
+### `Age Days` does not measure case age
+
+`Age Days` holds exactly **six** distinct values across all 2,175 rows — 1, 11, 12, 14,
+21, 22 — and each is precisely `2026-07-28 minus one of the six QV run dates`:
+
+| Age Days | 2026-07-28 − | rows |
+|---|---|---|
+| 1 | 2026-07-27 | 511 |
+| 11 | 2026-07-17 | 107 |
+| 12 | 2026-07-16 | 252 |
+| 14 | 2026-07-14 | 266 |
+| 21 | 2026-07-07 | 149 |
+| 22 | 2026-07-06 | 890 |
+
+So it measures **days since the QV run that produced the row**, not days since the
+exception was raised — anchored to a hard "today" of 2026-07-28. The apparent 2–10 day
+hole is not missing data; no run happened 2–10 days before that anchor.
+
+That means `Avg Age (Days)` averages run recency rather than case age, `Age Bucket`
+collapses to "most recent run" vs "an older run", and if the anchor is `DateTime.LocalNow()`
+in Power Query then every row ages on every refresh — the volatile-`NOW()` failure spec
+p.8 calls out by name. Fix is spec p.9's one-row refresh table, measuring from the date
+the exception was first seen (or Manifest Date), not from the run that emitted the row:
+
+```m
+Refresh = #table( {"StampUTC"}, { { DateTimeZone.UtcNow() } } )
+```
+
+### Still cannot be judged from a test extract
+
+Run/date coverage; the empty write-back columns; `Delivery Status` having one distinct
 value; and absolute KPI values.
 
 ### Outside the file
