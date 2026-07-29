@@ -1,0 +1,22 @@
+// Check - Age Days anchor
+//
+// Does [Age Days] measure how long a case has been open, or just how long ago
+// the QV run that produced the row happened?
+//
+// If it measured case age you would expect a smooth spread of values.  If every
+// value instead lines up with one run date - and the row count per value matches
+// the exception count of that run - then the column is anchored to the run, and
+// [Avg Age (Days)] is averaging run recency rather than case age.
+
+EVALUATE
+	ADDCOLUMNS(
+		SUMMARIZE(
+			'Resolutions Table',
+			'Resolutions Table'[Age Days],
+			'Resolutions Table'[Run Date]
+		),
+		"Rows", CALCULATE( COUNTROWS('Resolutions Table') ),
+		"Earliest Manifest Date", CALCULATE( MIN('Resolutions Table'[Manifest Date]) ),
+		"Latest Manifest Date", CALCULATE( MAX('Resolutions Table'[Manifest Date]) )
+	)
+	ORDER BY 'Resolutions Table'[Age Days] ASC

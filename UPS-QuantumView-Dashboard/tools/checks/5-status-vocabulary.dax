@@ -1,0 +1,33 @@
+// Check - status vocabulary
+//
+// Every status measure matches on a hard-coded string.  A mismatch returns 0
+// silently, which is indistinguishable from "nothing has resolved yet".  Run this
+// against production before trusting Resolved / Escalated on any card.
+//
+// Expect to find that the Resolutions measures look for "Escalated" while the
+// trace table stores "Escalate" - two spellings of one state in one model.
+
+EVALUATE
+	UNION(
+		SELECTCOLUMNS(
+			SUMMARIZE( 'Resolutions Table', 'Resolutions Table'[Tracker Status] ),
+			"Table",  "Resolutions Table",
+			"Column", "Tracker Status",
+			"Value",  'Resolutions Table'[Tracker Status],
+			"Rows",   CALCULATE( COUNTROWS('Resolutions Table') )
+		),
+		SELECTCOLUMNS(
+			SUMMARIZE( 'Resolutions Table', 'Resolutions Table'[Age Bucket] ),
+			"Table",  "Resolutions Table",
+			"Column", "Age Bucket",
+			"Value",  'Resolutions Table'[Age Bucket],
+			"Rows",   CALCULATE( COUNTROWS('Resolutions Table') )
+		),
+		SELECTCOLUMNS(
+			SUMMARIZE( 'Current_Open_Trace', 'Current_Open_Trace'[Review Status] ),
+			"Table",  "Current_Open_Trace",
+			"Column", "Review Status",
+			"Value",  'Current_Open_Trace'[Review Status],
+			"Rows",   CALCULATE( COUNTROWS('Current_Open_Trace') )
+		)
+	)

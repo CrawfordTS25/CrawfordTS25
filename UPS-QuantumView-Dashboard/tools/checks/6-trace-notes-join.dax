@@ -1,0 +1,23 @@
+// Check - Trace_Notes join health
+//
+// Trace_Notes keys on Exception Key.  Run this after re-pointing the merge
+// (tools/model-fixes.pq) to confirm notes actually land on trace rows.
+//
+// "Traces with a note" should be > 0 and should track the number of notes your
+// team has actually written.  If it stays at 0 the keys are not matching - most
+// likely a whitespace or casing difference, or the Exception Key was re-minted on
+// one side only.
+
+EVALUATE
+	ROW(
+		"Trace rows",                COUNTROWS('Current_Open_Trace'),
+		"Traces with a Trace Status", CALCULATE(
+				COUNTROWS('Current_Open_Trace'),
+				NOT ISBLANK('Current_Open_Trace'[Trace_Notes.Trace Status]) ),
+		"Traces with a note",        CALCULATE(
+				COUNTROWS('Current_Open_Trace'),
+				NOT ISBLANK('Current_Open_Trace'[Trace_Notes.Notes]) ),
+		"Traces with a follow-up",   CALCULATE(
+				COUNTROWS('Current_Open_Trace'),
+				NOT ISBLANK('Current_Open_Trace'[Trace_Notes.Next Follow-up Date]) )
+	)

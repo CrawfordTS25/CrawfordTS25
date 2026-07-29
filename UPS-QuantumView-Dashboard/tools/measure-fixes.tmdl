@@ -1,0 +1,43 @@
+// =====================================================================
+// Quantum View - measure fixes.  Review, then click Apply in TMDL view.
+//
+// Applies two changes and nothing else.  Both keep the existing measure
+// names, so no visual needs rebinding - the numbers simply become correct.
+//
+// BEFORE YOU APPLY: confirm the literal "Resolved" below matches the exact
+// string the production source emits.  These measures match on literals and
+// return 0 silently on a mismatch.  This model already contains one such
+// mismatch - the Resolutions measures spell the escalated state "Escalated"
+// while Current_Open_Trace[Review Status] stores "Escalate".
+// =====================================================================
+
+createOrReplace
+
+	ref table 'Resolutions Table'
+
+		/// Open exceptions aged 8+ days.  Excludes resolved items - without the
+		/// status filter this keeps counting cases that are already closed, which
+		/// only becomes visible once the queue starts resolving.
+		measure 'Aged 8 Plus Days' =
+				
+				CALCULATE(
+				    COUNTROWS('Resolutions Table'),
+				    'Resolutions Table'[Age Bucket] = "8+ Days",
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: #,0
+
+		/// Average age of the OPEN queue.  Excludes resolved items for the same
+		/// reason as above.
+		///
+		/// NOTE: this is only as meaningful as [Age Days], which currently measures
+		/// days since the QV run that produced the row - not days since the exception
+		/// was raised.  See the "Check - Age Days anchor" DAX query.  Fixing that is
+		/// a Power Query change (tools/model-fixes.pq).
+		measure 'Avg Age (Days)' =
+				
+				CALCULATE(
+				    AVERAGE('Resolutions Table'[Age Days]),
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: 0.0

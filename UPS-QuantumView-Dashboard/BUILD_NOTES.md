@@ -1,15 +1,27 @@
 # UPS Quantum View — Cross-Page Consistency Pass
 
-`Quantum_View_Exceptions_Dashboard.pbix` — same file, same format. The **Report layer**
-(`Report/definition/**`) was rewritten, and apply-ready fix tabs were appended to the
-**script layer** (`TMDLScripts/**`, `DAXQueries/**` — saved-script text that Desktop
-opens as tabs; inert until you click Apply or Run, and existing tabs preserved
-byte-identical).
+> ## ⚠ This report cannot be delivered as an edited `.pbix`
+>
+> `Quantum_View_Exceptions_Dashboard.pbix` carries a **Microsoft Purview sensitivity
+> label** — `6426_Internal_Use_Only_Standard_6426`, applied 2026-07-28 — recorded in
+> `docProps/custom.xml`. Its `SecurityBindings` part is a **DPAPI-protected binding**
+> (provider GUID `df9d8cd0-1501-11d1-8c7a-00c04fc297eb`) computed over the whole
+> package.
+>
+> Any external edit invalidates that binding and Desktop reports the file as
+> corrupted — **including** an edit that leaves `DataModel` byte-identical, which is
+> what the first attempt here did. Copying `SecurityBindings` through unchanged makes
+> it worse, not better: it still attests to the *original* package contents.
+>
+> This is the control working as designed. Spec p.15 is the reason it is there
+> ("Apply Internal Use Only · Standard on publish — it persists into exports").
+> **A labelled `.pbix` can only be edited inside Power BI Desktop.**
+>
+> So this repo ships the rebuilt report **definition**, not a `.pbix`. See §7.
 
-**The `DataModel` part is byte-for-byte identical to the original**, verified by
-SHA-256 on repackage, as are `Connections`, `Settings`, `Metadata`, `StaticResources`
-(theme) and `docProps`. Nothing in this repo alters the model on load — see §7 for how
-to apply the fixes that do.
+The work below rewrites the **report layer** only. It never touches the semantic model:
+no measure, relationship, column or query is altered by applying it. Model-side fixes
+are supplied separately as scripts you run in Desktop (§7).
 
 Authority for every number below: **UPS_QuantumView_Master_Build_Spec.pdf** p.5
 (theme tokens), p.6 (master coordinate table), p.7 (card anatomy + accent map);
@@ -300,52 +312,99 @@ measures in the meantime. Likewise the SharePoint write-back, Flow 1 audit log a
 Flow 2 mail-merge (spec pp.12–13) remain unbuilt; the Resolution automation panel now
 names those steps instead of a typo.
 
-## 7. Applying the fixes
+## 7. How to apply this
 
-The file opens exactly as before — `DataModel` is byte-identical, so nothing here
-changes until you choose to run it. Measures ship *inside* the file as an apply-ready
-script; Power Query steps cannot, because they live in the `DataModel` part and
-rewriting a compressed Analysis Services backup outside Desktop risks the file not
-opening at all.
+### Step 1 — get the report into an editable form
 
-**In the file — TMDL view → `Script 2` → Apply**
+```
+Open the ORIGINAL .pbix in Power BI Desktop
+File > Save as > Power BI project (.pbip)
+```
 
-Makes `Aged 8 Plus Days` and `Avg Age (Days)` status-aware. Both keep their names, so
-no visual needs rebinding — the numbers simply become correct. `Script 1` (your model
-snapshot) is untouched.
+A `.pbip` stores the same PBIR definition as plain files on disk with no security
+binding, so it can be edited programmatically. Desktop re-applies the sensitivity
+label when you save back to `.pbix`. If the option is missing, enable it under
+File → Options → Preview features → *Power BI Project (.pbip) save option*, and make
+sure the report format is PBIR.
 
-> Confirm the literal `"Resolved"` matches what production emits before applying.
-> These measures match on strings and return 0 silently on a mismatch — and the model
-> already contains one: the Resolutions measures spell the escalated state
-> `"Escalated"` while `Current_Open_Trace[Review Status]` stores `"Escalate"`.
+### Step 2 — apply the rebuilt layout
 
-**In the file — DAX query view → four read-only checks**
+```
+python3 tools/apply-to-pbip.py "<path>/Quantum_View_Exceptions_Dashboard.Report"
+```
 
-| Tab | Answers |
+Backs up the project's existing `definition/` folder alongside itself, then copies in
+`report-definition/` (5 pages, 92 visuals). The semantic model folder is never touched.
+To revert: delete `definition/` and rename the backup back.
+
+Then open the `.pbip` in Desktop, review, and Save as `.pbix`.
+
+> Because this pass was never validated in Desktop, expect the possibility that a
+> visual reports a load error. That is fixable and cheap — the audit in §8 lists the
+> 89 formatting properties that were not proven against the original file. Tell me
+> which visual and I will correct the property.
+
+### Step 3 — the model fixes (Desktop, optional but recommended)
+
+**`tools/measure-fixes.tmdl`** — paste into TMDL view, review, Apply. Makes
+`Aged 8 Plus Days` and `Avg Age (Days)` status-aware. Both keep their names, so no
+visual needs rebinding.
+
+> Confirm the literal `"Resolved"` matches what production emits first. These measures
+> match on strings and return 0 silently on a mismatch — and the model already contains
+> one: the Resolutions measures spell the escalated state `"Escalated"` while
+> `Current_Open_Trace[Review Status]` stores `"Escalate"`.
+
+**`tools/checks/*.dax`** — paste into DAX query view, read-only:
+
+| File | Answers |
 |---|---|
-| `Query 3` · Age Days anchor | is `[Age Days]` case age, or run recency? |
-| `Query 4` · KPI reconciliation | the three ties spec p.9 asks for, plus the three competing exception grains side by side |
-| `Query 5` · status vocabulary | every literal the status measures depend on, against what the data holds |
-| `Query 6` · Trace_Notes join health | run after re-pointing the merge to confirm notes land |
+| `3-age-days-anchor.dax` | is `[Age Days]` case age, or run recency? |
+| `4-kpi-reconciliation.dax` | the three ties spec p.9 asks for, plus the three competing exception grains side by side |
+| `5-status-vocabulary.dax` | every literal the status measures depend on, against what the data holds |
+| `6-trace-notes-join.dax` | run after re-pointing the merge to confirm notes land |
 
-`Query 1` and `Query 2` are preserved byte-identical.
+**`tools/model-fixes.pq`** — four Power Query blocks, each stating which step it
+replaces: the `Refresh` anchor table, the `Age Days` rebuild, the `Trace_Notes` merge
+on `Exception Key`, and the Step 0 key re-mint. Plus the relationship cross-filter
+direction and the model trim.
 
-**Outside the file — `tools/model-fixes.pq`**
+## 8. Verification — what was and was not checked
 
-Four Power Query blocks, each stating which step it replaces: the `Refresh` anchor
-table, the `Age Days` rebuild, the `Trace_Notes` merge on `Exception Key`, and the
-Step 0 key re-mint. Plus the two UI changes worth doing in the same sitting — the
-relationship cross-filter direction, and narrowing the model by ~54%.
+Structural checks that all pass on `report-definition/`: every `visual.json` name
+matches its folder; every visual carries `$schema`/`name`/`position`/`visual`;
+`pages.json` matches the page folders; `activePageName` is real; every
+`visualInteraction` target exists; all 158 field references resolve against the real
+model; every visual sits inside the canvas; no two data visuals overlap; component
+styles show zero variants.
 
-## 8. Reproducing / verifying
+**Not checked: whether Power BI Desktop renders it.** There is no Desktop in the
+environment this was built in. Of 289 formatting properties the rebuilt report sets,
+**89** are ones not present anywhere in the original file:
+
+| Visual | Unproven / emitted |
+|---|---|
+| tableEx | 23 / 46 |
+| areaChart | 20 / 42 |
+| clusteredBarChart | 16 / 47 |
+| actionButton | 15 / 20 |
+| shape · slicer · pageNavigator · cardVisual | 15 total |
+
+They are documented Power BI property names, and an unrecognised formatting property
+is ignored rather than fatal — but they are unverified. `actionButton` is the weakest
+cluster; worst case the two back buttons render unstyled while still navigating,
+because `visualLink type: Back` came from the original.
+
+## 9. Reproducing
 
 ```
-python3 tools/build.py       # rewrite Report/definition from the extracted original
-python3 tools/validate.py    # style uniformity, skeleton identity, canvas bounds, refs
-python3 tools/scripts.py     # write the TMDL + DAX fix tabs into the build tree
-python3 tools/package.py     # rezip; asserts non-report parts are byte-identical
-python3 tools/render.py      # layout-proof.svg, drawn to scale from the packaged file
+python3 tools/build.py       # rebuild report-definition from the original .pbix
+python3 tools/validate.py    # style uniformity, skeleton identity, bounds, refs
+python3 tools/render.py      # layout-proof.svg, to scale, from the built definition
 ```
 
-`layout-proof.svg` is a to-scale render of all five pages straight from the packaged
-file — the fastest way to confirm the chrome lines up before opening Desktop.
+`tools/package.py` and `tools/scripts.py` are retained for reference only — they
+rebuild a `.pbix`, which this labelled report cannot accept. Use `apply-to-pbip.py`.
+
+`layout-proof.svg` is a to-scale render of all five pages — the fastest way to check
+the chrome lines up before opening Desktop.

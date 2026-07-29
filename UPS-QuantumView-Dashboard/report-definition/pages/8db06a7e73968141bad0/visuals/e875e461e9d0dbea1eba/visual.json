@@ -1,0 +1,139 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "e875e461e9d0dbea1eba",
+  "position": {
+    "x": 662,
+    "y": 478,
+    "z": 2003,
+    "width": 582,
+    "height": 204,
+    "tabOrder": 2003
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "horizontalTextAlignment": "left",
+                "textRuns": [
+                  {
+                    "value": "SharePoint List is the system of record; Excel is an append-only log.",
+                    "textStyle": {
+                      "fontSize": "8pt",
+                      "color": "#5A6472",
+                      "fontWeight": "normal",
+                      "fontFamily": "Segoe UI Semibold"
+                    }
+                  }
+                ]
+              },
+              {
+                "horizontalTextAlignment": "left",
+                "textRuns": [
+                  {
+                    "value": "",
+                    "textStyle": {
+                      "fontSize": "8pt",
+                      "color": "#5A6472",
+                      "fontWeight": "normal",
+                      "fontFamily": "Segoe UI Semibold"
+                    }
+                  }
+                ]
+              },
+              {
+                "horizontalTextAlignment": "left",
+                "textRuns": [
+                  {
+                    "value": "Step 7  \u00b7  SharePoint List + seed rows",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#1F2D40",
+                      "fontWeight": "bold",
+                      "fontFamily": "Segoe UI Semibold"
+                    }
+                  }
+                ]
+              },
+              {
+                "horizontalTextAlignment": "left",
+                "textRuns": [
+                  {
+                    "value": "Step 8  \u00b7  Power Apps write-back, row-select passes Exception ID",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#1F2D40",
+                      "fontWeight": "bold",
+                      "fontFamily": "Segoe UI Semibold"
+                    }
+                  }
+                ]
+              },
+              {
+                "horizontalTextAlignment": "left",
+                "textRuns": [
+                  {
+                    "value": "Step 9  \u00b7  Flow 1 audit log  \u00b7  Flow 2 mail-merge (preview gate)",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#1F2D40",
+                      "fontWeight": "bold",
+                      "fontFamily": "Segoe UI Semibold"
+                    }
+                  }
+                ]
+              },
+              {
+                "horizontalTextAlignment": "left",
+                "textRuns": [
+                  {
+                    "value": "",
+                    "textStyle": {
+                      "fontSize": "8pt",
+                      "color": "#5A6472",
+                      "fontWeight": "normal",
+                      "fontFamily": "Segoe UI Semibold"
+                    }
+                  }
+                ]
+              },
+              {
+                "horizontalTextAlignment": "left",
+                "textRuns": [
+                  {
+                    "value": "Not yet wired - build order pages 12-14.",
+                    "textStyle": {
+                      "fontSize": "8pt",
+                      "color": "#7C5CBF",
+                      "fontWeight": "normal",
+                      "fontFamily": "Segoe UI Semibold"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

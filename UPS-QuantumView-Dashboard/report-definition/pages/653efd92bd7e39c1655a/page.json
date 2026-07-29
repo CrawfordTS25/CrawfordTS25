@@ -1,0 +1,176 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "653efd92bd7e39c1655a",
+  "displayName": "QV Tracing",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "189L"
+              }
+            }
+          },
+          "titleSize": {
+            "expr": {
+              "Literal": {
+                "Value": "10L"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 0,
+                    "Percent": -0.2
+                  }
+                }
+              }
+            }
+          },
+          "image": {
+            "image": {
+              "name": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              },
+              "url": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "filterCard": [
+      {
+        "properties": {
+          "fontFamily": {
+            "expr": {
+              "Literal": {
+                "Value": "'''Segoe UI Semibold'', wf_segoe-ui_semibold, helvetica, arial, sans-serif'"
+              }
+            }
+          },
+          "border": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "inputBoxColor": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 0,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "selector": {
+          "id": "Available"
+        }
+      }
+    ],
+    "outspace": [
+      {
+        "properties": {
+          "image": {
+            "image": {
+              "name": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              },
+              "url": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "a4bc518d4ca9ec4a273b",
+      "target": "c2bc2d2fd7c4d1741e13",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a4bc518d4ca9ec4a273b",
+      "target": "0920059c7b37d8512b58",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a4bc518d4ca9ec4a273b",
+      "target": "c9a3ca9a9c20da00e2d8",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a4bc518d4ca9ec4a273b",
+      "target": "d53bfbaba715840d83d3",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a4bc518d4ca9ec4a273b",
+      "target": "4b74e94189d28cacb8ba",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a4bc518d4ca9ec4a273b",
+      "target": "e27002cd13ca83c7c733",
+      "type": "NoFilter"
+    },
+    {
+      "source": "a4bc518d4ca9ec4a273b",
+      "target": "b2d6b5d6b97b94bc088e",
+      "type": "NoFilter"
+    }
+  ]
+}

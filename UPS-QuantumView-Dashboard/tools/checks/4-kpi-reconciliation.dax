@@ -1,0 +1,26 @@
+// Check - KPI reconciliation (master spec p.9)
+//
+// The spec asks for three ties before trusting the cards:
+//   1. [Total Exceptions] equals your known row count
+//   2. [Exception Rate] equals Total Exceptions / Total Shipments
+//   3. aging on a known row equals the hours since its stamp
+//
+// Rows 1 and 2 are below.  Watch the three different answers to "how many
+// exceptions" - distinct keys, rows flagged Is Issue, and total rows - and note
+// that every row carries Status = "Exception" while a large share are flagged 0.
+// Pick one grain and make every measure use it.
+
+EVALUATE
+	ROW(
+		"Total Exceptions (measure)",       [Total Exceptions],
+		"Total Shipments (measure)",        [Total Shipments],
+		"Exception Rate (measure)",         [Exception Rate],
+		"-- grain check --",                BLANK(),
+		"Distinct Exception Key",           DISTINCTCOUNT('QV_Output'[Exception Key]),
+		"Rows flagged Is Issue = 1",        CALCULATE( COUNTROWS('QV_Output'), 'QV_Output'[Is Issue] = 1 ),
+		"Rows in QV_Output",                COUNTROWS('QV_Output'),
+		"Distinct Tracking Number",         DISTINCTCOUNT('QV_Output'[Tracking Number]),
+		"-- denominator scope --",          BLANK(),
+		"Distinct Tracking in QV_Manifest", DISTINCTCOUNT('QV_Manifest'[Tracking Number]),
+		"Run dates covered by QV_Output",   DISTINCTCOUNT('QV_Output'[Run Date])
+	)
