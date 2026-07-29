@@ -158,27 +158,62 @@ Escalations card; the trailing space in the "QV Tracing " page name; and the
 "Shrepoint write-back pending" text box, which now lists the actual outstanding
 build-order steps 7–9.
 
-## 5. Known gaps that need a model change
+**Exceptions by QV Run Window → Run Coverage.** The bar chart spent a full panel on two
+bars (Morning 4,311 / Afternoon 2,325). Replaced with a table of the runs the model
+actually holds — Run Captured · Run Date · Window · Exceptions — ordered by
+`Date modified`, which maps 1:1 to Run Date + Run Time (9 values, 9 combinations) and,
+unlike the text `Run Date`, is a real datetime so the rows read chronologically. The
+capture timestamps also make SOP §4 window compliance checkable at a glance.
 
-These are visible in the report but cannot be fixed from `Report/definition`. Listed
-worst-first; numbers are measured against the data in this file.
+> A run that produced no file is absent from the source entirely, so no report-layer
+> visual can show it. Surfacing *missing* runs needs a Dim Date to outer-join against —
+> a model change.
+
+## 5. Known gaps
+
+> **Scope note.** The data in this file is a test extract, loaded to check that the
+> measures and calculations evaluate. Row counts, date coverage and empty write-back
+> columns are therefore not findings about the live process. The table below separates
+> what is **structural** — wrong regardless of how much data arrives — from what simply
+> **cannot be judged** from an extract.
+
+### Structural — will persist into production
+
+Visible in the report but not fixable from `Report/definition`. Worst first.
 
 | Gap | Evidence | Fix lives in |
 |---|---|---|
-| Exceptions slicers reach only 2 of 5 KPIs | relationships run `QV_Manifest → Resolutions Table → QV_Output`, all M:1 single, so `QV_Output` slicers propagate to nothing upstream. Total Shipments pinned at 45,561; Aged 8+ Days pinned at 1,664; Successful Shipments dominated by the constant | relationship cross-filter direction |
-| Exception Rate reads **4.77%**, spec target ~75% | 2,175 distinct Exception Keys ÷ 45,561 manifest tracking numbers — different grain *and* different scope (6 run dates vs all history) | measure + query scope |
-| "How many exceptions" has 3 answers | 2,175 distinct keys / 4,683 rows with `Is Issue = 1` / 6,636 rows, all of which carry `Status = "Exception"` | pick one grain |
+| Exceptions slicers reach only 2 of 5 KPIs | relationships run `QV_Manifest → Resolutions Table → QV_Output`, all M:1 single, so `QV_Output` slicers propagate to nothing upstream. Total Shipments, Aged 8+ Days and Successful Shipments never move | relationship cross-filter direction |
+| Status literals are unguarded | `Resolved Exceptions` / `Escalated Exceptions` filter on `"Resolved"` / `"Escalated"`. A vocabulary drift returns **0 silently** — and the model already contains one: the Resolutions measures say `"Escalated"` while `Current_Open_Trace[Review Status]` stores `"Escalate"` | DAX + source vocabulary |
+| Exception Rate mixes grains | numerator `DISTINCTCOUNT(QV_Output[Exception Key])`, denominator `DISTINCTCOUNT(QV_Manifest[Tracking Number])` — different grain *and* different scope, so it cannot reconcile to the spec's definition at any data volume | measure |
+| "How many exceptions" has 3 answers | distinct Exception Keys / rows with `Is Issue = 1` / total rows, and every row carries `Status = "Exception"` while 29% are flagged `Is Issue = 0` | pick one grain |
 | Exception Key is not the Step 0 key | it is `TrackingNumber\|<full UPS description text>`; reword the description upstream and every saved note detaches. No date component | Power Query |
-| 3 competing type columns | `Exception Type`, `Exception Type ` and `Exception Category` disagree on **4,429 of 6,636** rows (67%) | Power Query |
-| Resolution tracks a workflow that never closes | `Tracker Status` only ever `New / Needs Review` (1,136) or `Open` (1,039) → Resolved = 0, Escalated = 0, Open = 100% permanently. `Root Cause`, `Notes`, `Next Action`, `Last Updated`, `Closed Date` are **0 of 2,175** populated | write-back layer |
-| Trace can't support half its spec | `Refund Amount` text and 0 of 95 filled; `PII` 6 of 95 all `"NO"`; `Tickler` 0 of 95; `Delivery Status` one distinct value; every Trace date is text | Power Query + source |
-| Measure coverage | master spec pp.7–8: **4 of 13**; trace spec p.11: **0 of 9** | DAX |
+| 3 competing type columns | `Exception Type`, `Exception Type ` and `Exception Category` disagree on **67%** of rows | Power Query |
+| `Trace_Notes` cannot join | `CASE #` and `Tracking Number` populated on **1 of 200** rows; `Exception Key` holds 2 distinct values, one blank, matching **nothing** in any table. Notes resolve for 1 of 95 cases by construction | SharePoint + Power Query |
+| 4 spec fields captured but never merged | `Legal Notified` (the `Notify Legal` flag), `Claim Required`, `Assigned To`, `Contents Description` exist in `Trace_Notes`, absent from the fact | Power Query merge |
+| Trace dates and money are text | every Trace date column plus `Refund Amount` load as string — no date math, no `$ Recovered`, no month trending | Power Query |
+| Measure coverage | master spec pp.7–8: **4 of 13**; trace spec p.11: **0 of 9**. Three pairs are byte-identical duplicates across two home tables | DAX |
 | No refresh anchor | no `'Refresh'[StampUTC]` table, so aging cannot be anchored per pp.8–9. The DATA AS OF chip uses `Max(QV_Output[Date modified])` as a stand-in | Power Query |
-| Model hygiene | `Branch_Contacts` load broken (500 null rows, a column named `X:\hrdi_report_pickup\FA_Roster\`) so Flow 2 has no roster; `Res_Tracker` is 1,040 rows of `Column1…Column14`; `Trace_Active` and `Current_Open_Trace` are duplicate facts; Auto Date/Time on, generating 12 hidden date tables both specs say to disable | Power Query + options |
+| Model weight | `QV_Manifest` is **67.7%** of the model and referenced by zero visuals — it feeds one measure needing one column. Trimming it saves **47%**; unloading `Res_Tracker` + `Trace_Active` and killing Auto Date/Time takes the total to **54%**. Six of nine loaded tables are unreferenced | Power Query + options |
+| `Branch_Contacts` load broken | 500 rows, all null, with a column named `X:\hrdi_report_pickup\FA_Roster\` — Flow 2's roster merge has no source | Power Query |
 
-Easy win not yet built: `Run Time` cleanly separates `Morning QV` (4,311) from
-`Afternoon QV` (2,325), so a "both run windows completed today" measure against
-SOP §11.1 is available from data already in the model.
+### Cannot be judged from a test extract
+
+Re-check these against production data before treating them as defects: run/date
+coverage; whether `Tracker Status` ever reaches `Resolved` or `Escalated`; the empty
+write-back columns (`Root Cause`, `Notes`, `Next Action`, `Closed Date` on Resolutions;
+`PII`, `Tickler`, `Refund Amount` on Trace); `Delivery Status` having one distinct
+value; and absolute KPI values.
+
+### Outside the file
+
+SOP v1.5 carries **49** unfilled `[Insert …]` placeholders, concentrated in §5.2
+Required Files (14), §11.1 Completion Criteria (11), §5.3 Folder Paths (7), §5.5
+Contacts (5) and §5.1 Systems/Access (5). Its §3 states it is meant to serve as a
+training and continuity reference; at present nobody could run the process from it.
+`Connections` also shows this report is bound to a published dataset
+(`DatasetId 7ee1084b…`), so local edits and service edits can overwrite each other —
+worth settling which copy is authoritative.
 
 ## 6. Not changed
 

@@ -518,8 +518,31 @@ def build_p1():
                                R1L, Z_WORK, 'Exceptions by Category'))
     c2 = style_bar_chart(place(tpl(P1, '440cc3a8f7f81d9c576c'), '440cc3a8f7f81d9c576c',
                                R1R, Z_WORK + 1, 'Exceptions by Service'))
-    c3 = style_bar_chart(place(tpl(P1, 'c62f0b0a1aec5c80209a'), 'c62f0b0a1aec5c80209a',
-                               R2L, Z_WORK + 2, 'Exceptions by QV Run Window'))
+    # Run Coverage replaces the two-bar "Exceptions by QV Run Window" chart: same
+    # Morning/Afternoon split, but per run instead of totalled, so you can see which
+    # runs the model actually holds.  Ordered by Date modified, which maps 1:1 to
+    # Run Date + Run Time (9 values, 9 combinations) and unlike Run Date is a real
+    # datetime, so the rows read chronologically.
+    c3 = place(T_TABLE, 'c62f0b0a1aec5c80209a', R2L, Z_WORK + 2,
+               'Run Coverage  ·  QV runs captured in this model')
+    style_table(c3, widths=[('QV_Output.Date modified', 150),
+                            ('QV_Output.Run Date', 90),
+                            ('QV_Output.Run Time', 110),
+                            ('QV_Output.Total Exceptions', 95)])
+    c3["visual"]["query"] = {
+        "queryState": {"Values": {"projections": [
+            {"field": entity_col('QV_Output', 'Date modified'),
+             "queryRef": "QV_Output.Date modified", "nativeQueryRef": "Run Captured"},
+            {"field": entity_col('QV_Output', 'Run Date'),
+             "queryRef": "QV_Output.Run Date", "nativeQueryRef": "Run Date"},
+            {"field": entity_col('QV_Output', 'Run Time'),
+             "queryRef": "QV_Output.Run Time", "nativeQueryRef": "Window"},
+            {"field": entity_measure('QV_Output', 'Total Exceptions'),
+             "queryRef": "QV_Output.Total Exceptions", "nativeQueryRef": "Exceptions"},
+        ]}},
+        "sortDefinition": {"sort": [{"field": entity_col('QV_Output', 'Date modified'),
+                                     "direction": "Ascending"}], "isDefaultSort": True},
+    }
     # Trend axis is Manifest Date, not Run Date.  Run Date is stored as text, so it
     # orders alphabetically (7/14, 7/16, 7/17, 7/27, 7/6, 7/7) and "sort by column" is
     # a model property this file cannot set.  Manifest Date is a real datetime with 47
