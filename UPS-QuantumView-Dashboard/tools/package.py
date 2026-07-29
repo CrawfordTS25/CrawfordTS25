@@ -8,19 +8,26 @@ ORIG = os.path.join(SRC, 'pbix', 'dash.pbix')
 BUILD = os.path.join(SRC, 'pbix', 'build')
 OUT = os.path.join(SRC, 'Quantum_View_Exceptions_Dashboard.pbix')
 PREFIX = 'Report/definition/'
+# script-layer parts also taken from the build tree.  These are saved-script tabs
+# (TMDL view / DAX query view) - inert text, they cannot alter the model on load.
+SCRIPT_DIRS = ('TMDLScripts/', 'DAXQueries/')
 
 new_parts = []
-for root, _, files in os.walk(os.path.join(BUILD, 'Report', 'definition')):
-    for fn in files:
-        full = os.path.join(root, fn)
-        new_parts.append((os.path.relpath(full, BUILD).replace(os.sep, '/'), full))
+for sub in (('Report', 'definition'), ('TMDLScripts',), ('DAXQueries',)):
+    for root, _, files in os.walk(os.path.join(BUILD, *sub)):
+        for fn in files:
+            full = os.path.join(root, fn)
+            new_parts.append((os.path.relpath(full, BUILD).replace(os.sep, '/'), full))
 new_parts.sort()
+script_parts = {a for a, _ in new_parts if a.startswith(SCRIPT_DIRS)}
 
 zin = zipfile.ZipFile(ORIG)
 copied = replaced = 0
 with zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED) as zout:
     emitted = False
     for info in zin.infolist():
+        if info.filename.startswith(SCRIPT_DIRS):
+            continue                              # re-emitted from the build tree
         if info.filename.startswith(PREFIX):
             if not emitted:                       # emit the new report definition here
                 for arcname, full in new_parts:
@@ -47,12 +54,14 @@ assert bad is None, 'corrupt entry: %s' % bad
 
 orig_names = set(zin.namelist())
 out_names = set(zo.namelist())
-untouched = {n for n in orig_names if not n.startswith(PREFIX)}
+untouched = {n for n in orig_names
+             if not n.startswith(PREFIX) and not n.startswith(SCRIPT_DIRS)}
 drift = [n for n in sorted(untouched)
          if hashlib.sha256(zin.read(n)).hexdigest() != hashlib.sha256(zo.read(n)).hexdigest()]
 
 print('parts copied unchanged : %d' % copied)
-print('report definition parts: %d (was %d)' % (replaced, len(orig_names - untouched)))
+print('report + script parts  : %d' % replaced)
+print('  of which script tabs : %d' % len(script_parts))
 print('byte-identical non-report parts: %s' % ('ALL' if not drift else drift))
 print('DataModel size in/out  : %d / %d' % (len(zin.read('DataModel')), len(zo.read('DataModel'))))
 print('output: %s  (%.2f MB)' % (OUT, os.path.getsize(OUT) / 1024 / 1024))

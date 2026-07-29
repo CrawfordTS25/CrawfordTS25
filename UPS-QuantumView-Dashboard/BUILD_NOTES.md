@@ -1,10 +1,15 @@
 # UPS Quantum View — Cross-Page Consistency Pass
 
-`Quantum_View_Exceptions_Dashboard.pbix` — same file, same format. Only the **Report
-layer** (`Report/definition/**`) was rewritten. The `DataModel`, `Connections`,
-`Settings`, `Metadata`, `DAXQueries`, `TMDLScripts`, `StaticResources` (theme) and
-`docProps` parts are byte-for-byte identical to the original archive, verified by
-SHA-256 on repackage.
+`Quantum_View_Exceptions_Dashboard.pbix` — same file, same format. The **Report layer**
+(`Report/definition/**`) was rewritten, and apply-ready fix tabs were appended to the
+**script layer** (`TMDLScripts/**`, `DAXQueries/**` — saved-script text that Desktop
+opens as tabs; inert until you click Apply or Run, and existing tabs preserved
+byte-identical).
+
+**The `DataModel` part is byte-for-byte identical to the original**, verified by
+SHA-256 on repackage, as are `Connections`, `Settings`, `Metadata`, `StaticResources`
+(theme) and `docProps`. Nothing in this repo alters the model on load — see §7 for how
+to apply the fixes that do.
 
 Authority for every number below: **UPS_QuantumView_Master_Build_Spec.pdf** p.5
 (theme tokens), p.6 (master coordinate table), p.7 (card anatomy + accent map);
@@ -295,11 +300,49 @@ measures in the meantime. Likewise the SharePoint write-back, Flow 1 audit log a
 Flow 2 mail-merge (spec pp.12–13) remain unbuilt; the Resolution automation panel now
 names those steps instead of a typo.
 
-## 7. Reproducing / verifying
+## 7. Applying the fixes
+
+The file opens exactly as before — `DataModel` is byte-identical, so nothing here
+changes until you choose to run it. Measures ship *inside* the file as an apply-ready
+script; Power Query steps cannot, because they live in the `DataModel` part and
+rewriting a compressed Analysis Services backup outside Desktop risks the file not
+opening at all.
+
+**In the file — TMDL view → `Script 2` → Apply**
+
+Makes `Aged 8 Plus Days` and `Avg Age (Days)` status-aware. Both keep their names, so
+no visual needs rebinding — the numbers simply become correct. `Script 1` (your model
+snapshot) is untouched.
+
+> Confirm the literal `"Resolved"` matches what production emits before applying.
+> These measures match on strings and return 0 silently on a mismatch — and the model
+> already contains one: the Resolutions measures spell the escalated state
+> `"Escalated"` while `Current_Open_Trace[Review Status]` stores `"Escalate"`.
+
+**In the file — DAX query view → four read-only checks**
+
+| Tab | Answers |
+|---|---|
+| `Query 3` · Age Days anchor | is `[Age Days]` case age, or run recency? |
+| `Query 4` · KPI reconciliation | the three ties spec p.9 asks for, plus the three competing exception grains side by side |
+| `Query 5` · status vocabulary | every literal the status measures depend on, against what the data holds |
+| `Query 6` · Trace_Notes join health | run after re-pointing the merge to confirm notes land |
+
+`Query 1` and `Query 2` are preserved byte-identical.
+
+**Outside the file — `tools/model-fixes.pq`**
+
+Four Power Query blocks, each stating which step it replaces: the `Refresh` anchor
+table, the `Age Days` rebuild, the `Trace_Notes` merge on `Exception Key`, and the
+Step 0 key re-mint. Plus the two UI changes worth doing in the same sitting — the
+relationship cross-filter direction, and narrowing the model by ~54%.
+
+## 8. Reproducing / verifying
 
 ```
 python3 tools/build.py       # rewrite Report/definition from the extracted original
 python3 tools/validate.py    # style uniformity, skeleton identity, canvas bounds, refs
+python3 tools/scripts.py     # write the TMDL + DAX fix tabs into the build tree
 python3 tools/package.py     # rezip; asserts non-report parts are byte-identical
 python3 tools/render.py      # layout-proof.svg, drawn to scale from the packaged file
 ```
