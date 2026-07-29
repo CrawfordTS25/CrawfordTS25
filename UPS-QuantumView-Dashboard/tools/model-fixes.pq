@@ -280,3 +280,103 @@ in
 // And ingest is robust to duplicates but blind to GAPS. If a run never produced a
 // file, nothing here can tell. The Run Coverage panel on the Exceptions page is the
 // only thing that surfaces a missing run; watch it.
+
+
+// =============================================================================
+// 7. IF THE SOURCE BECOMES AN API
+//
+// Only step 6b knows where data comes from.  6c onward - key, dedupe, first-seen,
+// flags - never reference the source, so in principle an API swaps one query and
+// nothing downstream changes.  In practice there is one consequence to settle first.
+//
+// A FOLDER ACCUMULATES.  AN API ANSWERS "NOW".
+//
+// Folder.Files gives you an archive: 9 files = 9 point-in-time snapshots, and
+// [Date modified] stamps each one.  That is what makes the trend, Run Coverage and
+// latest-wins dedupe possible.  A live API call returns current state only.  Point
+// Power Query straight at it and every refresh REPLACES the picture rather than
+// adding to it - you lose run history, and the recency signal dedupe sorts on.
+// =============================================================================
+
+
+// --- 7a. The decision --------------------------------------------------------
+//
+// OPTION A - API writes files, Power Query still reads the folder   RECOMMENDED
+//     UPS API -> small script/Flow -> landing folder -> section 6 unchanged
+//   The API replaces the human in SOP 6.2, not the architecture.  History is kept,
+//   [Date modified] still exists, dedupe still works, nothing below 6b changes, and
+//   you can reprocess any past day because the files are still there.
+//
+// OPTION B - Power Query calls the API directly
+//     UPS API -> Web.Contents -> model
+//   Refreshes in the cloud with no gateway, which is a real advantage over a UNC
+//   path.  But it is current-state only.  To keep history you then need incremental
+//   refresh with a persisted partition, or to write results somewhere durable -
+//   i.e. you rebuild the archive the folder was already giving you for free.
+//
+// Take Option A unless you specifically need on-demand intraday lookups.
+
+
+// --- 7b. If you do go direct: the two things that break scheduled refresh -----
+//
+// 1. DYNAMIC DATA SOURCES.  A URL built by string concatenation cannot be refreshed
+//    by the Service - it refuses to validate the source.  The base URL must be
+//    static and everything variable must go in RelativePath / Query:
+//
+//        Web.Contents(
+//            "https://onlinetools.ups.com",                    // static, always
+//            [ RelativePath = "api/track/v1/details/" & id,    // variable here
+//              Query        = [ locale = "en_US" ],
+//              Headers      = [ Authorization = "Bearer " & token,
+//                               #"Content-Type" = "application/json" ] ] )
+//
+// 2. OAUTH TOKEN LIFETIME.  UPS moved to OAuth 2.0; tokens are short-lived, so the
+//    token cannot be a hard-coded parameter.  Fetch it in the same refresh:
+//
+//        GetToken = () =>
+//            let
+//                resp = Web.Contents("https://onlinetools.ups.com",
+//                    [ RelativePath = "security/v1/oauth/token",
+//                      Headers = [ #"Content-Type" = "application/x-www-form-urlencoded",
+//                                  Authorization  = "Basic " & ClientCredsBase64 ],
+//                      Content = Text.ToBinary("grant_type=client_credentials") ])
+//            in
+//                Json.Document(resp)[access_token]
+//
+//    Store the client id/secret as parameters, never in the query text.  Confirm
+//    endpoint paths and your account's entitlements on the UPS developer portal -
+//    do not take the paths above as verbatim.
+
+
+// --- 7c. Columns you must synthesise -----------------------------------------
+// Section 6 depends on five fields.  Four arrive in the payload.  One does not:
+//
+//   Tracking Number     UPS field
+//   Manifest Date       UPS field
+//   Status              UPS field
+//   Exception Category  derived by your keyword mapping - keep that step
+//   Date modified       Folder.Files METADATA. There is no equivalent in an API
+//                       response, and dedupe sorts on it.
+//
+// So stamp it at retrieval time, from the Refresh anchor in section 1 rather than
+// a volatile clock, so every row from one refresh shares one timestamp exactly as
+// every row from one file does today:
+//
+//     Stamped = Table.AddColumn(Payload, "Date modified",
+//                   each Refresh{0}[StampUTC], type datetime)
+//
+// Keep the column NAME. Everything downstream - and the Run Coverage panel on the
+// Exceptions page - reads it.
+
+
+// --- 7d. Check the shape of the endpoint before you scope this ---------------
+// If the only available endpoint is per-tracking-number rather than a bulk feed,
+// one refresh means one call per shipment:
+//
+//     2,127 calls to cover the exceptions currently in QV_Output
+//    45,561 calls to cover everything in QV_Manifest
+//
+// That is slow, throttling-prone, and a poor fit for a daily bulk sweep. Bulk
+// Quantum View delivery is historically a subscription that lands FILES - which is
+// Option A again. Ask your UPS rep which of the two you are entitled to before
+// committing to a build; the answer decides this whole section.
