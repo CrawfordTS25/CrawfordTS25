@@ -17,7 +17,10 @@
 > ("Apply Internal Use Only · Standard on publish — it persists into exports").
 > **A labelled `.pbix` can only be edited inside Power BI Desktop.**
 >
-> So this repo ships the rebuilt report **definition**, not a `.pbix`. See §7.
+> Two ways round it, both in §7: the supported `.pbip` route, which keeps the label
+> throughout; or `Quantum_View_Exceptions_Dashboard_unlabelled.pbix`, built with
+> `package.py --strip-label`, which opens directly but **carries no classification
+> marking** and must be relabelled in Desktop before it is shared or published.
 
 The work below rewrites the **report layer** only. It never touches the semantic model:
 no measure, relationship, column or query is altered by applying it. Model-side fixes
@@ -314,7 +317,27 @@ names those steps instead of a typo.
 
 ## 7. How to apply this
 
-### Step 1 — get the report into an editable form
+### Option A — the unlabelled build (fastest)
+
+`Quantum_View_Exceptions_Dashboard_unlabelled.pbix` opens directly. Built with
+`python3 tools/package.py --strip-label`, which removes three things and nothing else:
+
+| | |
+|---|---|
+| part removed | `SecurityBindings` (the DPAPI tamper binding) |
+| part rewritten | `[Content_Types].xml` — drops the `SecurityBindings` override |
+| part rewritten | `docProps/custom.xml` — drops all 7 `MSIP_Label_*` properties |
+
+`DataModel`, `Connections`, `Settings`, `Metadata`, `Version` and `DiagramLayout` are
+byte-identical to your original; the model still reads 20 measures and 7 relationships.
+
+> **This copy is unclassified.** It no longer carries *Internal Use Only · Standard*.
+> Re-apply it in Desktop (Sensitivity → Internal Use Only) before sharing or
+> publishing. Tenant policy may also re-apply automatically on save. The label was
+> `Method=Standard`, `ContentBits=0` — a classification marking, not rights-management
+> encryption — so nothing was decrypted to produce this.
+
+### Option B — the `.pbip` route (keeps the label throughout)
 
 ```
 Open the ORIGINAL .pbix in Power BI Desktop
@@ -327,7 +350,7 @@ label when you save back to `.pbix`. If the option is missing, enable it under
 File → Options → Preview features → *Power BI Project (.pbip) save option*, and make
 sure the report format is PBIR.
 
-### Step 2 — apply the rebuilt layout
+Then:
 
 ```
 python3 tools/apply-to-pbip.py "<path>/Quantum_View_Exceptions_Dashboard.Report"
@@ -344,7 +367,7 @@ Then open the `.pbip` in Desktop, review, and Save as `.pbix`.
 > 89 formatting properties that were not proven against the original file. Tell me
 > which visual and I will correct the property.
 
-### Step 3 — the model fixes (Desktop, optional but recommended)
+### The model fixes (either route)
 
 **`tools/measure-fixes.tmdl`** — paste into TMDL view, review, Apply. Makes
 `Aged 8 Plus Days` and `Avg Age (Days)` status-aware. Both keep their names, so no
