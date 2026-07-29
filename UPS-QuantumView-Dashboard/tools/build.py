@@ -53,10 +53,14 @@ R2L = (186, 339, 525, 150)
 R2R = (723, 339, 533, 150)
 R2F = (186, 339, 1070, 150)
 R3F = (186, 501, 1070, 195)
-# Resolution work area (spec p.6, authoritative over the mockup callouts)
+# Resolution work area.  Spec p.6 gives queue/notes/automation all 452 wide, which
+# stops the work area at x=1102 while every other page runs to the 1256 right margin.
+# Queue stays at the spec's 452; the right column is widened to close that gap so
+# Resolution is flush with the rest of the report.
 QUEUE = (186, 162, 452, 470)
-NOTES = (650, 162, 452, 236)
-AUTO  = (650, 410, 452, 222)
+NOTES = (650, 162, 606, 236)
+AUTO  = (650, 410, 606, 222)
+AUTO_TEXT = (AUTO[0] + 12, AUTO[1] + 36, AUTO[2] - 24, AUTO[3] - 50)
 
 Z_RAIL, Z_BAR, Z_RAILHDR, Z_TITLE, Z_NAV, Z_STAMP = 100, 200, 300, 400, 500, 600
 Z_KPI, Z_SLICER, Z_WORK = 1000, 1100, 2000
@@ -620,7 +624,7 @@ def build_p2():
     panel_chrome(auto, title='Write-Back & Email Automation', border=False)
     auto["visual"]["visualContainerObjects"]["background"] = grp({"show": bv(False)})
 
-    note_txt = make_textbox('e875e461e9d0dbea1eba', (662, 446, 428, 172), Z_WORK + 3, [
+    note_txt = make_textbox('e875e461e9d0dbea1eba', AUTO_TEXT, Z_WORK + 3, [
         run('SharePoint List is the system of record; Excel is an append-only log.', 8, LABEL),
         run('', 8, LABEL),
         run('Step 7  ·  SharePoint List + seed rows', 9, INK, True),

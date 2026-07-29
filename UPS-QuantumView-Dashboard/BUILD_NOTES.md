@@ -67,15 +67,21 @@ Grid rhythm shared by Exceptions, Trace, Exception Detail and Trace Detail —
 rows at y=162 (h 165), y=339 (h 150), y=501 (h 195); columns at x=186 (w 525),
 x=723 (w 533), full width 1070.
 
-Resolution uses the spec's own act-surface grid (p.6): queue 186,162,452×470 ·
-notes 650,162,452×236 · automation 650,410,452×222.
+Resolution keeps the spec's act-surface arrangement (p.6) — queue left, notes and
+automation stacked right — with one deliberate departure: queue 186,162,**452**×470 ·
+notes 650,162,**606**×236 · automation 650,410,**606**×222.
 
-> **Flagged:** that grid stops at x=1102 while every other page runs to the 1256
-> right margin, so Resolution shows a 154 px empty column. This is what the master
-> coordinate table specifies and p.2 says to trust the table over the mockup
-> callouts, so it was built as written. To make Resolution flush with the other
-> pages, widen the notes and automation panels from 452 to 606 (`NOTES` and `AUTO`
-> in `tools/build.py`).
+> **Departure from spec p.6.** The coordinate table gives all three panels 452 wide,
+> which stops the work area at x=1102 while every other page runs to the 1256 right
+> margin — a 154 px empty column on one page out of five. The queue stays at the
+> spec's 452; the right column was widened to 606 so Resolution is flush with the
+> rest of the report. Revert by setting `NOTES` and `AUTO` back to 452 in
+> `tools/build.py` (`AUTO_TEXT` follows automatically).
+>
+> Still open: Resolution's panels bottom out at y=632 because the spec's heights
+> (470, and 236+12+222) are 64 px short of the 696 bottom margin the other four
+> pages reach. To close that too, take the queue to 534 and the right column to
+> 268 / 254.
 
 ## 4. Functional fixes
 
