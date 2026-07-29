@@ -25,14 +25,14 @@
                           "Entity": "QV_Output"
                         }
                       },
-                      "Property": "Exception Type "
+                      "Property": "Service"
                     }
                   },
                   "Function": 2
                 }
               },
-              "queryRef": "Min(QV_Output.Exception Type )",
-              "nativeQueryRef": "EXCEPTION TYPE"
+              "queryRef": "Min(QV_Output.Service)",
+              "nativeQueryRef": "SERVICE"
             }
           ]
         }

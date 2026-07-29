@@ -81,10 +81,13 @@ for p in order:
                           tuple(json.load(open(vf))['position'][k] for k in ('x','y','width','height')),
                           json.load(open(vf))['visual']['visualType'])
                          for vf in glob.glob(f'{B}/{p}/visuals/*/visual.json')
-                         if json.load(open(vf))['position']['z'] < 1100))
+                         if json.load(open(vf))['position']['z'] < 1100
+                         and json.load(open(vf))['visual']['visualType'] != 'pageNavigator'))
 if len(set(sk.values())) != 1:
     errs.append('skeleton geometry differs between pages')
-print('\nSKELETON GEOMETRY IDENTICAL ON ALL 5 PAGES:', len(set(sk.values())) == 1)
+print('\nSKELETON GEOMETRY IDENTICAL ON ALL 5 PAGES:', len(set(sk.values())) == 1,
+      '(page navigator excluded - present on the 3 visible pages, omitted on the 2\n'
+      '  drill-through pages, which carry a Back button instead)')
 
 # ---- 4. page.json shape
 for p in order:

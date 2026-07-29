@@ -6,7 +6,7 @@
     "y": 162,
     "z": 2000,
     "width": 1070,
-    "height": 165,
+    "height": 534,
     "tabOrder": 2000
   },
   "visual": {
@@ -79,6 +79,62 @@
                       "Entity": "QV_Output"
                     }
                   },
+                  "Property": "Exception Description"
+                }
+              },
+              "queryRef": "QV_Output.Exception Description",
+              "nativeQueryRef": "Exception Description"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Exception Resolution"
+                }
+              },
+              "queryRef": "QV_Output.Exception Resolution",
+              "nativeQueryRef": "Exception Resolution"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Recommended Action"
+                }
+              },
+              "queryRef": "QV_Output.Recommended Action",
+              "nativeQueryRef": "Recommended Action"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Carrier Delay Reason"
+                }
+              },
+              "queryRef": "QV_Output.Carrier Delay Reason",
+              "nativeQueryRef": "Carrier Delay Reason"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
                   "Property": "Service"
                 }
               },
@@ -126,6 +182,90 @@
               },
               "queryRef": "QV_Output.Scheduled Delivery",
               "nativeQueryRef": "Scheduled Delivery"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Shipper Name"
+                }
+              },
+              "queryRef": "QV_Output.Shipper Name",
+              "nativeQueryRef": "Shipper Name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Shipper Location"
+                }
+              },
+              "queryRef": "QV_Output.Shipper Location",
+              "nativeQueryRef": "Shipper Location"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Ship To Name"
+                }
+              },
+              "queryRef": "QV_Output.Ship To Name",
+              "nativeQueryRef": "Ship To"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Full Address"
+                }
+              },
+              "queryRef": "QV_Output.Full Address",
+              "nativeQueryRef": "Ship To Address"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Run Date"
+                }
+              },
+              "queryRef": "QV_Output.Run Date",
+              "nativeQueryRef": "Run Date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "QV_Output"
+                    }
+                  },
+                  "Property": "Run Time"
+                }
+              },
+              "queryRef": "QV_Output.Run Time",
+              "nativeQueryRef": "Run Window"
             }
           ]
         }

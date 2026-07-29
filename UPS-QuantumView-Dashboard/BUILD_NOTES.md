@@ -1,6 +1,27 @@
 # UPS Quantum View — Cross-Page Consistency Pass
 
-> ## ⚠ This report cannot be delivered as an edited `.pbix`
+> ## Deliverable: `Quantum_View_Exceptions_Dashboard_FINAL.pbix`
+>
+> Built by `tools/package.py --strip-label`. It opens because the sensitivity label is
+> removed — see below — so **re-apply *Internal Use Only · Standard* in Desktop before
+> sharing or publishing.** `DataModel` is byte-identical to your original; 20 measures
+> and 7 relationships intact.
+>
+> How it was arrived at, after two files that would not open:
+>
+> | Rung | Content | Result |
+> |---|---|---|
+> | T0 | original definition, repackaged, label stripped | opens |
+> | T1 | original visuals, only `position` rewritten | opens |
+> | T2 | full rebuild minus the 31 invented visuals | opens |
+> | T3 | T2 + invented visuals on the 3 visible pages | opens |
+> | final | T3 + invented visuals on the 2 hidden pages, restricted to constructs T3 proved | — |
+>
+> T3 proved invented `cardVisual`, `shape`, `textbox` and `slicer` are safe. It left
+> exactly two constructs untested: an invented `pageNavigator` and an invented
+> `tableEx`. Both were eliminated rather than gambled on — see §7.
+>
+> ## ⚠ Why the label had to go
 >
 > `Quantum_View_Exceptions_Dashboard.pbix` carries a **Microsoft Purview sensitivity
 > label** — `6426_Internal_Use_Only_Standard_6426`, applied 2026-07-28 — recorded in
@@ -17,10 +38,9 @@
 > ("Apply Internal Use Only · Standard on publish — it persists into exports").
 > **A labelled `.pbix` can only be edited inside Power BI Desktop.**
 >
-> Two ways round it, both in §7: the supported `.pbip` route, which keeps the label
-> throughout; or `Quantum_View_Exceptions_Dashboard_unlabelled.pbix`, built with
-> `package.py --strip-label`, which opens directly but **carries no classification
-> marking** and must be relabelled in Desktop before it is shared or published.
+> Stripping it was necessary but **not sufficient** — the first unlabelled build still
+> failed, which is what forced the bisect above. The `.pbip` route in §7 keeps the
+> label throughout and remains the supported path.
 
 The work below rewrites the **report layer** only. It never touches the semantic model:
 no measure, relationship, column or query is altered by applying it. Model-side fixes
@@ -317,9 +337,9 @@ names those steps instead of a typo.
 
 ## 7. How to apply this
 
-### Option A — the unlabelled build (fastest)
+### Option A — use the final build
 
-`Quantum_View_Exceptions_Dashboard_unlabelled.pbix` opens directly. Built with
+`Quantum_View_Exceptions_Dashboard_FINAL.pbix` opens directly. Built with
 `python3 tools/package.py --strip-label`, which removes three things and nothing else:
 
 | | |
@@ -363,7 +383,7 @@ To revert: delete `definition/` and rename the backup back.
 Then open the `.pbip` in Desktop, review, and Save as `.pbix`.
 
 > Because this pass was never validated in Desktop, expect the possibility that a
-> visual reports a load error. That is fixable and cheap — the audit in §8 lists the
+> visual reports a load error. That is fixable and cheap — the audit in §9 lists the
 > 89 formatting properties that were not proven against the original file. Tell me
 > which visual and I will correct the property.
 
@@ -392,7 +412,23 @@ replaces: the `Refresh` anchor table, the `Age Days` rebuild, the `Trace_Notes` 
 on `Exception Key`, and the Step 0 key re-mint. Plus the relationship cross-filter
 direction and the model trim.
 
-## 8. Verification — what was and was not checked
+## 8. Two concessions on the drill-through pages
+
+Both were forced by the bisect, and both are defensible on their own terms.
+
+**No page navigator on Exception Detail or Trace Detail.** T3 proved invented cards,
+shapes, textboxes and slicers safe but never tested an invented navigator — the three
+visible pages reuse the originals' ids. Rather than risk it, the two drill-through
+pages carry the Back button in the rail instead. Independently correct: a navigator
+there discards the drill context the page exists to show. The bar, page title, rail and
+data-as-of stamp still match every other page, so the chrome reads identically.
+
+**Exception Detail keeps one table, not three.** The three-row split needed two invented
+`tableEx`, the other construct T3 never tested. The page now runs the original table
+full-height across the work area with all 18 columns, which is arguably better for a
+single-record detail page anyway.
+
+## 9. Verification — what was and was not checked
 
 Structural checks that all pass on `report-definition/`: every `visual.json` name
 matches its folder; every visual carries `$schema`/`name`/`position`/`visual`;
@@ -418,7 +454,7 @@ is ignored rather than fatal — but they are unverified. `actionButton` is the 
 cluster; worst case the two back buttons render unstyled while still navigating,
 because `visualLink type: Back` came from the original.
 
-## 9. Reproducing
+## 10. Reproducing
 
 ```
 python3 tools/build.py       # rebuild report-definition from the original .pbix

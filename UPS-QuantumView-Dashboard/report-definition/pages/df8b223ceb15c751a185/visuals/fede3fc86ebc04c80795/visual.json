@@ -25,14 +25,14 @@
                           "Entity": "QV_Output"
                         }
                       },
-                      "Property": "Shipper Location"
+                      "Property": "Scheduled Delivery"
                     }
                   },
                   "Function": 2
                 }
               },
-              "queryRef": "Min(QV_Output.Shipper Location)",
-              "nativeQueryRef": "SHIPPER LOCATION"
+              "queryRef": "Min(QV_Output.Scheduled Delivery)",
+              "nativeQueryRef": "SCHEDULED DELIVERY"
             }
           ]
         }

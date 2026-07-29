@@ -182,7 +182,7 @@
 <text x="140.3" y="1262.0" font-size="7" font-weight="600" fill="#1F2D40">Manual Notes &amp; Status</text>
 <rect x="135.3" y="1351.4" width="663.4" height="120.9" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <text x="140.3" y="1362.4" font-size="7" font-weight="600" fill="#1F2D40">Open Trace Queue  ·  right-click a row to drill to Trace Detail</text>
-<text x="20" y="1534" font-size="12" font-weight="700" fill="#1F2D40">QV Exception Detail<tspan font-weight="400" fill="#5A6472">   1280x720  ·  15 visuals  ·  HiddenInViewMode</tspan></text>
+<text x="20" y="1534" font-size="12" font-weight="700" fill="#1F2D40">QV Exception Detail<tspan font-weight="400" fill="#5A6472">   1280x720  ·  12 visuals  ·  HiddenInViewMode</tspan></text>
 <rect x="20" y="1543.1999999999998" width="793.6" height="446.4" fill="#CCCCCC" stroke="#B8BCC2"/>
 <rect x="34.9" y="1643.6" width="93.0" height="331.1" rx="3.7" fill="#FFFFFF" stroke="#E4E6EA" stroke-width="1"/>
 <rect x="34.9" y="1558.1" width="763.8" height="27.3" rx="0.0" fill="#1F2D40" stroke="none" stroke-width="1"/>
@@ -190,13 +190,6 @@
 <text x="47.3" y="1658.5" font-size="6" font-weight="600" fill="#5A6472">CONTEXT</text>
 <rect x="44.8" y="1563.7" width="213.3" height="16.1" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
 <text x="49.8" y="1574.2" font-size="8" font-weight="700" fill="#fff">UPS QUANTUM VIEW  ·  EXCEPTION DETAIL</text>
-<rect x="265.5" y="1561.8" width="282.7" height="19.8" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
-<rect x="265.5" y="1561.8" width="91.2" height="19.8" rx="3" fill="#33415A"/>
-<text x="311.1" y="1574.1" font-size="6" font-weight="700" text-anchor="middle" fill="#fff">QV EXCEPTIONS</text>
-<rect x="359.8" y="1561.8" width="91.2" height="19.8" rx="3" fill="#33415A"/>
-<text x="405.4" y="1574.1" font-size="6" font-weight="700" text-anchor="middle" fill="#fff">QV RESOLUTIONS</text>
-<rect x="454.0" y="1561.8" width="91.2" height="19.8" rx="3" fill="#33415A"/>
-<text x="499.6" y="1574.1" font-size="6" font-weight="700" text-anchor="middle" fill="#fff">QV TRACING</text>
 <rect x="558.2" y="1559.9" width="230.6" height="23.6" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
 <text x="563.2" y="1570.9" font-size="6.5" font-weight="600" fill="#fff">DATA AS OF</text>
 <rect x="34.9" y="1590.3" width="143.8" height="48.4" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
@@ -205,11 +198,11 @@
 <text x="39.9" y="1629.7" font-size="15" font-weight="800" fill="#1F2D40">123</text>
 <rect x="189.9" y="1590.3" width="143.8" height="48.4" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <rect x="189.9" y="1590.3" width="143.8" height="3" rx="1.5" fill="#D64545"/>
-<text x="194.9" y="1601.3" font-size="6.5" font-weight="600" fill="#5A6472">EXCEPTION TYPE</text>
+<text x="194.9" y="1601.3" font-size="6.5" font-weight="600" fill="#5A6472">SERVICE</text>
 <text x="194.9" y="1629.7" font-size="15" font-weight="800" fill="#1F2D40">123</text>
 <rect x="344.9" y="1590.3" width="143.8" height="48.4" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <rect x="344.9" y="1590.3" width="143.8" height="3" rx="1.5" fill="#1F2D40"/>
-<text x="349.9" y="1601.3" font-size="6.5" font-weight="600" fill="#5A6472">SERVICE</text>
+<text x="349.9" y="1601.3" font-size="6.5" font-weight="600" fill="#5A6472">SHIPPER LOCATION</text>
 <text x="349.9" y="1629.7" font-size="15" font-weight="800" fill="#1F2D40">123</text>
 <rect x="499.9" y="1590.3" width="143.8" height="48.4" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <rect x="499.9" y="1590.3" width="143.8" height="3" rx="1.5" fill="#2F9E6F"/>
@@ -217,17 +210,13 @@
 <text x="504.9" y="1629.7" font-size="15" font-weight="800" fill="#1F2D40">123</text>
 <rect x="654.9" y="1590.3" width="143.8" height="48.4" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <rect x="654.9" y="1590.3" width="143.8" height="3" rx="1.5" fill="#F2A900"/>
-<text x="659.9" y="1601.3" font-size="6.5" font-weight="600" fill="#5A6472">SHIPPER LOCATION</text>
+<text x="659.9" y="1601.3" font-size="6.5" font-weight="600" fill="#5A6472">SCHEDULED DELIVERY</text>
 <text x="659.9" y="1629.7" font-size="15" font-weight="800" fill="#1F2D40">123</text>
 <rect x="42.3" y="1664.7" width="78.1" height="24.8" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <text x="47.3" y="1679.6" font-size="6.5" font-weight="600" fill="#1F2D40">Back to Exceptions</text>
-<rect x="135.3" y="1643.6" width="663.4" height="102.3" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
+<rect x="135.3" y="1643.6" width="663.4" height="331.1" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <text x="140.3" y="1654.6" font-size="7" font-weight="600" fill="#1F2D40">Exception Detail  ·  click the Tracking Number to open UPS tracking</text>
-<rect x="135.3" y="1753.4" width="663.4" height="93.0" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
-<text x="140.3" y="1764.4" font-size="7" font-weight="600" fill="#1F2D40">Shipper &amp; Consignee</text>
-<rect x="135.3" y="1853.8" width="663.4" height="120.9" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
-<text x="140.3" y="1864.8" font-size="7" font-weight="600" fill="#1F2D40">Exception, Resolution &amp; Recommended Action</text>
-<text x="20" y="2037" font-size="12" font-weight="700" fill="#1F2D40">Trace Detail<tspan font-weight="400" fill="#5A6472">   1280x720  ·  16 visuals  ·  HiddenInViewMode</tspan></text>
+<text x="20" y="2037" font-size="12" font-weight="700" fill="#1F2D40">Trace Detail<tspan font-weight="400" fill="#5A6472">   1280x720  ·  15 visuals  ·  HiddenInViewMode</tspan></text>
 <rect x="20" y="2045.6" width="793.6" height="446.4" fill="#CCCCCC" stroke="#B8BCC2"/>
 <rect x="34.9" y="2146.0" width="93.0" height="331.1" rx="3.7" fill="#FFFFFF" stroke="#E4E6EA" stroke-width="1"/>
 <rect x="34.9" y="2060.5" width="763.8" height="27.3" rx="0.0" fill="#1F2D40" stroke="none" stroke-width="1"/>
@@ -235,13 +224,6 @@
 <text x="47.3" y="2160.9" font-size="6" font-weight="600" fill="#5A6472">CONTEXT</text>
 <rect x="44.8" y="2066.1" width="213.3" height="16.1" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
 <text x="49.8" y="2076.6" font-size="8" font-weight="700" fill="#fff">UPS QUANTUM VIEW  ·  TRACE DETAIL</text>
-<rect x="265.5" y="2064.2" width="282.7" height="19.8" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
-<rect x="265.5" y="2064.2" width="91.2" height="19.8" rx="3" fill="#33415A"/>
-<text x="311.1" y="2076.5" font-size="6" font-weight="700" text-anchor="middle" fill="#fff">QV EXCEPTIONS</text>
-<rect x="359.8" y="2064.2" width="91.2" height="19.8" rx="3" fill="#33415A"/>
-<text x="405.4" y="2076.5" font-size="6" font-weight="700" text-anchor="middle" fill="#fff">QV RESOLUTIONS</text>
-<rect x="454.0" y="2064.2" width="91.2" height="19.8" rx="3" fill="#33415A"/>
-<text x="499.6" y="2076.5" font-size="6" font-weight="700" text-anchor="middle" fill="#fff">QV TRACING</text>
 <rect x="558.2" y="2062.3" width="230.6" height="23.6" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
 <text x="563.2" y="2073.3" font-size="6.5" font-weight="600" fill="#fff">DATA AS OF</text>
 <rect x="34.9" y="2092.7" width="143.8" height="48.4" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>

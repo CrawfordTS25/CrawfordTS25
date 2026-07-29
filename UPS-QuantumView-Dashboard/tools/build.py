@@ -464,16 +464,20 @@ def write_page(page_name, display_name, visuals, page_extra=None):
     return len(visuals)
 
 
-def skeleton(page_key, title_text, rail_header, ids):
-    """The four-part chrome that is byte-identical (bar geometry, nav, rail) on every page."""
-    return [
+def skeleton(page_key, title_text, rail_header, ids, nav=True):
+    """The chrome that is identical on every page.  `nav=False` on the drill-through
+    pages: they are reached contextually and carry a Back button, and a page navigator
+    there would discard the drill context.  The bar, title, rail and stamp still match."""
+    out = [
         make_rail_panel(ids['rail']),
         make_title_bar(ids['bar']),
         make_rail_header(ids['railhdr'], rail_header),
         make_page_title(ids['pagetitle'], title_text),
-        make_nav(ids['nav']),
         make_stamp(ids['stamp']),
     ]
+    if nav:
+        out.insert(4, make_nav(ids['nav']))
+    return out
 
 def skel_ids(page_key):
     return {k: new_id('%s/%s' % (page_key, k))
@@ -778,7 +782,7 @@ def build_p3():
 # ================================================================= PAGE 4
 def build_p4():
     ids = skel_ids('p4')
-    vis = skeleton('p4', 'UPS QUANTUM VIEW  ·  EXCEPTION DETAIL', 'CONTEXT', ids)
+    vis = skeleton('p4', 'UPS QUANTUM VIEW  ·  EXCEPTION DETAIL', 'CONTEXT', ids, nav=False)
     vis.append(make_back_button('79c52cc25902bb5aae7b', 'Back to Exceptions'))
 
     QO = 'QV_Output'
@@ -787,14 +791,17 @@ def build_p4():
                          'Min(%s.%s)' % (QO, prop))
     vis += [
         dcard(new_id('p4/c1'), 0, 'EXCEPTION CATEGORY', 'Exception Category', INK),
-        dcard(new_id('p4/c2'), 1, 'EXCEPTION TYPE', 'Exception Type ', BREACH),
-        dcard(new_id('p4/c3'), 2, 'SERVICE', 'Service', INK),
+        dcard(new_id('p4/c2'), 1, 'SERVICE', 'Service', BREACH),
+        dcard(new_id('p4/c3'), 2, 'SHIPPER LOCATION', 'Shipper Location', INK),
         dcard(new_id('p4/c4'), 3, 'MANIFEST DATE', 'Manifest Date', RESOLVED),
-        dcard(new_id('p4/c5'), 4, 'SHIPPER LOCATION', 'Shipper Location', ACCENT),
+        dcard(new_id('p4/c5'), 4, 'SCHEDULED DELIVERY', 'Scheduled Delivery', ACCENT),
     ]
 
+    # One table, not three.  The original table on this page is a proven-good visual;
+    # splitting it into invented ones is the only untested table construct in the build.
     t1 = place(tpl(P4, '4270694a1cb209308bd0'), '4270694a1cb209308bd0',
-               R1F, Z_WORK, 'Exception Detail  ·  click the Tracking Number to open UPS tracking')
+               (186, 162, 1070, 534), Z_WORK,
+               'Exception Detail  ·  click the Tracking Number to open UPS tracking')
     style_table(t1, web_url_on='QV_Output.Tracking Number',
                 web_url_entity=QO, web_url_col='Tracking URL')
     t1["visual"]["query"] = table_projections([
@@ -802,31 +809,22 @@ def build_p4():
         (QO, 'Exception Key', 'Exception Key'),
         (QO, 'Exception Category', 'Category'),
         (QO, 'Exception Status Description', 'Exception Status'),
+        (QO, 'Exception Description', 'Exception Description'),
+        (QO, 'Exception Resolution', 'Exception Resolution'),
+        (QO, 'Recommended Action', 'Recommended Action'),
+        (QO, 'Carrier Delay Reason', 'Carrier Delay Reason'),
         (QO, 'Service', 'Service'),
         (QO, 'Manifest Date', 'Manifest Date'),
         (QO, 'Original Scheduled Delivery Date', 'Orig. Sched. Delivery'),
         (QO, 'Scheduled Delivery', 'Scheduled Delivery'),
-    ])
-    t2 = place(T_TABLE, new_id('p4/t2'), R2F, Z_WORK + 1, 'Shipper & Consignee')
-    style_table(t2)
-    t2["visual"]["query"] = table_projections([
         (QO, 'Shipper Name', 'Shipper Name'),
         (QO, 'Shipper Location', 'Shipper Location'),
-        (QO, 'Shipper Address Line 1', 'Shipper Address'),
         (QO, 'Ship To Name', 'Ship To'),
         (QO, 'Full Address', 'Ship To Address'),
-    ])
-    t3 = place(T_TABLE, new_id('p4/t3'), R3F, Z_WORK + 2, 'Exception, Resolution & Recommended Action')
-    style_table(t3)
-    t3["visual"]["query"] = table_projections([
-        (QO, 'Exception Description', 'Exception Description'),
-        (QO, 'Exception Resolution', 'Exception Resolution'),
-        (QO, 'Carrier Delay Reason', 'Carrier Delay Reason'),
-        (QO, 'Recommended Action', 'Recommended Action'),
         (QO, 'Run Date', 'Run Date'),
         (QO, 'Run Time', 'Run Window'),
     ])
-    vis += [t1, t2, t3]
+    vis += [t1]
 
     # Drill through on Exception Key, not Tracking Number.  1,216 of 2,127 tracking
     # numbers carry more than one exception row (up to 9), and Category / Exception
@@ -851,7 +849,7 @@ def build_p4():
 def build_p5():
     ids = skel_ids('p5')
     ids['pagetitle'] = 'ef87d8fa8e9402ba0740'
-    vis = skeleton('p5', 'UPS QUANTUM VIEW  ·  TRACE DETAIL', 'CONTEXT', ids)
+    vis = skeleton('p5', 'UPS QUANTUM VIEW  ·  TRACE DETAIL', 'CONTEXT', ids, nav=False)
     vis.append(make_back_button('8db4c211d065035d6cc7', 'Back to Trace'))
 
     COT = 'Current_Open_Trace'
