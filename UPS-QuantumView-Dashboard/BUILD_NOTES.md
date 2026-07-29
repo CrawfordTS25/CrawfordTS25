@@ -128,11 +128,29 @@ does not render them as links, set the `Tracking URL` column's **Data category =
 Web URL** in the model — that is a model-side property this file cannot carry
 (spec p.10, step 3).
 
-**Drill-through.** Both hidden pages keep their bindings — Exception Detail on
-`QV_Output[Tracking Number]`, Trace Detail on `Current_Open_Trace[CASE #]` +
-`[Tracking Number]`. Trace Detail's hard-coded leftover drill values (case
-`20260629005`, tracking `1Z8E19V71292549531`) were removed so it no longer opens on a
-stale record. Both back buttons kept, restyled, and moved into the rail's first slot.
+**Exceptions Trend was neither sorted nor a trend.** It sorted by `Total Exceptions`
+descending, and its axis — `Run Date` — is stored as text, so even a date sort orders
+alphabetically: `7/14, 7/16, 7/17, 7/27, 7/6, 7/7`, putting July 6–7 at the right-hand
+end of the line. "Sort by column" is a model property this file cannot set, so the
+axis moved to `Manifest Date`, a real datetime with 47 days of history (22 May →
+27 Jul), sorted ascending. Title now reads *Exceptions Trend · by Manifest Date* so
+the axis is explicit. `Run Date` remains available as a slicer.
+
+**Drill-through keyed on a non-unique column.** Exception Detail bound on
+`QV_Output[Tracking Number]`, but **1,216 of 2,127** tracking numbers carry more than
+one exception row — up to 9 — and Category / Exception Type genuinely differ across
+them on ~30, so the page's `Min()` cards landed on an arbitrary record. Rebound to
+`QV_Output[Exception Key]`, which holds Category, Exception Type, Service, Manifest
+Date, Shipper Location and Ship To constant across **all 2,175** of its groups, making
+`Min()` exact. The remaining multiplicity is the same exception seen across several QV
+runs, which the detail table now shows usefully. `Exception Key` was added to the
+Exceptions detail table as a narrow 50 px "Key" column so right-click can pass it;
+that table switched to explicit column widths (1,043 px of 1,070) instead of autosize.
+
+Trace Detail keeps its `CASE #` + `Tracking Number` binding — `CASE #` is unique across
+all 95 rows. Its hard-coded leftover drill values (case `20260629005`, tracking
+`1Z8E19V71292549531`) were removed so it no longer opens on a stale record. Both back
+buttons kept, restyled, and moved into the rail's first slot.
 
 **Other cleanups.** The stray inverted Shipper Location filter on the Exceptions
 detail table; the missing `NoFilter` interaction from the Trace queue to the
@@ -140,7 +158,29 @@ Escalations card; the trailing space in the "QV Tracing " page name; and the
 "Shrepoint write-back pending" text box, which now lists the actual outstanding
 build-order steps 7–9.
 
-## 5. Not changed
+## 5. Known gaps that need a model change
+
+These are visible in the report but cannot be fixed from `Report/definition`. Listed
+worst-first; numbers are measured against the data in this file.
+
+| Gap | Evidence | Fix lives in |
+|---|---|---|
+| Exceptions slicers reach only 2 of 5 KPIs | relationships run `QV_Manifest → Resolutions Table → QV_Output`, all M:1 single, so `QV_Output` slicers propagate to nothing upstream. Total Shipments pinned at 45,561; Aged 8+ Days pinned at 1,664; Successful Shipments dominated by the constant | relationship cross-filter direction |
+| Exception Rate reads **4.77%**, spec target ~75% | 2,175 distinct Exception Keys ÷ 45,561 manifest tracking numbers — different grain *and* different scope (6 run dates vs all history) | measure + query scope |
+| "How many exceptions" has 3 answers | 2,175 distinct keys / 4,683 rows with `Is Issue = 1` / 6,636 rows, all of which carry `Status = "Exception"` | pick one grain |
+| Exception Key is not the Step 0 key | it is `TrackingNumber\|<full UPS description text>`; reword the description upstream and every saved note detaches. No date component | Power Query |
+| 3 competing type columns | `Exception Type`, `Exception Type ` and `Exception Category` disagree on **4,429 of 6,636** rows (67%) | Power Query |
+| Resolution tracks a workflow that never closes | `Tracker Status` only ever `New / Needs Review` (1,136) or `Open` (1,039) → Resolved = 0, Escalated = 0, Open = 100% permanently. `Root Cause`, `Notes`, `Next Action`, `Last Updated`, `Closed Date` are **0 of 2,175** populated | write-back layer |
+| Trace can't support half its spec | `Refund Amount` text and 0 of 95 filled; `PII` 6 of 95 all `"NO"`; `Tickler` 0 of 95; `Delivery Status` one distinct value; every Trace date is text | Power Query + source |
+| Measure coverage | master spec pp.7–8: **4 of 13**; trace spec p.11: **0 of 9** | DAX |
+| No refresh anchor | no `'Refresh'[StampUTC]` table, so aging cannot be anchored per pp.8–9. The DATA AS OF chip uses `Max(QV_Output[Date modified])` as a stand-in | Power Query |
+| Model hygiene | `Branch_Contacts` load broken (500 null rows, a column named `X:\hrdi_report_pickup\FA_Roster\`) so Flow 2 has no roster; `Res_Tracker` is 1,040 rows of `Column1…Column14`; `Trace_Active` and `Current_Open_Trace` are duplicate facts; Auto Date/Time on, generating 12 hidden date tables both specs say to disable | Power Query + options |
+
+Easy win not yet built: `Run Time` cleanly separates `Morning QV` (4,311) from
+`Afternoon QV` (2,325), so a "both run windows completed today" measure against
+SOP §11.1 is available from data already in the model.
+
+## 6. Not changed
 
 No measures were added or edited and no model change was made — the `DataModel` part
 is untouched. That means the spec's `Avg Transit Days`, `Top Carrier`, `Aging > 48h`
@@ -151,7 +191,7 @@ measures in the meantime. Likewise the SharePoint write-back, Flow 1 audit log a
 Flow 2 mail-merge (spec pp.12–13) remain unbuilt; the Resolution automation panel now
 names those steps instead of a typo.
 
-## 6. Reproducing / verifying
+## 7. Reproducing / verifying
 
 ```
 python3 tools/build.py       # rewrite Report/definition from the extracted original

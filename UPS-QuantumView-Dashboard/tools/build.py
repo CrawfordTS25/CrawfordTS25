@@ -393,7 +393,7 @@ def style_area_chart(v):
     o["seriesLabels"] = grp({"show": bv(False)})
     return v
 
-def style_table(v, web_url_on=None, web_url_entity=None, web_url_col=None):
+def style_table(v, web_url_on=None, web_url_entity=None, web_url_col=None, widths=None):
     o = {}
     v["visual"]["objects"] = o
     values = [{"properties": {"fontSize": dv(9), "fontFamily": REGULAR,
@@ -413,7 +413,10 @@ def style_table(v, web_url_on=None, web_url_entity=None, web_url_col=None):
     o["columnHeaders"] = grp({"fontSize": dv(9), "fontFamily": SEMIBOLD,
                               "fontColor": col(WHITE), "backColor": col(INK),
                               "alignment": sv('left'), "wordWrap": bv(True),
-                              "autoSizeColumnWidth": bv(True)})
+                              "autoSizeColumnWidth": bv(not widths)})
+    if widths:
+        o["columnWidth"] = [{"properties": {"value": dv(w)},
+                             "selector": {"metadata": ref}} for ref, w in widths]
     o["grid"] = grp({"rowPadding": dv(4), "gridVertical": bv(False),
                      "gridHorizontal": bv(True), "gridHorizontalColor": col(BORDER),
                      "outlineColor": col(BORDER), "outlineWeight": dv(1)})
@@ -517,12 +520,44 @@ def build_p1():
                                R1R, Z_WORK + 1, 'Exceptions by Service'))
     c3 = style_bar_chart(place(tpl(P1, 'c62f0b0a1aec5c80209a'), 'c62f0b0a1aec5c80209a',
                                R2L, Z_WORK + 2, 'Exceptions by QV Run Window'))
+    # Trend axis is Manifest Date, not Run Date.  Run Date is stored as text, so it
+    # orders alphabetically (7/14, 7/16, 7/17, 7/27, 7/6, 7/7) and "sort by column" is
+    # a model property this file cannot set.  Manifest Date is a real datetime with 47
+    # days of history, so the trend reads chronologically.
     c4 = style_area_chart(place(tpl(P1, 'd93bc956c906aebdc346'), 'd93bc956c906aebdc346',
-                                R2R, Z_WORK + 3, 'Exceptions Trend'))
+                                R2R, Z_WORK + 3, 'Exceptions Trend  ·  by Manifest Date'))
+    c4["visual"]["query"] = {
+        "queryState": {
+            "Category": {"projections": [{
+                "field": entity_col('QV_Output', 'Manifest Date'),
+                "queryRef": "QV_Output.Manifest Date",
+                "nativeQueryRef": "Manifest Date", "active": True}]},
+            "Y": {"projections": [{
+                "field": entity_measure('QV_Output', 'Total Exceptions'),
+                "queryRef": "QV_Output.Total Exceptions",
+                "nativeQueryRef": "Total Exceptions"}]},
+        },
+        "sortDefinition": {"sort": [{"field": entity_col('QV_Output', 'Manifest Date'),
+                                     "direction": "Ascending"}], "isDefaultSort": True},
+    }
+
+    # Exception Key rides along so right-click drill-through can pass it to the
+    # Exception Detail page.  Narrow on purpose - it is the drill handle, and its two
+    # components (Tracking Number, Exception Description) are already columns here.
     tbl = place(tpl(P1, '2c1e56f341d91febe543'), '2c1e56f341d91febe543',
                 R3F, Z_WORK + 4, 'Exception Detail  ·  click a Tracking Number to open UPS tracking')
     style_table(tbl, web_url_on='QV_Output.Tracking Number',
-                web_url_entity='QV_Output', web_url_col='Tracking URL')
+                web_url_entity='QV_Output', web_url_col='Tracking URL',
+                widths=[('QV_Output.Exception Type ', 100),
+                        ('QV_Output.Tracking Number', 140),
+                        ('QV_Output.Service', 90),
+                        ('QV_Output.Manifest Date', 78),
+                        ('QV_Output.Shipper Name', 110),
+                        ('QV_Output.Shipper Location', 105),
+                        ('QV_Output.Ship To Name', 105),
+                        ('QV_Output.Exception Description', 150),
+                        ('QV_Output.Recommended Action', 115),
+                        ('QV_Output.Exception Key', 50)])
     tbl["visual"]["query"] = table_projections([
         ('QV_Output', 'Exception Type ', 'Exception Type'),
         ('QV_Output', 'Tracking Number', 'Tracking Number'),
@@ -533,6 +568,7 @@ def build_p1():
         ('QV_Output', 'Ship To Name', 'Ship To'),
         ('QV_Output', 'Exception Description', 'Issue'),
         ('QV_Output', 'Recommended Action', 'Recommended Action'),
+        ('QV_Output', 'Exception Key', 'Key'),
     ])
     vis += [c1, c2, c3, c4, tbl]
 
@@ -769,15 +805,20 @@ def build_p4():
     ])
     vis += [t1, t2, t3]
 
+    # Drill through on Exception Key, not Tracking Number.  1,216 of 2,127 tracking
+    # numbers carry more than one exception row (up to 9), and Category / Exception
+    # Type genuinely differ across them on ~30 of those, so the Min() cards landed on
+    # an arbitrary record.  Exception Key holds Category, Type, Service, Manifest Date,
+    # Shipper Location and Ship To constant across every one of its 2,175 groups.
     extra = {
         "filterConfig": {"filters": [{
             "name": "add1b3a50c80c5fa73a8",
-            "field": entity_col('QV_Output', 'Tracking Number'),
+            "field": entity_col('QV_Output', 'Exception Key'),
             "type": "Categorical", "howCreated": "Drillthrough"}]},
         "pageBinding": {"name": "b76efc3bd74845b1a45f", "type": "Drillthrough",
                         "parameters": [{"name": "d58a868399b2cc5b13c0",
                                         "boundFilter": "add1b3a50c80c5fa73a8",
-                                        "fieldExpr": entity_col('QV_Output', 'Tracking Number')}]},
+                                        "fieldExpr": entity_col('QV_Output', 'Exception Key')}]},
         "visibility": "HiddenInViewMode",
     }
     return write_page(P4, 'QV Exception Detail', vis, extra)

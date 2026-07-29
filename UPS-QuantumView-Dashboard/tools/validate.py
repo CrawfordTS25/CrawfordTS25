@@ -56,6 +56,10 @@ for vf in files:
     o = json.loads(json.dumps(v.get('objects', {})))
     if 'values' in o:   # drop the per-table Web URL conditional-formatting entry
         o['values'] = [e for e in o['values'] if 'webURL' not in e.get('properties', {})]
+    # explicit column widths are per-table content, not shared style; autosize is its toggle
+    o.pop('columnWidth', None)
+    for e in o.get('columnHeaders', []):
+        e.get('properties', {}).pop('autoSizeColumnWidth', None)
     style = json.dumps(strip({'o': o, 'c': v.get('visualContainerObjects', {})},
                              {'text', 'color', 'fill', 'areaColor', 'paragraphs'}),
                        sort_keys=True)
