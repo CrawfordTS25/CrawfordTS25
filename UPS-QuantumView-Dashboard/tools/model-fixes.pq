@@ -380,3 +380,111 @@ in
 // Quantum View delivery is historically a subscription that lands FILES - which is
 // Option A again. Ask your UPS rep which of the two you are entitled to before
 // committing to a build; the answer decides this whole section.
+
+
+// =============================================================================
+// 8. OPTION A - BUILD SHEET
+//
+//   UPS API  ->  fetcher  ->  landing folder  ->  section 6, unchanged
+//
+// The fetcher replaces the human in SOP 6.2. Nothing in the model changes, so the
+// whole job is: produce a CSV that looks exactly like the portal export, land it in
+// the folder, on a schedule, without corrupting anything when it fails.
+// =============================================================================
+
+
+// --- 8a. THE CONTRACT - match the export schema exactly ----------------------
+// Your transform chain is built on these headers. Emit these 18, spelled and cased
+// exactly like this, in this order:
+//
+//    1  Tracking Number                    10  Shipper Name
+//    2  Service                            11  Shipper Address Line 1
+//    3  Status                             12  Ship To Attention
+//    4  Exception Status Description       13  Ship To Name
+//    5  Exception Description              14  Ship To Address Line 1
+//    6  Exception Resolution               15  Ship To Address Line 2
+//    7  Manifest Date                      16  Ship To City
+//    8  Original Scheduled Delivery Date   17  Ship To State/Province
+//    9  Scheduled Delivery                 18  Ship To Postal Code
+//
+// Do NOT emit: Full Address, Is Issue, Carrier Delay Reason, Recommended Action,
+// Tracking URL, Shipper Location, Exception Type, Exception Type , Exception
+// Category, Exception Key, Run Date, Run Time, Date modified.  Every one of those
+// is derived downstream; producing them either gets ignored or collides.
+//
+// Cross-check against SOP Appendix A before you build - that is the approved QV
+// Manager field set, and it is the contract the portal export honours today.
+
+
+// --- 8b. FILE NAMING ---------------------------------------------------------
+// Section 6b filters on Text.StartsWith(Text.Upper([Name]), "QUANTUMVIEW"), so:
+//
+//     QuantumView_20260729_0930.csv        <- morning run
+//     QuantumView_20260729_1500.csv        <- afternoon run
+//
+// UTF-8, comma-delimited, quoted. One file per run window, never appended to.
+
+
+// --- 8c. WRITE ATOMICALLY - the failure everyone hits ------------------------
+// Power Query can read a half-written file if a refresh lands mid-write, and it
+// will not error - it will just ingest a truncated run. Write to a name the folder
+// filter ignores, then rename:
+//
+//     write   _incoming_20260729_0930.tmp      (does not match QUANTUMVIEW*)
+//     rename  QuantumView_20260729_0930.csv    (atomic on the same volume)
+
+
+// --- 8d. FAILURE BEHAVIOUR - distinguish "no data" from "no run" -------------
+// These are different and must look different:
+//
+//   API returned zero rows   -> DO write the file, headers only. A real quiet run.
+//   API call failed          -> write NOTHING, and alert. A gap you can see.
+//
+// Never write a partial or empty file on error. An empty file is indistinguishable
+// from a genuine zero-exception run, and it will quietly understate your numbers
+// forever. A missing file at least shows up as a hole in Run Coverage.
+
+
+// --- 8e. SCHEDULING ----------------------------------------------------------
+// Two routes, matching the two the specs already assume:
+//
+//   POWER AUTOMATE (preferred - no machine to keep on, aligns with Flows 1-3)
+//     Recurrence  weekdays, just after each SOP window (SOP 4: 08:00-10:00, 14:00-16:00)
+//     HTTP        get OAuth token, then call the UPS endpoint
+//     Compose     map JSON -> the 18 columns in 8a
+//     Create file SharePoint/OneDrive, .tmp name
+//     Rename      to QuantumView_*.csv
+//     On failure  post to Teams; do not create a file
+//
+//   POWERSHELL + TASK SCHEDULER (fallback if flow creation is blocked - spec p.16)
+//     Same sequence. Master spec p.4 already documents the Task Scheduler traps:
+//     use the full \\server\share UNC path not a mapped drive, -ExecutionPolicy
+//     Bypass for unsigned scripts, and remember an on-prem share still needs a
+//     gateway for unattended Service refresh.
+//
+// If the landing folder is SharePoint, prefer Power Automate AND switch section 6b
+// to SharePoint.Files - that combination needs no gateway at all.
+
+
+// --- 8f. RETENTION - this will bite around month three -----------------------
+// Every refresh re-reads every file in the folder. You are at 9 files for QV_Output
+// and 20 for QV_Manifest today; at 4 runs a day that is roughly 1,000 a year, and
+// refresh time grows with it.
+//
+//     keep    the last 90 days in the landing folder
+//     archive older files to a sibling folder the query does not enumerate
+//
+// Archive rather than delete - the files are your only replay mechanism if a
+// transform turns out to have been wrong. Move them; never let the fetcher delete.
+
+
+// --- 8g. ORDER OF WORK -------------------------------------------------------
+//   1. Confirm with UPS: bulk feed or per-shipment endpoint (decides feasibility)
+//   2. Section 4 - re-mint Exception Key. BEFORE daily ingest, not after.
+//   3. Section 1 + 2 - Refresh anchor and Age Days
+//   4. Section 6 - folder ingest and dedupe
+//   5. This section - the fetcher
+//   6. Scheduled refresh, gateway if needed, service-account connections (spec p.15)
+//
+// Steps 2 and 3 come first for the same reason: automating the feed onto a moving
+// key and a broken anchor produces fresher wrong numbers, arriving daily.
