@@ -68,20 +68,19 @@ rows at y=162 (h 165), y=339 (h 150), y=501 (h 195); columns at x=186 (w 525),
 x=723 (w 533), full width 1070.
 
 Resolution keeps the spec's act-surface arrangement (p.6) — queue left, notes and
-automation stacked right — with one deliberate departure: queue 186,162,**452**×470 ·
-notes 650,162,**606**×236 · automation 650,410,**606**×222.
+automation stacked right — resized to the margins: queue 186,162,452×**534** ·
+notes 650,162,**606**×**268** · automation 650,**442**,**606**×**254**.
 
-> **Departure from spec p.6.** The coordinate table gives all three panels 452 wide,
-> which stops the work area at x=1102 while every other page runs to the 1256 right
-> margin — a 154 px empty column on one page out of five. The queue stays at the
-> spec's 452; the right column was widened to 606 so Resolution is flush with the
-> rest of the report. Revert by setting `NOTES` and `AUTO` back to 452 in
-> `tools/build.py` (`AUTO_TEXT` follows automatically).
->
-> Still open: Resolution's panels bottom out at y=632 because the spec's heights
-> (470, and 236+12+222) are 64 px short of the 696 bottom margin the other four
-> pages reach. To close that too, take the queue to 534 and the right column to
-> 268 / 254.
+All five pages now fill the same work area: x 186 → 1256, y 162 → 696.
+
+> **Departure from spec p.6.** The coordinate table sizes the three Resolution panels
+> 452×470, 452×236 and 452×222, which ends the work area at x=1102, y=632 while every
+> other page fills to 1256 × 696 — a 154 px empty column and a 64 px empty strip on
+> one page out of five. Panels were grown to the margins instead. The queue keeps the
+> spec's 452 width, the stacked right panels keep the 12 px gutter between them, and
+> the automation text box derives its rectangle from the panel (`AUTO_TEXT`). To
+> restore the literal spec numbers, set `QUEUE`/`NOTES`/`AUTO` in `tools/build.py`
+> back to `(186,162,452,470)`, `(650,162,452,236)`, `(650,410,452,222)`.
 
 ## 4. Functional fixes
 

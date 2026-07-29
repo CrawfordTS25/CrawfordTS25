@@ -53,13 +53,14 @@ R2L = (186, 339, 525, 150)
 R2R = (723, 339, 533, 150)
 R2F = (186, 339, 1070, 150)
 R3F = (186, 501, 1070, 195)
-# Resolution work area.  Spec p.6 gives queue/notes/automation all 452 wide, which
-# stops the work area at x=1102 while every other page runs to the 1256 right margin.
-# Queue stays at the spec's 452; the right column is widened to close that gap so
-# Resolution is flush with the rest of the report.
-QUEUE = (186, 162, 452, 470)
-NOTES = (650, 162, 606, 236)
-AUTO  = (650, 410, 606, 222)
+# Resolution work area.  Spec p.6 keeps the queue-left / notes-and-automation-right
+# arrangement but sizes all three panels 452x(470 | 236 | 222), which ends the work
+# area at x=1102 y=632 while every other page fills to 1256 x 696.  Panel widths and
+# heights are grown to the margins so Resolution is flush; the queue keeps the spec's
+# 452 width and the 12px gutter between the stacked right panels is preserved.
+QUEUE = (186, 162, 452, 534)
+NOTES = (650, 162, 606, 268)
+AUTO  = (650, 442, 606, 254)
 AUTO_TEXT = (AUTO[0] + 12, AUTO[1] + 36, AUTO[2] - 24, AUTO[3] - 50)
 
 Z_RAIL, Z_BAR, Z_RAILHDR, Z_TITLE, Z_NAV, Z_STAMP = 100, 200, 300, 400, 500, 600

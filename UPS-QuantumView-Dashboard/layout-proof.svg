@@ -114,14 +114,14 @@
 <rect x="42.3" y="828.6" width="78.1" height="34.7" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <rect x="42.3" y="839.6" width="78.1" height="23.7" rx="3" fill="#FBFBFC" stroke="#E4E6EA"/>
 <text x="47.3" y="839.6" font-size="6.5" font-weight="600" fill="#5A6472">EXCEPTION TYPE</text>
-<rect x="135.3" y="638.8" width="280.2" height="291.4" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
+<rect x="135.3" y="638.8" width="280.2" height="331.1" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <text x="140.3" y="649.8" font-size="7" font-weight="600" fill="#1F2D40">Resolution Queue  ·  select a row to load Notes</text>
-<rect x="423.0" y="638.8" width="375.7" height="146.3" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
+<rect x="423.0" y="638.8" width="375.7" height="166.2" rx="3.7" fill="#fff" stroke="#E4E6EA" stroke-width="1"/>
 <text x="428.0" y="649.8" font-size="7" font-weight="600" fill="#1F2D40">Manual Notes &amp; Status</text>
-<rect x="423.0" y="792.6" width="375.7" height="137.6" rx="3.7" fill="#FFFFFF" stroke="#E4E6EA" stroke-width="1"/>
-<text x="428.0" y="803.6" font-size="7" font-weight="600" fill="#1F2D40">Write-Back &amp; Email Automation</text>
-<rect x="430.4" y="814.9" width="360.8" height="106.6" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
-<text x="435.4" y="870.7" font-size="6" font-weight="600" fill="#5A6472">SharePoint List is the system of record; Excel is an append-only log.</text>
+<rect x="423.0" y="812.4" width="375.7" height="157.5" rx="3.7" fill="#FFFFFF" stroke="#E4E6EA" stroke-width="1"/>
+<text x="428.0" y="823.4" font-size="7" font-weight="600" fill="#1F2D40">Write-Back &amp; Email Automation</text>
+<rect x="430.4" y="834.8" width="360.8" height="126.5" rx="3.7" fill="none" stroke="none" stroke-width="1"/>
+<text x="435.4" y="900.5" font-size="6" font-weight="600" fill="#5A6472">SharePoint List is the system of record; Excel is an append-only log.</text>
 <text x="20" y="1032" font-size="12" font-weight="700" fill="#1F2D40">QV Tracing<tspan font-weight="400" fill="#5A6472">   1280x720  ·  20 visuals  ·  Visible</tspan></text>
 <rect x="20" y="1040.8" width="793.6" height="446.4" fill="#CCCCCC" stroke="#B8BCC2"/>
 <rect x="34.9" y="1141.2" width="93.0" height="331.1" rx="3.7" fill="#FFFFFF" stroke="#E4E6EA" stroke-width="1"/>
