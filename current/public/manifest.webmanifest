@@ -1,0 +1,22 @@
+{
+  "name": "current",
+  "short_name": "current",
+  "description": "A live platform for music creators and their fans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07131F",
+  "theme_color": "#07131F",
+  "icons": [
+    {
+      "src": "/icon-512.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

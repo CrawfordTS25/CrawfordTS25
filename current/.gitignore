@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.local
+
+# Generated review artefacts — regenerate with:
+#   npx tsx scripts/render-brand.mts   (brand/preview)
+#   npm run smoke                      (screenshots)
+screenshots/
+
+# SQLite files when CURRENT_DB points at disk
+*.db
+*.db-wal
+*.db-shm
+data/

@@ -1,0 +1,627 @@
+/* Component layer. Everything here is built from tokens — no raw hex values. */
+
+/* ── App shell ───────────────────────────────────────────────────────────── */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in oklab, var(--bg) 84%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  height: 68px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-inline-start: var(--space-2);
+}
+
+.nav-link {
+  padding: 8px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color var(--motion-fast) var(--motion-ease), background var(--motion-fast) var(--motion-ease);
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: color-mix(in oklab, var(--c-river) 12%, transparent);
+}
+
+.nav-link[aria-current='page'] {
+  color: var(--text);
+  background: color-mix(in oklab, var(--c-river) 20%, transparent);
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+/* Below this the header cannot hold one row: the nav drops to its own line and
+   the search field takes the remaining width. */
+@media (max-width: 820px) {
+  .topbar-inner {
+    height: auto;
+    flex-wrap: wrap;
+    padding-block: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .topbar-spacer {
+    display: none;
+  }
+
+  .search-field {
+    order: 2;
+    flex: 1 1 140px;
+    width: auto;
+    min-width: 0;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    margin-inline-start: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    white-space: nowrap;
+  }
+}
+
+.search-field {
+  position: relative;
+  width: clamp(160px, 26vw, 300px);
+}
+
+.footer {
+  margin-top: auto;
+  border-top: 1px solid var(--hairline);
+  padding-block: var(--space-6) var(--space-7);
+}
+
+.footer-cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* ── Page furniture ──────────────────────────────────────────────────────── */
+
+.page {
+  padding-block: var(--space-6) var(--space-8);
+}
+
+.section {
+  margin-top: var(--space-7);
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.divider {
+  margin-block: var(--space-6);
+  opacity: 0.85;
+}
+
+/* ── Media plates ────────────────────────────────────────────────────────── */
+
+/*
+ * Hero panels, card artwork and the stage are tinted dark surfaces in BOTH
+ * themes — they are artwork, not chrome. So they pin the on-dark ink and the
+ * dark scrim locally; without this, light theme flips the text to #14324A and
+ * every label on the plate disappears.
+ */
+.hero,
+.stream-art,
+.stage {
+  --text: var(--c-ink);
+  --text-muted: color-mix(in oklab, var(--c-ink) 74%, transparent);
+  --text-faint: color-mix(in oklab, var(--c-ink) 54%, transparent);
+  --hairline: color-mix(in oklab, var(--c-ink) 20%, transparent);
+  --hairline-strong: color-mix(in oklab, var(--c-ink) 34%, transparent);
+  --scrim: linear-gradient(
+    to top,
+    var(--c-abyss) 8%,
+    color-mix(in oklab, var(--c-abyss) 55%, transparent) 55%,
+    transparent
+  );
+  color: var(--c-ink);
+}
+
+/* ── Avatar ──────────────────────────────────────────────────────────────── */
+
+.avatar {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  color: var(--c-abyss);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  user-select: none;
+  background-image: linear-gradient(
+    var(--gradient-angle),
+    hsl(var(--avatar-hue) 72% 62%),
+    hsl(calc(var(--avatar-hue) + 18) 66% 54%)
+  );
+}
+
+:root[data-theme='light'] .avatar {
+  color: #fff;
+}
+
+.avatar-ring {
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px color-mix(in oklab, var(--c-aqua) 70%, transparent);
+}
+
+/* ── Stream card ─────────────────────────────────────────────────────────── */
+
+.stream-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    transform var(--motion-base) var(--motion-easeOut),
+    border-color var(--motion-base) var(--motion-ease);
+}
+
+.stream-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--c-aqua) 42%, transparent);
+}
+
+/* The artwork plate: water gradient tinted by the creator's hue. */
+.stream-art {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  background-image: linear-gradient(
+    var(--gradient-angle),
+    hsl(var(--avatar-hue) 64% 42%),
+    hsl(calc(var(--avatar-hue) + 18) 58% 30%)
+  );
+}
+
+.stream-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  opacity: 0.55;
+}
+
+.stream-art-mark {
+  opacity: 0.34;
+  transform: scale(1.5);
+}
+
+.stream-art-badges {
+  position: absolute;
+  inset: var(--space-3) var(--space-3) auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  z-index: 1;
+}
+
+.stream-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.stream-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.dot-sep::before {
+  content: '·';
+  margin-inline: 6px;
+  opacity: 0.6;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── Hero (the one live set we lead with) ────────────────────────────────── */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--hairline-strong);
+  background-image: linear-gradient(
+    var(--gradient-angle),
+    hsl(var(--avatar-hue) 62% 34%),
+    hsl(calc(var(--avatar-hue) + 18) 56% 22%)
+  );
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-5);
+  padding: clamp(var(--space-5), 4vw, var(--space-7));
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .hero-inner {
+    grid-template-columns: 1.25fr 0.75fr;
+    align-items: end;
+  }
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  opacity: 0.72;
+}
+
+.hero-mark {
+  position: absolute;
+  right: -3%;
+  bottom: -22%;
+  opacity: 0.14;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Live room ───────────────────────────────────────────────────────────── */
+
+.live-layout {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 940px) {
+  .live-layout {
+    grid-template-columns: minmax(0, 1fr) 356px;
+  }
+}
+
+.stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--hairline-strong);
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  background-image: linear-gradient(
+    var(--gradient-angle),
+    hsl(var(--avatar-hue) 60% 30%),
+    hsl(calc(var(--avatar-hue) + 18) 54% 18%)
+  );
+}
+
+.stage-mark {
+  opacity: 0.3;
+  transform: scale(2.1);
+}
+
+/* Sparks fly up from the bottom of the stage when the room reacts. */
+.spark-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.spark-fly {
+  position: absolute;
+  bottom: 8%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--c-spark);
+  animation: spark-rise 1.4s var(--motion-easeOut) forwards;
+}
+
+@keyframes spark-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  18% {
+    opacity: 1;
+    transform: translateY(-16px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-190px) scale(0.45);
+  }
+}
+
+.transport {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-5);
+}
+
+.transport-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.transport-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* ── Chat ────────────────────────────────────────────────────────────────── */
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  height: min(72vh, 620px);
+  overflow: hidden;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  scrollbar-width: thin;
+}
+
+.chat-msg {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--space-3);
+  animation: msg-in var(--motion-base) var(--motion-easeOut);
+}
+
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.chat-author {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chat-body {
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.chat-mine .chat-author {
+  color: var(--c-aqua);
+}
+
+.chat-compose {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+
+.chat-empty {
+  margin: auto;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 14px;
+  max-width: 26ch;
+}
+
+/* ── Track list ──────────────────────────────────────────────────────────── */
+
+.tracklist {
+  display: flex;
+  flex-direction: column;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+
+.track + .track {
+  border-top: 1px solid var(--hairline);
+}
+
+.track-num {
+  color: var(--text-faint);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.track-playing {
+  background: color-mix(in oklab, var(--c-aqua) 10%, transparent);
+}
+
+.track-playing .track-num {
+  color: var(--c-aqua);
+}
+
+/* ── Stats ───────────────────────────────────────────────────────────────── */
+
+.stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-value {
+  font-family: var(--font-ui);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Creator card ────────────────────────────────────────────────────────── */
+
+.creator-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  align-items: flex-start;
+  transition:
+    transform var(--motion-base) var(--motion-easeOut),
+    border-color var(--motion-base) var(--motion-ease);
+}
+
+.creator-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--c-aqua) 42%, transparent);
+}
+
+/* ── Feedback ────────────────────────────────────────────────────────────── */
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hairline-strong);
+  background: color-mix(in oklab, var(--c-tide) 60%, transparent);
+  font-size: 14px;
+}
+
+.skeleton {
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--c-river) 10%, transparent),
+    color-mix(in oklab, var(--c-river) 20%, transparent),
+    color-mix(in oklab, var(--c-river) 10%, transparent)
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 140% 0;
+  }
+  to {
+    background-position: -40% 0;
+  }
+}
+
+/* ── Brand system page ───────────────────────────────────────────────────── */
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: var(--space-4);
+}
+
+.swatch {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+}
+
+.swatch-chip {
+  height: 76px;
+}
+
+.swatch-meta {
+  padding: var(--space-3);
+  font-size: 12px;
+}
+
+.spec {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+
+.rules {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.rule-list {
+  margin: 0;
+  padding-left: 1.1em;
+  display: grid;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--text-muted);
+}
