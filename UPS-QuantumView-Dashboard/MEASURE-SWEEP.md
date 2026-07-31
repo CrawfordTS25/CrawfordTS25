@@ -1,10 +1,29 @@
 # Measure sweep, source flexibility, and what's left for full completion
 
-**File:** `Quantum_View_Exceptions_Dashboard_v3.pbix` — label removed so it opens;
+**File:** `Quantum_View_Exceptions_Dashboard_v4.pbix` — label removed so it opens;
 re-apply *Internal Use Only · Standard* before sharing. `DataModel` byte-identical to
 your upload, 169 field references resolve, no overlaps.
 
 ---
+
+## 0. New in v4 — vendor ranking chart
+
+**Exceptions by Account / Vendor**, sorted worst-first, on OVERVIEW. The work area was
+full, so rather than displace anything the top row went from two panels to three:
+
+| | Before | After |
+|---|---|---|
+| Exceptions by Category | 186,162,525×165 | 186,162,**300**×165 |
+| Exceptions by Service | 723,162,533×165 | **498**,162,**290**×165 |
+| **Exceptions by Account / Vendor** | — | **800,162,456×165** |
+
+Vendor gets the widest slot because its labels are the longest
+(`2093RE - EDWARD JONES/Brand Addition`); Category and Service have short labels and
+lose little. Right edge lands on 1256, the page margin. The chart is a clone of
+"Exceptions by Category" from the same page with only name, position, query and title
+changed.
+
+`QV_Manifest` is also wired up in this pass — see §3.
 
 ## 1. The headline: four of five ACTIVE TRACES cards were wrong
 
@@ -63,10 +82,10 @@ own labels (`0-1`→1, `2-3`→2-3, `4-7`→6-7, `8+`→8-37) — the anchor fix
 Exceptions` counts distinct Exception Keys instead. Either wire it in or retire it,
 because right now it looks authoritative and influences nothing.
 
-## 3. Apply in Desktop — about 5 minutes
+## 3. Apply in Desktop — about 6 minutes, one script
 
 **a. Delete three measures** (Fields pane → right-click → Delete). All three are
-unused by any visual, verified:
+byte-identical duplicates, verified unused by any visual:
 
 ```
 'Resolutions Table'[Exceptions Total]
@@ -74,13 +93,22 @@ QV_Output[Open Exceptions]
 QV_Output[Exceptions Resolved]
 ```
 
-**b. Apply `tools/measure-sweep.tmdl`** (TMDL view → paste → Apply). Corrects the two
-aging measures and the rate grain, and adds `Affected Shipments` plus
-`Exceptions per Affected Shipment`. Every existing measure keeps its name, so **no
-visual needs rebinding**.
+**b. Apply `tools/model-updates.tmdl`** (TMDL view → paste → Apply). This is the
+**consolidated** script — it supersedes `account-drilldown.tmdl` and
+`measure-sweep.tmdl`, which stay in the repo for reference. Do not run all three.
 
-Deletions are deliberately not in the TMDL — the syntax is easy to get wrong and three
-right-clicks is faster than debugging it.
+It does four things: the two account key columns, the two status-aware aging measures,
+the rate-grain correction, and the two relationships. Every measure keeps its name, so
+**no visual needs rebinding**.
+
+Deletions are deliberately not in the script — the TMDL delete syntax is easy to get
+wrong and three right-clicks is faster than debugging it.
+
+> **The vendor ranking chart is flat until step b runs.** It is bound to
+> `Dim_Account[Account Label]` × `[Total Exceptions]`, and until
+> `Dim_Account → Resolutions Table` exists there is no path from the account dimension
+> to the exception facts — so every account shows the same 7,775 total. Not an error
+> state, but visibly wrong until the relationship lands.
 
 ## 4. Why `Exception Rate` changes from 9.31% to 8.60%
 
@@ -151,35 +179,24 @@ so an API path must stamp it at retrieval from the `Refresh` anchor.
 
 ## 6. To strengthen the build — ranked by payoff
 
-**1. Relate `QV_Manifest`. It has zero relationships.** Every rate is therefore a
-constant denominator: filter to one vendor and Total Shipments still says 83,502, so
-Exception Rate is wrong under every slicer. This is the biggest correctness gap left.
-The account relationship in `ACCOUNT-DRILLDOWN.md` §2 fixes it for the vendor slicer;
-a shared `Dim Date` fixes it for everything else.
-
-**2. Build `Dim Date` and retire Auto Date/Time.** One date table, related to both
+**1. Build `Dim Date` and retire Auto Date/Time.** One date table, related to both
 facts, with `USERELATIONSHIP` for the manifest/delivery roles. This is what makes
 "exception rate for this vendor last week" possible — today you can have the vendor or
 the week, not both. It is also the star schema Trace spec p.7 asks for.
 
-**3. Settle the exception grain, once, in writing.** Three defensible numbers exist:
+**2. Settle the exception grain, once, in writing.** Three defensible numbers exist:
 7,775 distinct Exception Keys, 29,957 rows flagged `Is Issue`, 40,735 total rows. Pick
 one, make every measure use it, and retire `Is Issue` if it isn't the answer.
 
-**4. Confirm the resolved / escalated vocabulary.** Silent zeros are the worst failure
+**3. Confirm the resolved / escalated vocabulary.** Silent zeros are the worst failure
 mode you have — they look exactly like a quiet week.
 
-**5. Trim the model.** `QV_Manifest` is 83,502 rows and only `Tracking Number` and
+**4. Trim the model.** `QV_Manifest` is 83,502 rows and only `Tracking Number` and
 `Account Key` are used by anything. `Res_Tracker` is still unpromoted `Column1…Column14`.
 Auto Date/Time is still generating hidden tables. All three are free savings that get
 more valuable as the data grows.
 
-**6. Add a vendor view now that the account dimension exists.** The drill-down is wired
-but nothing yet *ranks* vendors. One bar chart — exceptions by `Account Label`, sorted
-descending — turns "which vendor is causing problems" from a click-hunt into a glance.
-That is the efficiency goal stated for this build, and it is a single visual.
-
-**7. Then the write-back layer.** `Root Cause`, `Next Action` and `Notes` are still 100%
+**6. Then the write-back layer.** `Root Cause`, `Next Action` and `Notes` are still 100%
 empty across 7,775 rows, so the Resolution page shows a queue nobody can action from.
 This is the largest remaining functional gap, but it is also the biggest build — I'd
 sequence it after rollout, not before.

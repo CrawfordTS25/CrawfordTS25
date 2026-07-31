@@ -1,0 +1,116 @@
+// =============================================================================
+// Quantum View - consolidated model updates
+//
+// Everything outstanding in one Apply. Replaces account-drilldown.tmdl and
+// measure-sweep.tmdl (both kept for reference; do not run all three).
+//
+// Review in TMDL view before applying. Every measure keeps its NAME, so no visual
+// needs rebinding - only expressions change.
+//
+// THREE DELETIONS ARE NOT IN THIS SCRIPT. Do them first, by right-clicking each in
+// the Fields pane. All three are byte-identical duplicates, verified unused by any
+// visual:
+//     'Resolutions Table'[Exceptions Total]     (duplicate of QV_Output[Total Exceptions])
+//     QV_Output[Open Exceptions]                (duplicate of 'Resolutions Table'[Open Ex])
+//     QV_Output[Exceptions Resolved]            (duplicate of 'Resolutions Table'[Resolved Exceptions])
+// =============================================================================
+
+createOrReplace
+
+// -----------------------------------------------------------------------------
+// 1. ACCOUNT KEYS - recovered from the tracking number
+//    UPS 1Z format is 1Z + 6-char shipper account + service + package id, so
+//    MID(...,3,6) recovers it. Verified 100% against Dim_Account on every table
+//    once A25T52 was added to the workbook. Matches the derivation already used on
+//    Current_Open_Trace and Trace_Active.
+// -----------------------------------------------------------------------------
+
+	ref table 'Resolutions Table'
+
+		column 'Account Key' = UPPER ( MID ( 'Resolutions Table'[Tracking Number], 3, 6 ) )
+			dataType: string
+			summarizeBy: none
+
+	ref table QV_Manifest
+
+		column 'Account Key' = UPPER ( MID ( QV_Manifest[Tracking Number], 3, 6 ) )
+			dataType: string
+			summarizeBy: none
+
+// -----------------------------------------------------------------------------
+// 2. AGING - status aware
+//    Neither measure excluded resolved cases, so both kept counting after close.
+//    Invisible today (Tracker Status only holds "New / Needs Review" and "Open")
+//    and starts drifting the day resolution flows through.
+// -----------------------------------------------------------------------------
+
+	ref table 'Resolutions Table'
+
+		/// Open exceptions aged 8+ days. Excludes resolved.
+		measure 'Aged 8 Plus Days' =
+				
+				CALCULATE(
+				    COUNTROWS('Resolutions Table'),
+				    'Resolutions Table'[Age Bucket] = "8+ Days",
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: #,0
+
+		/// Average age of the OPEN queue only.
+		measure 'Avg Age (Days)' =
+				
+				CALCULATE(
+				    AVERAGE('Resolutions Table'[Age Days]),
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: 0.0
+
+// -----------------------------------------------------------------------------
+// 3. EXCEPTION RATE - one grain on both sides            (master spec p.8)
+//    Was DIVIDE([Total Exceptions],[Total Shipments]) - exception EVENTS over
+//    SHIPMENTS. Mixed grain, and able to exceed 100% in principle.
+//    On current data: 9.31% -> 8.60%.
+// -----------------------------------------------------------------------------
+
+	ref table QV_Output
+
+		/// Distinct shipments carrying at least one exception. 7,178 today.
+		measure 'Affected Shipments' = DISTINCTCOUNT(QV_Output[Tracking Number])
+			formatString: #,0
+
+		/// Share of shipments that hit a problem.
+		measure 'Exception Rate' = DIVIDE([Affected Shipments], [Total Shipments])
+			formatString: 0.0%
+
+		/// Shipments with no exception at all. Same grain correction.
+		measure 'Successful Shipments' = [Total Shipments] - [Affected Shipments]
+			formatString: #,0
+
+		/// Multiplicity kept separate rather than buried in the rate. 1.08 today.
+		measure 'Exceptions per Affected Shipment' =
+				DIVIDE([Total Exceptions], [Affected Shipments])
+			formatString: 0.00
+
+// -----------------------------------------------------------------------------
+// 4. RELATIONSHIPS
+//
+//    Dim_Account -> Resolutions Table -> QV_Output.  Deliberately NOT relating
+//    Dim_Account to QV_Output as well: QV_Output already reaches Dim_Account through
+//    Resolutions Table, and a second path is ambiguous - Power BI will refuse it or
+//    silently deactivate one.
+//
+//    Dim_Account -> QV_Manifest is QV_Manifest's FIRST relationship. Until this
+//    exists, Total Shipments is a flat 83,502 under every filter and Exception Rate
+//    is wrong on any sliced view. This is also what makes the vendor ranking chart
+//    on OVERVIEW show real per-vendor numbers instead of a flat bar per account.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship Dim_Account_to_Resolutions
+			fromColumn: 'Resolutions Table'.'Account Key'
+			toColumn: Dim_Account.'Account Key'
+
+		relationship Dim_Account_to_QV_Manifest
+			fromColumn: QV_Manifest.'Account Key'
+			toColumn: Dim_Account.'Account Key'
