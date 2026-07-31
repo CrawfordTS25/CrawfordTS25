@@ -1,0 +1,185 @@
+// ===========================================================================
+// 02 - RELIABILITY (Time-in-Transit)
+//
+// On-Time Delivery is the 40% component of the recommendation score, so these
+// measures carry the most weight in the final answer and are written
+// defensively.
+//
+// Two rules that are easy to get wrong and expensive to get wrong:
+//
+//   1. OTD is a weighted ratio, never an average of percentages. The source
+//      extract supplies an "On Time %" column per row; it must be ignored in
+//      favour of SUM(On-Time) / SUM(Measured). Averaging the supplied column
+//      across the March file returns ~98.2% against a true 96.46%, because a
+//      4-package service scores the same as a 47,916-package service.
+//
+//   2. Packages Measured is a Shipper View population; Volume on the Volume &
+//      Net Spend extract is a Payor View population. They are close but they
+//      are not the same number and must never be used interchangeably. Use
+//      [Packages Measured] as the denominator for delivery metrics and
+//      [Rankable Shipments] as the denominator for claims and cost metrics.
+// ===========================================================================
+
+Packages Measured =
+SUM ( Fact_TimeInTransit[PackagesMeasured] )
+
+Total Late =
+SUM ( Fact_TimeInTransit[TotalLate] )
+
+// "Late by Day" means the package arrived on a later calendar day than
+// committed. "Late by Time" means it arrived on the committed day but after
+// the committed time. The first is a materially worse client outcome and, in
+// this data, is the overwhelming driver - splitting them is what turns
+// "delivery performance" into an actionable conversation with UPS.
+Late by Day =
+SUM ( Fact_TimeInTransit[LateByDay] )
+
+Late by Time =
+SUM ( Fact_TimeInTransit[LateByTime] )
+
+On-Time Packages =
+SUM ( Fact_TimeInTransit[OnTimePackages] )
+
+On-Time Delivery % =
+DIVIDE ( [On-Time Packages], [Packages Measured] )
+
+Late Delivery % =
+DIVIDE ( [Total Late], [Packages Measured] )
+
+Late by Day % =
+DIVIDE ( [Late by Day], [Packages Measured] )
+
+Late by Time % =
+DIVIDE ( [Late by Time], [Packages Measured] )
+
+// Share of lateness that is a missed day rather than a missed time window.
+Severity Mix (Day Share of Late) =
+DIVIDE ( [Late by Day], [Total Late] )
+
+
+// --- Trend and stability ---------------------------------------------------
+
+OTD % PM =
+CALCULATE ( [On-Time Delivery %], DATEADD ( Dim_Date[DateKey], -1, MONTH ) )
+
+OTD % Delta MoM =
+VAR Current = [On-Time Delivery %]
+VAR Prior = [OTD % PM]
+RETURN
+    IF ( NOT ISBLANK ( Current ) && NOT ISBLANK ( Prior ), Current - Prior )
+
+// Annual OTD for the current service, ignoring any month filter. Used as the
+// reference line on monthly trend visuals.
+OTD % Annual Benchmark =
+CALCULATE (
+    [On-Time Delivery %],
+    REMOVEFILTERS ( Dim_Date[MonthNumber], Dim_Date[MonthName], Dim_Date[Quarter],
+        Dim_Date[MonthYearLabel], Dim_Date[MonthKey] )
+)
+
+// Consistency, not just level. A service averaging 97% every month is a better
+// operational bet than one alternating 99% and 95%. Population standard
+// deviation of the monthly OTD series, in percentage points.
+OTD Volatility (pp) =
+VAR MonthlySeries =
+    ADDCOLUMNS (
+        CALCULATETABLE (
+            VALUES ( Dim_Date[MonthKey] ),
+            Dim_Date[IsReportable] = "Yes"
+        ),
+        "@OTD", [On-Time Delivery %]
+    )
+VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )
+RETURN
+    IF ( COUNTROWS ( Clean ) >= 2, STDEVX.P ( Clean, [@OTD] ) * 100 )
+
+Worst OTD Month =
+VAR MonthlySeries =
+    ADDCOLUMNS (
+        CALCULATETABLE (
+            VALUES ( Dim_Date[MonthYearLabel] ),
+            Dim_Date[IsReportable] = "Yes"
+        ),
+        "@OTD", [On-Time Delivery %]
+    )
+VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )
+RETURN
+    IF (
+        NOT ISEMPTY ( Clean ),
+        CONCATENATEX (
+            TOPN ( 1, Clean, [@OTD], ASC ),
+            Dim_Date[MonthYearLabel] & " (" & FORMAT ( [@OTD], "0.0%" ) & ")"
+        )
+    )
+
+
+// --- Statistical confidence ------------------------------------------------
+//
+// A hard volume threshold answers "is this service big enough to rank?" but
+// not "how much of this OTD figure is real?". A service with 4 measured
+// packages and zero late shows 100% OTD; its true rate could plausibly be
+// anywhere above ~51%.
+//
+// The Wilson score interval gives a lower confidence bound on the true on-time
+// rate. Ranking on the lower bound instead of the point estimate makes small
+// samples fall down the list automatically, in proportion to how little we
+// actually know about them - a smoother and more defensible control than a
+// cliff-edge threshold alone. Use both: the threshold for eligibility, the
+// lower bound for ordering.
+
+OTD Wilson Lower Bound =
+VAR N = [Packages Measured]
+VAR Successes = [On-Time Packages]
+VAR Z = 1.96                                  // 95% two-sided
+VAR P = DIVIDE ( Successes, N )
+VAR Denominator = 1 + DIVIDE ( Z * Z, N )
+VAR Centre = P + DIVIDE ( Z * Z, 2 * N )
+VAR Margin =
+    Z * SQRT ( DIVIDE ( P * ( 1 - P ), N ) + DIVIDE ( Z * Z, 4 * N * N ) )
+RETURN
+    IF ( N > 0, DIVIDE ( Centre - Margin, Denominator ) )
+
+// Width of the gap between the point estimate and the lower bound. Large gap =
+// small sample = treat the headline OTD with caution.
+OTD Confidence Gap (pp) =
+VAR Gap = [On-Time Delivery %] - [OTD Wilson Lower Bound]
+RETURN
+    IF ( NOT ISBLANK ( Gap ), Gap * 100 )
+
+OTD Confidence Label =
+VAR Gap = [OTD Confidence Gap (pp)]
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( Gap ), "No transit data",
+        Gap <= 0.5, "High confidence",
+        Gap <= 2.0, "Moderate confidence",
+        Gap <= 10.0, "Low confidence - small sample",
+        "Not interpretable - sample too small"
+    )
+
+
+// --- Coverage --------------------------------------------------------------
+//
+// Transit data is not guaranteed to exist for every month, service or account
+// that has shipment volume. Reporting an OTD of blank as though it were a
+// problem - or worse, as though it were zero - is a common failure. These
+// measures make coverage explicit.
+
+Months with Transit Data =
+CALCULATE (
+    DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ),
+    REMOVEFILTERS ( Dim_ServiceMapping, Dim_Account )
+)
+
+Transit Coverage % =
+DIVIDE (
+    CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ) ),
+    CALCULATE (
+        DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ),
+        REMOVEFILTERS ( Dim_ServiceMapping )
+    )
+)
+
+Has Transit Data =
+IF ( [Packages Measured] > 0, "Yes", "No" )

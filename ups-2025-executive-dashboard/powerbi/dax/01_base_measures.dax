@@ -1,0 +1,156 @@
+// ===========================================================================
+// 01 - BASE MEASURES
+// Volume, spend, weight, and the cost metrics.
+//
+// Convention used throughout this library:
+//   * DIVIDE() everywhere. A divide-by-zero on a low-volume service must
+//     return blank, not an error that blanks an entire visual.
+//   * Ratios are always computed as SUM(numerator) / SUM(denominator).
+//     Never AVERAGE() a ratio column - averaging percentages weights a
+//     4-package service the same as a 48,000-package service.
+//   * Every measure that feeds a ranking respects the qualification rules in
+//     06_scoring_recommendation.dax.
+// ===========================================================================
+
+// --- Shipment volume -------------------------------------------------------
+
+Total Shipments =
+SUM ( Fact_VolumeSpend[Volume] )
+
+// Shipment count restricted to real service activity. This is the denominator
+// for every rate metric. MISC / UNC rows are billing adjustments with no
+// shipments attached and would otherwise dilute every rate in the model.
+Rankable Shipments =
+CALCULATE (
+    [Total Shipments],
+    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+)
+
+YTD Shipments =
+TOTALYTD ( [Total Shipments], Dim_Date[DateKey] )
+
+Shipments PY =
+CALCULATE ( [Total Shipments], SAMEPERIODLASTYEAR ( Dim_Date[DateKey] ) )
+
+Shipments YoY % =
+VAR Current = [Total Shipments]
+VAR Prior = [Shipments PY]
+RETURN
+    DIVIDE ( Current - Prior, Prior )
+
+// Prior-year volume as supplied on the extract itself. Only the Schema A
+// (Monthly/YTD VnR) files carry comparatives, so this is blank for months
+// sourced from a Schema B (VnS) file. Kept separate from [Shipments PY] so
+// nobody mistakes a source-supplied comparative for a modelled one.
+Shipments LY (Source) =
+SUM ( Fact_VolumeSpend[VolumeLY] )
+
+
+// --- Spend -----------------------------------------------------------------
+
+Total Net Spend =
+SUM ( Fact_VolumeSpend[NetSpend] )
+
+Total Gross Spend =
+SUM ( Fact_VolumeSpend[GrossSpend] )
+
+Total Incentive =
+SUM ( Fact_VolumeSpend[Incentive] )
+
+// The negotiated discount actually realised against list rates. A falling
+// incentive rate is an early warning that the contract is drifting.
+Incentive % =
+DIVIDE ( [Total Incentive], [Total Gross Spend] )
+
+YTD Net Spend =
+TOTALYTD ( [Total Net Spend], Dim_Date[DateKey] )
+
+Net Spend PY =
+CALCULATE ( [Total Net Spend], SAMEPERIODLASTYEAR ( Dim_Date[DateKey] ) )
+
+Net Spend YoY % =
+DIVIDE ( [Total Net Spend] - [Net Spend PY], [Net Spend PY] )
+
+
+// --- Cost efficiency -------------------------------------------------------
+
+// Headline cost metric. Excludes adjustment rows from BOTH numerator and
+// denominator - including a $22k MISC / UNC row against zero shipments would
+// silently inflate cost per shipment for whatever account it lands on.
+Avg Net Spend per Shipment =
+DIVIDE (
+    CALCULATE (
+        [Total Net Spend],
+        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+    ),
+    [Rankable Shipments]
+)
+
+Total Billed Weight =
+CALCULATE (
+    SUM ( Fact_VolumeSpend[BilledWeightLbs] ),
+    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+)
+
+Avg Billed Weight per Shipment =
+DIVIDE ( [Total Billed Weight], [Rankable Shipments] )
+
+// ---------------------------------------------------------------------------
+// WEIGHT-NORMALISED COST - read the note before using cost in any comparison.
+//
+// Cost per shipment is NOT comparable across service groups in this data set.
+// Ground averages ~16 lb per piece; 2nd Day Air averages ~2 lb per piece. On a
+// per-shipment basis those two services look almost identically priced, which
+// is a package-mix artefact, not an economic fact. Per billed pound, Ground is
+// roughly seven times cheaper.
+//
+// Always show [Avg Net Spend per Billed Lb] beside [Avg Net Spend per Shipment]
+// on any visual that compares cost between service groups.
+// ---------------------------------------------------------------------------
+Avg Net Spend per Billed Lb =
+DIVIDE (
+    CALCULATE (
+        [Total Net Spend],
+        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+    ),
+    [Total Billed Weight]
+)
+
+// Cost of the selected service priced at the firm's blended rate for the same
+// weight. Positive = this service costs more than the blended average for the
+// weight it carries. This is the honest way to express a cost premium.
+Weight-Adjusted Cost Premium =
+VAR BlendedRatePerLb =
+    CALCULATE (
+        [Avg Net Spend per Billed Lb],
+        REMOVEFILTERS ( Dim_ServiceMapping ),
+        VALUES ( Dim_Date[MonthKey] )
+    )
+VAR ExpectedSpend = [Total Billed Weight] * BlendedRatePerLb
+RETURN
+    DIVIDE ( [Total Net Spend] - ExpectedSpend, ExpectedSpend )
+
+
+// --- Mix -------------------------------------------------------------------
+
+Service Volume Mix % =
+DIVIDE (
+    [Rankable Shipments],
+    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_ServiceMapping ) )
+)
+
+Service Spend Mix % =
+DIVIDE (
+    [Total Net Spend],
+    CALCULATE ( [Total Net Spend], REMOVEFILTERS ( Dim_ServiceMapping ) )
+)
+
+Account Volume Mix % =
+DIVIDE (
+    [Rankable Shipments],
+    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Account ) )
+)

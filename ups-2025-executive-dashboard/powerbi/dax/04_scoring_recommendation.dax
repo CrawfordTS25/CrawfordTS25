@@ -1,0 +1,348 @@
+// ===========================================================================
+// 04 - QUALIFICATION AND THE SERVICE CONSISTENCY SCORE
+//
+// The build guide specifies the weights (OTD 40 / Loss 30 / Exception 20 /
+// Cost 10) but not the arithmetic. Weights alone are not a score: the four
+// inputs are in four different units - a percentage, two rates per 10,000, and
+// a dollar amount - and three of them are "higher is better" while cost is
+// "lower is better". Adding them directly is meaningless.
+//
+// This file defines the missing half:
+//
+//   1. QUALIFICATION. Which services are eligible to be ranked at all.
+//   2. NORMALISATION. Min-max scaling of each metric to 0-1 across the
+//      qualified set only, with direction handled per metric.
+//   3. WEIGHT REALLOCATION. When a component cannot be measured - as Loss and
+//      Exception currently cannot be, at service grain - its weight is
+//      redistributed across the components that CAN be measured, rather than
+//      being scored as zero. Scoring an unmeasurable component as zero
+//      penalises every service equally and silently rescales the whole model.
+//   4. LABELLING. The named recommendation categories from Section 7.
+// ===========================================================================
+
+// --- 1. Qualification ------------------------------------------------------
+//
+// Two independent gates, both of which must pass. Absolute volume protects
+// against a tiny service in a large firm; relative share protects against the
+// threshold becoming meaningless as the firm grows.
+//
+// Minimum Shipment Threshold and Minimum Volume Share are What-If parameters
+// so leadership can move them live in a review and watch the ranking respond.
+// See report_spec/01_slicer_filter_matrix.md section 4 for the generator definitions.
+
+Minimum Shipment Threshold =
+SELECTEDVALUE ( 'Volume Threshold'[Volume Threshold], 1000 )
+
+Minimum Volume Share =
+SELECTEDVALUE ( 'Share Threshold'[Share Threshold], 0.01 )
+
+// A binomial proportion needs roughly 384 observations for a +/-5pp margin at
+// 95% confidence. Below that, an OTD figure is not precise enough to separate
+// services that sit two points apart.
+Minimum Measured Packages = 384
+
+Service Volume Share =
+DIVIDE (
+    [Rankable Shipments],
+    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_ServiceMapping ) )
+)
+
+Annual Qualification Flag =
+VAR MeetsAbsolute = [Rankable Shipments] >= [Minimum Shipment Threshold]
+VAR MeetsShare = [Service Volume Share] >= [Minimum Volume Share]
+VAR MeetsMeasurement = [Packages Measured] >= [Minimum Measured Packages]
+VAR IsRankableService =
+    CALCULATE (
+        SELECTEDVALUE ( Dim_ServiceMapping[IncludeInRanking] ),
+        REMOVEFILTERS ( Dim_ServiceMapping[RawProduct] )
+    ) = "Yes"
+RETURN
+    IF ( MeetsAbsolute && MeetsShare && MeetsMeasurement && IsRankableService, 1, 0 )
+
+Qualification Status =
+VAR Vol = [Rankable Shipments]
+VAR Measured = [Packages Measured]
+RETURN
+    SWITCH (
+        TRUE (),
+        [Annual Qualification Flag] = 1, "Qualified",
+        ISBLANK ( Vol ) || Vol = 0, "No shipment volume",
+        Measured < [Minimum Measured Packages],
+            "Transit sample too small (" & FORMAT ( Measured, "#,0" ) & " measured, "
+                & FORMAT ( [Minimum Measured Packages], "#,0" ) & " required)",
+        Vol < [Minimum Shipment Threshold],
+            "Below volume floor (" & FORMAT ( Vol, "#,0" ) & " of "
+                & FORMAT ( [Minimum Shipment Threshold], "#,0" ) & ")",
+        [Service Volume Share] < [Minimum Volume Share],
+            "Below " & FORMAT ( [Minimum Volume Share], "0.0%" ) & " volume share",
+        "Excluded from ranking by service mapping"
+    )
+
+Qualified Service Count =
+COUNTROWS (
+    FILTER (
+        CALCULATETABLE (
+            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_ServiceMapping )
+        ),
+        [Annual Qualification Flag] = 1
+    )
+)
+
+
+// --- 2. Normalised component scores ---------------------------------------
+//
+// Each helper returns 0-1 within the qualified peer set. Best performer scores
+// 1, worst scores 0, everything else lands proportionally between them. When
+// only one service qualifies, every component returns 1 - a single service is
+// trivially both best and worst, and the resulting score should be read as
+// "unranked", which [Recommendation Category] handles.
+
+// Reliability component. Ranks on the Wilson lower bound rather than the raw
+// percentage so that a thin sample cannot out-rank a proven one on noise.
+Score - Reliability =
+VAR QualifiedSet =
+    FILTER (
+        CALCULATETABLE (
+            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_ServiceMapping )
+        ),
+        [Annual Qualification Flag] = 1
+    )
+VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [OTD Wilson Lower Bound] )
+VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+VAR MinV = MINX ( Populated, [@M] )
+VAR MaxV = MAXX ( Populated, [@M] )
+VAR Self = [OTD Wilson Lower Bound]
+RETURN
+    IF (
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
+        IF ( MaxV = MinV, 1, DIVIDE ( Self - MinV, MaxV - MinV ) )
+    )
+
+// Loss-risk component. Lower rate is better, so the scale is inverted.
+// Currently returns BLANK at service grain by design - see 03_claims_risk.dax.
+// It is written out in full so that the day a service key appears on the
+// claims export, this measure starts returning values and the weight
+// reallocation below unwinds itself automatically.
+Score - Loss Risk =
+VAR QualifiedSet =
+    FILTER (
+        CALCULATETABLE (
+            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_ServiceMapping )
+        ),
+        [Annual Qualification Flag] = 1
+    )
+VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Loss Claim Rate per 10k] )
+VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+VAR MinV = MINX ( Populated, [@M] )
+VAR MaxV = MAXX ( Populated, [@M] )
+VAR Self = [Loss Claim Rate per 10k]
+RETURN
+    IF (
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
+        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+    )
+
+// Broader operational friction. Same attribution limitation as loss.
+Score - Exception Risk =
+VAR QualifiedSet =
+    FILTER (
+        CALCULATETABLE (
+            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_ServiceMapping )
+        ),
+        [Annual Qualification Flag] = 1
+    )
+VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Claims Rate per 10k] )
+VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+VAR MinV = MINX ( Populated, [@M] )
+VAR MaxV = MAXX ( Populated, [@M] )
+VAR Self = [Claims Rate per 10k]
+RETURN
+    IF (
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
+        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+    )
+
+// Cost component, on a WEIGHT-NORMALISED basis. Using cost per shipment here
+// would be a serious error: Ground carries ~16 lb per piece against ~2 lb for
+// 2nd Day Air, so per-shipment cost makes Ground and 2nd Day Air look almost
+// identically priced when Ground is roughly seven times cheaper per pound.
+// Scoring on cost per shipment would recommend migrating heavy Ground volume
+// onto air service on the strength of a package-mix artefact.
+Score - Cost =
+VAR QualifiedSet =
+    FILTER (
+        CALCULATETABLE (
+            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_ServiceMapping )
+        ),
+        [Annual Qualification Flag] = 1
+    )
+VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Avg Net Spend per Billed Lb] )
+VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+VAR MinV = MINX ( Populated, [@M] )
+VAR MaxV = MAXX ( Populated, [@M] )
+VAR Self = [Avg Net Spend per Billed Lb]
+RETURN
+    IF (
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
+        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+    )
+
+
+// --- 3. Weighted blend with reallocation -----------------------------------
+
+Weight - Reliability = 0.40
+Weight - Loss Risk = 0.30
+Weight - Exception Risk = 0.20
+Weight - Cost = 0.10
+
+// 1 when the claims export carries a service or tracking key that lets claims
+// be attributed to a service group. Flip this to 1 by pointing it at the real
+// column once the source is upgraded; the score reweights itself.
+Claims Service Key Available = 0
+
+// Sum of the weights whose components actually returned a value. Dividing by
+// this - rather than by 1.00 - is what keeps the score on a comparable 0-1
+// scale when a component is missing.
+Effective Weight Total =
+VAR W =
+    IF ( NOT ISBLANK ( [Score - Reliability] ), [Weight - Reliability], 0 )
+        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Weight - Loss Risk], 0 )
+        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Weight - Exception Risk], 0 )
+        + IF ( NOT ISBLANK ( [Score - Cost] ), [Weight - Cost], 0 )
+RETURN
+    IF ( W > 0, W )
+
+Service Consistency Score =
+VAR Weighted =
+    IF ( NOT ISBLANK ( [Score - Reliability] ), [Score - Reliability] * [Weight - Reliability], 0 )
+        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Score - Loss Risk] * [Weight - Loss Risk], 0 )
+        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Score - Exception Risk] * [Weight - Exception Risk], 0 )
+        + IF ( NOT ISBLANK ( [Score - Cost] ), [Score - Cost] * [Weight - Cost], 0 )
+RETURN
+    IF (
+        [Annual Qualification Flag] = 1,
+        DIVIDE ( Weighted, [Effective Weight Total] ) * 100
+    )
+
+// Every score on the page must be able to state what it was actually built
+// from. This is the subtitle for the scorecard visual.
+Score Basis =
+VAR Covered =
+    IF ( NOT ISBLANK ( [Score - Reliability] ), "Reliability " & FORMAT ( [Weight - Reliability] / [Effective Weight Total], "0%" ) & "; ", "" )
+        & IF ( NOT ISBLANK ( [Score - Loss Risk] ), "Loss risk " & FORMAT ( [Weight - Loss Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
+        & IF ( NOT ISBLANK ( [Score - Exception Risk] ), "Exceptions " & FORMAT ( [Weight - Exception Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
+        & IF ( NOT ISBLANK ( [Score - Cost] ), "Cost " & FORMAT ( [Weight - Cost] / [Effective Weight Total], "0%" ), "" )
+VAR Missing =
+    IF ( ISBLANK ( [Score - Loss Risk] ) || ISBLANK ( [Score - Exception Risk] ),
+        " | Claims components unavailable at service grain - weights reallocated.", "" )
+RETURN
+    "Effective weights: " & Covered & Missing
+
+Service Rank =
+IF (
+    [Annual Qualification Flag] = 1,
+    RANKX (
+        FILTER (
+            CALCULATETABLE (
+                VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+                REMOVEFILTERS ( Dim_ServiceMapping )
+            ),
+            [Annual Qualification Flag] = 1
+        ),
+        [Service Consistency Score],
+        ,
+        DESC,
+        DENSE
+    )
+)
+
+
+// --- 4. Recommendation categories -----------------------------------------
+
+Recommendation Category =
+VAR Qualified = [Annual Qualification Flag] = 1
+VAR QualCount = [Qualified Service Count]
+VAR Tier =
+    CALCULATE (
+        SELECTEDVALUE ( Dim_ServiceMapping[ServiceTier] ),
+        REMOVEFILTERS ( Dim_ServiceMapping[RawProduct] )
+    )
+VAR Rank = [Service Rank]
+VAR BestPremiumRank =
+    RANKX (
+        FILTER (
+            CALCULATETABLE (
+                VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+                REMOVEFILTERS ( Dim_ServiceMapping )
+            ),
+            [Annual Qualification Flag] = 1
+                && CALCULATE (
+                    SELECTEDVALUE ( Dim_ServiceMapping[ServiceTier] ),
+                    REMOVEFILTERS ( Dim_ServiceMapping[RawProduct] )
+                ) = "Premium"
+        ),
+        [OTD Wilson Lower Bound],
+        ,
+        DESC,
+        DENSE
+    )
+VAR IsVolumeAnchor = [Service Volume Share] >= 0.50
+VAR Volatile = [OTD Volatility (pp)] > 1.5
+VAR BelowFirmOTD = [On-Time Delivery %] < CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_ServiceMapping ) )
+RETURN
+    SWITCH (
+        TRUE (),
+        NOT Qualified, "Not ranked - " & [Qualification Status],
+        QualCount <= 1, "Single qualified service - no comparison possible",
+        // The service the firm actually runs on. It is the default by
+        // economics; the question the dashboard answers is whether its
+        // reliability is acceptable, not whether to replace it.
+        IsVolumeAnchor && BelowFirmOTD, "Volume anchor - reliability below firm average, monitor",
+        IsVolumeAnchor, "Recommended default service",
+        Rank = 1 && Tier <> "Premium", "Recommended default service",
+        Rank = 1, "Best overall performer",
+        BestPremiumRank = 1, "Recommended premium service",
+        Volatile, "Service to monitor - inconsistent month to month",
+        "Qualified alternative"
+    )
+
+// Text for the recommendation callout on the Executive Overview. Written to
+// degrade gracefully: with one month of transit data it says so rather than
+// asserting an annual conclusion the data cannot support.
+Recommendation Callout =
+VAR MonthsCovered = [Months with Transit Data]
+VAR BestService =
+    CONCATENATEX (
+        TOPN (
+            1,
+            FILTER (
+                CALCULATETABLE (
+                    VALUES ( Dim_ServiceMapping[ServiceGroup] ),
+                    REMOVEFILTERS ( Dim_ServiceMapping )
+                ),
+                [Annual Qualification Flag] = 1
+            ),
+            [Service Consistency Score],
+            DESC
+        ),
+        Dim_ServiceMapping[ServiceGroup]
+    )
+VAR FirmOTD = CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_ServiceMapping ) )
+RETURN
+    SWITCH (
+        TRUE (),
+        MonthsCovered = 0,
+            "No Time-in-Transit data loaded. Reliability cannot be assessed and no service recommendation can be made.",
+        MonthsCovered < 6,
+            "PROVISIONAL - based on " & MonthsCovered & " month(s) of Time-in-Transit data. "
+                & "Highest-scoring qualified service: " & BestService & ". "
+                & "Firm-wide on-time delivery " & FORMAT ( FirmOTD, "0.0%" ) & ". "
+                & "Do not issue as an annual service policy until at least six completed months are loaded.",
+        "Highest-scoring qualified service: " & BestService & ". Firm-wide on-time delivery "
+            & FORMAT ( FirmOTD, "0.0%" ) & " across " & MonthsCovered & " months."
+    )

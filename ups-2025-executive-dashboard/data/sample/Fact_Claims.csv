@@ -1,0 +1,291 @@
+Year,MonthNumber,MonthName,MonthKey,Quarter,DateKey,AccountKey,SubNumber,SubName,IsMaskedSubParent,AccountNumber,AccountName,ClaimsCategory,IsLoss,IssuedClaimsQty,IssuedClaimsPkgQty,PaidClaimsQty,PaidClaimsPkgQty,RegisteredClaimsQty,RegisteredClaimsPkgQty,PaidClaimsAmount,ClaimsDeclaredValue,ServiceAttribution,SourceFile
+2025,1,Jan,202501,Q1,2025-01-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,8,8,3,3,0,0,513.45,223.69,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,10,10,5,5,0,0,831.42,630.99,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,3,3,1,1,0,0,44.15,20.33,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,2,2,1,1,0,0,128.65,67.79,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,5,5,1,1,0,0,126.44,52.11,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,2,2,1,1,0,0,179.64,158.2,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,3,3,1,1,0,0,167.86,156.85,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,2,2,1,1,0,0,115.33,66.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,2,2,1,1,0,0,130.76,122.21,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,34,34,15,15,0,0,1296.8,1077.16,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,19,19,9,9,0,0,1340.44,1249.2,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,4,4,1,1,0,0,172.86,117.62,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,1,1,0,0,107.55,101.97,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,2,2,1,1,0,0,84.29,55.41,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,1,Jan,202501,Q1,2025-01-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_01_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,14,14,8,8,0,0,1280.65,1008.56,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,8,8,3,3,0,0,239.38,99.89,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,3,3,1,1,0,0,66.52,50.9,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,2,2,1,1,0,0,138.72,102.03,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,3,3,1,1,0,0,62.36,55.26,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,5,5,2,2,0,0,195.88,203.72,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,39,39,23,23,0,0,990.84,1048.97,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,7,7,2,2,0,0,263.86,205.07,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,4,4,1,1,0,0,111.39,100.49,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,1,1,0,0,132.71,98.66,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,3,3,1,1,0,0,177.91,107.15,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,2,Feb,202502,Q1,2025-02-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_02_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,9,9,2,2,0,0,185.1,199.5,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,5,5,2,2,0,0,110.2,106.86,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,2,2,1,1,0,0,142.27,63.43,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,4,4,1,1,0,0,178.18,155.89,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,5,5,3,3,0,0,189.56,159.15,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,2,2,1,1,0,0,112.55,106.37,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,16,16,6,6,0,0,887.15,604.05,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,8,8,3,3,0,0,340.26,286.31,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,5,5,1,1,0,0,80.08,70.98,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,2,2,1,1,0,0,78.89,70.24,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,3,Mar,202503,Q1,2025-03-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_03_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,20,20,7,7,0,0,551.62,324.92,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,10,10,3,3,0,0,428.8,236.76,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,3,3,1,1,0,0,49.66,49.95,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,4,4,2,2,0,0,197.55,91.84,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,2,2,1,1,0,0,79.55,72.8,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,7,7,3,3,0,0,415.41,422.33,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,4,4,2,2,0,0,162.76,132.72,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,19,19,6,6,0,0,1044.43,1046.54,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,15,15,5,5,0,0,641.73,356.32,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,5,5,2,2,0,0,253.15,266.89,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,4,Apr,202504,Q2,2025-04-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_04_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,16,16,6,6,0,0,395.64,192.88,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,8,8,4,4,0,0,466.02,402.68,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,3,3,1,1,0,0,59.67,34.7,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,6,6,2,2,0,0,297.96,166.35,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,3,3,1,1,0,0,130.53,80.16,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,36,36,19,19,0,0,2230.59,1394.17,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,7,7,4,4,0,0,431.21,321.59,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,3,3,1,1,0,0,58.9,48.41,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,3,3,1,1,0,0,121.31,52.25,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,5,May,202505,Q2,2025-05-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_05_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,11,11,5,5,0,0,208.67,193.73,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,5,5,2,2,0,0,113.43,120.13,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,6,6,2,2,0,0,320.19,249.54,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,2,2,1,1,0,0,43.73,42.28,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,2,2,1,1,0,0,110.57,65.93,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,3,3,1,1,0,0,84.68,65.29,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,3,3,1,1,0,0,157.46,123.87,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,50,50,26,26,0,0,2106.31,1286.78,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,21,21,10,10,0,0,1705.24,922.88,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,4,4,2,2,0,0,155.73,121.5,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,1,1,0,0,134.26,95.92,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,3,3,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,6,Jun,202506,Q2,2025-06-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_06_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,8,8,3,3,0,0,269.52,240.53,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,9,9,3,3,0,0,239.86,125.93,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,3,3,1,1,0,0,175.13,76.15,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,3,3,1,1,0,0,28.3,12.97,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,3,3,1,1,0,0,71.75,68.3,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,5,5,2,2,0,0,149.27,105.13,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,3,3,1,1,0,0,118.96,70.93,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,37,37,12,12,0,0,1852.67,1734.96,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,17,17,10,10,0,0,1564.73,957.85,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,3,3,1,1,0,0,162.21,75.94,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,4,4,2,2,0,0,226.59,182.74,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,7,Jul,202507,Q3,2025-07-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_07_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,7,7,4,4,0,0,305.02,199.65,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,7,7,3,3,0,0,220.3,150.37,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,2,2,1,1,0,0,162.33,113.23,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,4,4,1,1,0,0,48.05,27.28,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,8,8,3,3,0,0,533.45,335.65,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,2,2,1,1,0,0,87.04,72.53,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,24,24,9,9,0,0,457.86,351.2,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,14,14,6,6,0,0,693.54,417.77,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,2,2,1,1,0,0,137.29,106.85,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,5,5,2,2,0,0,207.12,144.25,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,2,2,1,1,0,0,85.52,75.5,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,8,Aug,202508,Q3,2025-08-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_08_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,19,19,9,9,0,0,784.8,359.16,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,6,6,2,2,0,0,152.94,75.02,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,3,3,1,1,0,0,65.79,47.95,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,3,3,1,1,0,0,133.46,129.78,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,3,3,1,1,0,0,30.34,27.53,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,2,2,1,1,0,0,109.58,80.21,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,6,6,3,3,0,0,417.41,285.58,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,3,3,1,1,0,0,167.89,170.42,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,45,45,20,20,0,0,1662.88,1476.12,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,19,19,11,11,0,0,1270.87,667.64,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,3,3,1,1,0,0,116.66,95.04,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,9,Sep,202509,Q3,2025-09-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_09_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,13,13,6,6,0,0,569.8,471.38,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,5,5,1,1,0,0,149.91,71.55,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,2,2,1,1,0,0,73.3,52.14,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,3,3,1,1,0,0,162.56,139.67,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,3,3,1,1,0,0,30.48,24.76,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,3,3,1,1,0,0,139.95,130.05,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,6,6,2,2,0,0,296.87,135.99,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,4,4,2,2,0,0,235.8,137.31,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,15,15,5,5,0,0,370.51,292.35,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,9,9,2,2,0,0,77.29,64.22,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,4,4,1,1,0,0,75.98,70.88,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,5,5,3,3,0,0,500.54,359.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,10,Oct,202510,Q4,2025-10-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_10_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,17,17,10,10,0,0,1595.2,1082.51,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,8,8,4,4,0,0,221.43,148.53,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,4,4,2,2,0,0,187.97,149.12,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,5,5,1,1,0,0,110.49,86.55,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,5,5,2,2,0,0,315.82,161.49,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,2,2,1,1,0,0,99.45,56.96,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,40,40,18,18,0,0,518.16,397.78,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,12,12,4,4,0,0,605.86,663.07,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,4,4,1,1,0,0,64.94,50.21,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,2,2,1,1,0,0,93.66,60.45,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,11,Nov,202511,Q4,2025-11-01,@@|TCO009,@@,Unassigned Sub-Parent,Yes,TCO009,Transfer Co Operations,Loss,Yes,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_11_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Loss,Yes,17,17,8,8,0,0,1194.9,1219.02,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Damage,No,10,10,3,3,0,0,516.67,285.84,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100011|TCH001,0009100011,Technology Operations,No,TCH001,Technology Operations - Central,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Loss,Yes,3,3,1,1,0,0,40.66,40.84,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100012|MAI002,0009100012,Mail Services,No,MAI002,Mail Services - Regional,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Loss,Yes,4,4,2,2,0,0,285.2,169.99,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100013|VEN003,0009100013,Vendor Programs,No,VEN003,Vendor Programs - Print,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Loss,Yes,2,2,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100013|VEN004,0009100013,Vendor Programs,No,VEN004,Vendor Programs - Fulfilment,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Loss,Yes,4,4,2,2,0,0,132.5,105.95,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Damage,No,3,3,1,1,0,0,170.9,178.44,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Follow-up,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100014|FLD005,0009100014,Field Administration,No,FLD005,Field Administration - North,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100015|HQX006,0009100015,Corporate HQ,No,HQX006,Corporate HQ - Facilities,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Loss,Yes,40,40,19,19,0,0,2683.79,1867.45,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Damage,No,15,15,8,8,0,0,387.58,391.6,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Follow-up,No,6,6,3,3,0,0,381.46,291.59,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100016|RTL007,0009100016,Retail Partner Network,No,RTL007,Retail Partner Network - Stores,Casualty,No,2,2,1,1,0,0,138.96,90.65,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Loss,Yes,2,2,1,1,0,0,165.99,124.69,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Damage,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx
+2025,12,Dec,202512,Q4,2025-12-01,0009100017|CSH008,0009100017,Cash Operations,No,CSH008,Cash Operations - Processing,Casualty,No,1,1,0,0,0,0,0.0,0.0,Not Available,SAMPLE_2025_12_Claims.xlsx

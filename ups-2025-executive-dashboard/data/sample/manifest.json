@@ -1,0 +1,38 @@
+{
+  "SYNTHETIC": true,
+  "notice": "SYNTHETIC SAMPLE DATA - NOT REAL SHIPMENT, ACCOUNT OR SPEND DATA",
+  "generatedBy": "etl/make_sample_data.py",
+  "seed": 20250131,
+  "generatedOn": "2026-07-31",
+  "monthsLoaded": [
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05",
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12"
+  ],
+  "rowCounts": {
+    "Fact_VolumeSpend": 1648,
+    "Fact_TimeInTransit": 936,
+    "Fact_Claims": 290,
+    "Fact_Accessorial": 120,
+    "Dim_Date": 12,
+    "Dim_Account": 9,
+    "Dim_ServiceMapping": 42
+  },
+  "plantedSignals": {
+    "highLossAccount": "RTL007",
+    "degradedGroundMonth": 11,
+    "note": "Planted so the dashboard has something real to surface in the demo."
+  },
+  "duplicateRowsSuppressed": 0,
+  "rowsRejected": 0,
+  "unmappedProducts": 0
+}

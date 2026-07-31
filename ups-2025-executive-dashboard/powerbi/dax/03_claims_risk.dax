@@ -1,0 +1,179 @@
+// ===========================================================================
+// 03 - CLAIMS AND LOSS RISK
+//
+// STRUCTURAL LIMITATION - read before building any service-level claims visual.
+//
+// The UPS claims extract carries Sub-Parent, Account, and Claims Category. It
+// does NOT carry a product, service, or tracking number. There is therefore no
+// join path from Fact_Claims to Dim_ServiceMapping, and no honest way to state
+// a loss claim rate "by service".
+//
+// The build guide assigns 30% of the recommendation score to Loss Claim Rate.
+// That weight cannot be allocated from this data. Three options, in order of
+// preference:
+//
+//   A. Request a service or tracking-number field on the claims export.
+//      This is the only real fix and is the first item on the automation
+//      backlog. Until then:
+//   B. Score claims at the ACCOUNT level (fully supported today) and use it
+//      to drive account-level action rather than service selection.
+//   C. If leadership insists on a service-level figure, present the allocated
+//      proxy below with its assumption stated on the visual, and never let it
+//      drive the headline recommendation.
+//
+// Measures in this file are grouped by which of those three tiers they belong
+// to, and the proxy measures carry the word "Proxy" in their names so they
+// cannot be mistaken for measured fact on a report page.
+// ===========================================================================
+
+// --- Tier B: supported claim measures (account grain) ----------------------
+
+Issued Claims Pkgs =
+SUM ( Fact_Claims[IssuedClaimsPkgQty] )
+
+Paid Claims Pkgs =
+SUM ( Fact_Claims[PaidClaimsPkgQty] )
+
+Registered Claims Pkgs =
+SUM ( Fact_Claims[RegisteredClaimsPkgQty] )
+
+Paid Claims Amount =
+SUM ( Fact_Claims[PaidClaimsAmount] )
+
+Claims Declared Value =
+SUM ( Fact_Claims[ClaimsDeclaredValue] )
+
+Loss Claims =
+CALCULATE (
+    [Issued Claims Pkgs],
+    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Loss" )
+)
+
+Damage Claims =
+CALCULATE (
+    [Issued Claims Pkgs],
+    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Damage" )
+)
+
+Loss Claims Paid Amount =
+CALCULATE (
+    [Paid Claims Amount],
+    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Loss" )
+)
+
+// Recovery rate on submitted claims. A low rate is a claims-process problem,
+// not a carrier-reliability problem, and belongs in a different conversation.
+Claims Recovery Rate =
+DIVIDE ( [Paid Claims Pkgs], [Issued Claims Pkgs] )
+
+Avg Paid per Claim =
+DIVIDE ( [Paid Claims Amount], [Paid Claims Pkgs] )
+
+// Claims are rare events. Expressed as a bare percentage they render as
+// "0.05%" and every service looks identical. Per 10,000 shipments is the
+// readable unit and is what belongs on an executive card.
+Loss Claim Rate per 10k =
+DIVIDE ( [Loss Claims], [Rankable Shipments] ) * 10000
+
+Claims Rate per 10k =
+DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] ) * 10000
+
+// Retained for continuity with the original build guide's KPI list.
+Loss Claim Rate =
+DIVIDE ( [Loss Claims], [Rankable Shipments] )
+
+Exception / Claims Rate =
+DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] )
+
+// Financial exposure per 1,000 shipments - the version of claims risk a CFO
+// reacts to.
+Claims Cost per 1k Shipments =
+DIVIDE ( [Paid Claims Amount], [Rankable Shipments] ) * 1000
+
+
+// --- Concentration ---------------------------------------------------------
+//
+// The single most useful thing this data says about claims is not the firm-wide
+// rate; it is how unevenly that rate is distributed across accounts. These
+// measures quantify the concentration so it can be stated as a number rather
+// than eyeballed off a bar chart.
+
+Firm-wide Loss Rate per 10k =
+CALCULATE (
+    [Loss Claim Rate per 10k],
+    REMOVEFILTERS ( Dim_Account, Dim_ServiceMapping )
+)
+
+// How many times the firm average this account's loss rate runs. Anything
+// above ~2.0x on meaningful volume is an account-level intervention.
+Loss Rate Index vs Firm =
+DIVIDE ( [Loss Claim Rate per 10k], [Firm-wide Loss Rate per 10k] )
+
+Loss Risk Flag =
+VAR Idx = [Loss Rate Index vs Firm]
+VAR Vol = [Rankable Shipments]
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( [Loss Claims] ) || [Loss Claims] = 0, "No loss activity",
+        Vol < 500, "Insufficient volume to rate",
+        Idx >= 3, "Critical - investigate",
+        Idx >= 2, "Elevated - monitor",
+        Idx >= 1, "Above firm average",
+        "At or below firm average"
+    )
+
+// Share of all loss claims sitting in the highest-concentration account.
+// Answers "is this a UPS problem or an account problem?" in one number.
+Top Account Share of Loss Claims =
+VAR ByAccount =
+    ADDCOLUMNS (
+        CALCULATETABLE ( VALUES ( Dim_Account[AccountKey] ), REMOVEFILTERS ( Dim_Account ) ),
+        "@Loss", [Loss Claims]
+    )
+VAR TotalLoss = SUMX ( ByAccount, [@Loss] )
+VAR TopLoss = MAXX ( ByAccount, [@Loss] )
+RETURN
+    DIVIDE ( TopLoss, TotalLoss )
+
+Top Account by Loss Claims =
+VAR ByAccount =
+    ADDCOLUMNS (
+        CALCULATETABLE ( VALUES ( Dim_Account[AccountName] ), REMOVEFILTERS ( Dim_Account ) ),
+        "@Loss", [Loss Claims]
+    )
+RETURN
+    CONCATENATEX ( TOPN ( 1, ByAccount, [@Loss], DESC ), Dim_Account[AccountName] )
+
+
+// --- Tier C: allocated service proxy - handle with care --------------------
+//
+// Distributes account-level loss claims across the service groups that account
+// actually shipped on, in proportion to shipment volume. The assumption is
+// explicit and almost certainly wrong in detail: it presumes loss risk is
+// uniform across services within an account, which is precisely the hypothesis
+// the metric would be used to test. It is circular, and it is offered only so
+// that a leadership request for a service view can be met with a labelled
+// estimate instead of a refusal or - far worse - an unlabelled guess.
+//
+// Never place these on the Executive Overview or the Annual Recommendation
+// page. Data Quality page and analyst drillthrough only.
+
+Loss Claims (Allocated Proxy) =
+SUMX (
+    VALUES ( Dim_Account[AccountKey] ),
+    VAR AccountLoss = CALCULATE ( [Loss Claims], REMOVEFILTERS ( Dim_ServiceMapping ) )
+    VAR AccountVolumeAllServices =
+        CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_ServiceMapping ) )
+    VAR VolumeInScope = [Rankable Shipments]
+    RETURN
+        AccountLoss * DIVIDE ( VolumeInScope, AccountVolumeAllServices )
+)
+
+Loss Claim Rate per 10k (Allocated Proxy) =
+DIVIDE ( [Loss Claims (Allocated Proxy)], [Rankable Shipments] ) * 10000
+
+Claims Attribution Warning =
+"Allocated estimate. The claims extract carries no service or tracking key; "
+    & "account-level claims are distributed across services by shipment volume. "
+    & "Not a measured service-level loss rate. Do not use for service selection."

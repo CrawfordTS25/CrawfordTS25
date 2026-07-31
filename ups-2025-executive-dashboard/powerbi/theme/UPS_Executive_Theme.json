@@ -1,0 +1,199 @@
+{
+  "name": "UPS 2025 Executive",
+  "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.114.json",
+
+  "_comment_palette": "Categorical slots are assigned in fixed order and never cycled. Validated for colour-vision deficiency: worst all-pairs deutan separation 9.2 (OKLab x100) across the first three slots, worst normal-vision separation 24.0. Slots 4-8 are gate-safe for adjacent marks (stacked bars, grouped columns, multi-line) but the first three are the cap for scatter, bubble and map visuals where any pair can land side by side. Past three series on those forms, fold the tail into Other or use small multiples - never add a ninth colour.",
+
+  "dataColors": [
+    "#2a78d6",
+    "#eb6834",
+    "#1baf7a",
+    "#eda100",
+    "#e87ba4",
+    "#008300",
+    "#4a3aa7",
+    "#e34948"
+  ],
+
+  "_comment_status": "Status colours are reserved. Never reuse one as a series colour - a bar that happens to be the fourth category must not read as 'critical'. Always paired with an icon or text label so state is never carried by colour alone.",
+  "good": "#0ca30c",
+  "neutral": "#898781",
+  "bad": "#d03b3b",
+  "maximum": "#0d366b",
+  "center": "#f0efec",
+  "minimum": "#cde2fb",
+  "null": "#e1e0d9",
+
+  "foreground": "#0b0b0b",
+  "foregroundNeutralSecondary": "#52514e",
+  "foregroundNeutralTertiary": "#898781",
+  "background": "#fcfcfb",
+  "backgroundLight": "#f9f9f7",
+  "backgroundNeutral": "#e1e0d9",
+  "tableAccent": "#2a78d6",
+  "secondaryBackground": "#f0efec",
+  "hyperlink": "#256abf",
+
+  "textClasses": {
+    "title": { "fontFace": "Segoe UI Semibold", "fontSize": 15, "color": "#0b0b0b" },
+    "header": { "fontFace": "Segoe UI Semibold", "fontSize": 12, "color": "#0b0b0b" },
+    "label": { "fontFace": "Segoe UI", "fontSize": 10, "color": "#52514e" },
+    "callout": { "fontFace": "Segoe UI", "fontSize": 32, "color": "#0b0b0b" }
+  },
+
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{ "show": true, "color": { "solid": { "color": "#fcfcfb" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#e1e0d9" } }, "radius": 6 }],
+        "dropShadow": [{ "show": false }],
+        "visualHeader": [{ "show": true, "background": { "solid": { "color": "#fcfcfb" } } }],
+        "title": [{
+          "show": true,
+          "fontColor": { "solid": { "color": "#0b0b0b" } },
+          "fontSize": 13,
+          "fontFamily": "Segoe UI Semibold",
+          "alignment": "left",
+          "background": { "solid": { "color": "#fcfcfb" } }
+        }],
+        "subTitle": [{
+          "show": true,
+          "fontColor": { "solid": { "color": "#898781" } },
+          "fontSize": 9,
+          "alignment": "left"
+        }],
+
+        "_comment_axes": "Gridlines are hairline, solid, one step off surface, and recessive. Never dashed - a dashed gridline competes with the data for attention.",
+        "categoryAxis": [{
+          "show": true,
+          "showAxisTitle": false,
+          "labelColor": { "solid": { "color": "#898781" } },
+          "fontSize": 9,
+          "gridlineShow": false,
+          "lineColor": { "solid": { "color": "#c3c2b7" } }
+        }],
+        "valueAxis": [{
+          "show": true,
+          "showAxisTitle": false,
+          "labelColor": { "solid": { "color": "#898781" } },
+          "fontSize": 9,
+          "gridlineShow": true,
+          "gridlineColor": { "solid": { "color": "#e1e0d9" } },
+          "gridlineThickness": 1,
+          "gridlineStyle": "solid",
+          "_comment_secondary": "There is no secondary axis configuration in this theme, by design. A dual-axis chart makes two unrelated scales look comparable and is the single most common serious charting error. Two measures of different scale get two visuals, small multiples, or indexing to a common base."
+        }],
+
+        "legend": [{
+          "show": true,
+          "position": "TopLeft",
+          "showTitle": false,
+          "labelColor": { "solid": { "color": "#52514e" } },
+          "fontSize": 9
+        }],
+        "labels": [{
+          "show": false,
+          "color": { "solid": { "color": "#52514e" } },
+          "fontSize": 9,
+          "_comment": "Data labels default OFF. Label selectively - the endpoint, the extreme, or the series the story is about. A number on every point goes unread and buries the one that matters."
+        }]
+      }
+    },
+
+    "card": {
+      "*": {
+        "labels": [{ "color": { "solid": { "color": "#0b0b0b" } }, "fontSize": 28, "fontFamily": "Segoe UI" }],
+        "categoryLabels": [{ "show": true, "color": { "solid": { "color": "#898781" } }, "fontSize": 9 }],
+        "background": [{ "show": true, "color": { "solid": { "color": "#fcfcfb" } } }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#e1e0d9" } }, "radius": 6 }]
+      }
+    },
+
+    "columnChart": {
+      "*": {
+        "dataPoint": [{ "fill": { "solid": { "color": "#2a78d6" } } }],
+        "_comment": "Single-series column charts use one hue, not the full categorical set. Reserve categorical colour for when the series themselves are the subject."
+      }
+    },
+
+    "barChart": {
+      "*": {
+        "dataPoint": [{ "fill": { "solid": { "color": "#2a78d6" } } }]
+      }
+    },
+
+    "lineChart": {
+      "*": {
+        "lineStyles": [{ "strokeWidth": 2, "lineStyle": "solid", "showMarker": true, "markerSize": 5 }]
+      }
+    },
+
+    "slicer": {
+      "*": {
+        "background": [{ "show": true, "color": { "solid": { "color": "#f9f9f7" } } }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#e1e0d9" } }, "radius": 6 }],
+        "header": [{ "show": true, "fontColor": { "solid": { "color": "#52514e" } }, "fontSize": 9, "outline": "None" }],
+        "items": [{ "fontColor": { "solid": { "color": "#0b0b0b" } }, "fontSize": 10 }],
+        "selection": [{ "strictSingleSelect": false, "singleSelect": false }]
+      }
+    },
+
+    "tableEx": {
+      "*": {
+        "grid": [{
+          "gridVertical": false,
+          "gridHorizontal": true,
+          "gridHorizontalColor": { "solid": { "color": "#e1e0d9" } },
+          "gridHorizontalWeight": 1,
+          "rowPadding": 4,
+          "outlineColor": { "solid": { "color": "#e1e0d9" } },
+          "outlineWeight": 1
+        }],
+        "columnHeaders": [{
+          "fontColor": { "solid": { "color": "#52514e" } },
+          "backColor": { "solid": { "color": "#f9f9f7" } },
+          "fontSize": 9,
+          "bold": true,
+          "alignment": "left"
+        }],
+        "values": [{
+          "fontColor": { "solid": { "color": "#0b0b0b" } },
+          "backColor": { "solid": { "color": "#fcfcfb" } },
+          "fontSize": 10,
+          "backColorSecondary": { "solid": { "color": "#fcfcfb" } },
+          "_comment": "Banded rows are off. With a hairline horizontal rule and 4px padding, banding is redundant ink."
+        }]
+      }
+    },
+
+    "pivotTable": {
+      "*": {
+        "columnHeaders": [{ "fontColor": { "solid": { "color": "#52514e" } }, "backColor": { "solid": { "color": "#f9f9f7" } }, "fontSize": 9, "bold": true }],
+        "values": [{ "fontColor": { "solid": { "color": "#0b0b0b" } }, "fontSize": 10 }]
+      }
+    },
+
+    "scatterChart": {
+      "*": {
+        "_comment": "Cap scatter, bubble and map visuals at THREE series. Any pair of points can land adjacent on these forms, so the palette must clear the all-pairs gate rather than the adjacent gate - and only the first three slots do. Fold the tail into Other or facet into small multiples.",
+        "fillPoint": [{ "show": true }],
+        "bubbles": [{ "bubbleSize": -20 }]
+      }
+    },
+
+    "actionButton": {
+      "*": {
+        "text": [{ "fontColor": { "solid": { "color": "#256abf" } }, "fontSize": 10 }],
+        "outline": [{ "lineColor": { "solid": { "color": "#c3c2b7" } }, "transparency": 0, "weight": 1 }],
+        "fill": [{ "show": true, "fillColor": { "solid": { "color": "#f9f9f7" } }, "transparency": 0 }]
+      }
+    },
+
+    "page": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#f9f9f7" } }, "transparency": 0 }],
+        "outspace": [{ "color": { "solid": { "color": "#f0efec" } }, "transparency": 0 }]
+      }
+    }
+  }
+}

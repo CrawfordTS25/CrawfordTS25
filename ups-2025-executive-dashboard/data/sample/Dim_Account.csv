@@ -1,0 +1,10 @@
+AccountKey,SubNumber,SubName,AccountNumber,AccountName,City,State,ZIP,PresentIn,HasTransitData,HasClaimsData,Region
+0009100011|TCH001,0009100011,Technology Operations,TCH001,Technology Operations - Central,Columbus,OH,43004,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Midwest
+0009100012|MAI002,0009100012,Mail Services,MAI002,Mail Services - Regional,Kansas City,MO,64108,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Midwest
+0009100013|VEN003,0009100013,Vendor Programs,VEN003,Vendor Programs - Print,Aurora,IL,60502,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Midwest
+0009100013|VEN004,0009100013,Vendor Programs,VEN004,Vendor Programs - Fulfilment,Aurora,IL,60502,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Midwest
+0009100014|FLD005,0009100014,Field Administration,FLD005,Field Administration - North,Madison,WI,53703,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Midwest
+0009100015|HQX006,0009100015,Corporate HQ,HQX006,Corporate HQ - Facilities,Columbus,OH,43004,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Midwest
+0009100016|RTL007,0009100016,Retail Partner Network,RTL007,Retail Partner Network - Stores,Phoenix,AZ,85004,VolumeSpend + TimeInTransit + Claims,Yes,Yes,West
+0009100017|CSH008,0009100017,Cash Operations,CSH008,Cash Operations - Processing,Newark,NJ,07102,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Northeast
+@@|TCO009,@@,Unassigned Sub-Parent,TCO009,Transfer Co Operations,Whippany,NJ,07981,VolumeSpend + TimeInTransit + Claims,Yes,Yes,Northeast

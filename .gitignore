@@ -1,0 +1,22 @@
+# --- Client data: never commit -------------------------------------------
+# Raw UPS extracts and everything derived from them contain a named client's
+# account numbers, shipping addresses and negotiated spend. Only the synthetic
+# sample set in data/sample/ is committed.
+ups-2025-executive-dashboard/data/raw/
+ups-2025-executive-dashboard/data/processed/
+ups-2025-executive-dashboard/dashboard/live.html
+*.pbix
+~$*.xlsx
+
+# --- Python ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# --- OS / editor ----------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

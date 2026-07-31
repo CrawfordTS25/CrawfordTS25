@@ -1,0 +1,234 @@
+// ===========================================================================
+// 05 - DATA QUALITY, COVERAGE AND NARRATIVE
+//
+// The governance section of the build guide asks for hidden filters that
+// protect metric accuracy. Hidden filters create an obligation: if the report
+// silently drops rows, it must be able to say exactly how many and why. These
+// measures make every exclusion countable, and drive the banner text that tells
+// a reader how far to trust what is on screen.
+// ===========================================================================
+
+// --- Coverage --------------------------------------------------------------
+
+Months Loaded =
+CALCULATE (
+    DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+    Dim_Date[IsLoaded] = "Yes",
+    REMOVEFILTERS ( Dim_Date )
+)
+
+Completed Months Loaded =
+CALCULATE (
+    DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+    Dim_Date[IsReportable] = "Yes",
+    REMOVEFILTERS ( Dim_Date )
+)
+
+Missing Months =
+VAR Expected =
+    CALCULATE (
+        DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+        Dim_Date[IsCompletedMonth] = "Yes",
+        REMOVEFILTERS ( Dim_Date )
+    )
+RETURN
+    Expected - [Completed Months Loaded]
+
+Missing Months List =
+CONCATENATEX (
+    CALCULATETABLE (
+        VALUES ( Dim_Date[MonthYearLabel] ),
+        Dim_Date[IsCompletedMonth] = "Yes",
+        Dim_Date[IsLoaded] = "No",
+        REMOVEFILTERS ( Dim_Date )
+    ),
+    Dim_Date[MonthYearLabel],
+    ", ",
+    Dim_Date[SortOrder],
+    ASC
+)
+
+Annual Completeness % =
+DIVIDE ( [Months Loaded], 12 )
+
+// The three fact tables do not have to cover the same months. Volume & Spend
+// arrives monthly; Time-in-Transit and Claims may not. Stating the coverage of
+// each separately is what stops a reader from assuming an annual OTD figure is
+// built on twelve months when it is built on one.
+Volume Months Covered =
+CALCULATE ( DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+
+Transit Months Covered =
+CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+
+Claims Months Covered =
+CALCULATE ( DISTINCTCOUNT ( Fact_Claims[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+
+Coverage Summary =
+"Volume & Spend: " & [Volume Months Covered] & " mo  |  "
+    & "Time-in-Transit: " & [Transit Months Covered] & " mo  |  "
+    & "Claims: " & [Claims Months Covered] & " mo"
+
+
+// --- Exclusions ------------------------------------------------------------
+
+Excluded Adjustment Spend =
+CALCULATE (
+    SUM ( Fact_VolumeSpend[NetSpend] ),
+    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "No" )
+)
+
+Excluded Adjustment Spend % =
+DIVIDE (
+    [Excluded Adjustment Spend],
+    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_ServiceMapping ) )
+)
+
+Spend-Only Adjustment Rows =
+CALCULATE (
+    COUNTROWS ( Fact_VolumeSpend ),
+    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = "Yes" )
+)
+
+Spend-Only Adjustment Value =
+CALCULATE (
+    SUM ( Fact_VolumeSpend[NetSpend] ),
+    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = "Yes" )
+)
+
+// Spend that appears in the financial total but has no shipment behind it, so
+// it can never be recovered by a cost-per-shipment metric. Worth its own card:
+// it is real money that the service comparison legitimately cannot see.
+Unattributed Spend % =
+DIVIDE (
+    [Spend-Only Adjustment Value],
+    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_ServiceMapping ) )
+)
+
+Unmapped Product Rows =
+CALCULATE (
+    COUNTROWS ( Fact_VolumeSpend ),
+    KEEPFILTERS ( Fact_VolumeSpend[ServiceGroup] = "Unmapped - Review" )
+)
+
+Masked Sub-Parent Volume =
+CALCULATE (
+    [Total Shipments],
+    KEEPFILTERS ( Fact_VolumeSpend[IsMaskedSubParent] = "Yes" )
+)
+
+
+// --- Reconciliation --------------------------------------------------------
+//
+// The accessorial extract decomposes the same net spend the Volume & Net Spend
+// extract reports in total. They must agree to the cent for a given month. A
+// non-zero variance means one of the two files is stale or filtered - catch it
+// on the Data Quality page, not in a leadership meeting.
+
+Accessorial Net Spend =
+SUM ( Fact_Accessorial[NetSpend] )
+
+Spend Reconciliation Variance =
+VAR VolumeSpendTotal =
+    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_ServiceMapping ) )
+VAR AccessorialTotal =
+    CALCULATE ( [Accessorial Net Spend], REMOVEFILTERS ( Dim_ServiceMapping ) )
+RETURN
+    IF ( AccessorialTotal <> 0, VolumeSpendTotal - AccessorialTotal )
+
+Reconciliation Status =
+VAR Variance = [Spend Reconciliation Variance]
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( Variance ), "No accessorial detail for this period",
+        ABS ( Variance ) < 1, "Reconciled",
+        ABS ( Variance ) < 100, "Rounding variance - " & FORMAT ( Variance, "$#,0.00" ),
+        "VARIANCE - " & FORMAT ( Variance, "$#,0.00" ) & " - investigate before publishing"
+    )
+
+// Shipper View (Time-in-Transit) against Payor View (Volume & Net Spend).
+// These populations are defined differently and a small gap is expected;
+// a large one means an account is shipping on a payer account the transit
+// extract does not cover.
+Measured vs Billed Coverage % =
+DIVIDE ( [Packages Measured], [Rankable Shipments] )
+
+
+// --- Banner narrative ------------------------------------------------------
+//
+// One measure, placed as a card at the top of every page. It states the
+// reporting basis in plain language and escalates when the data cannot support
+// the conclusion the page is designed to present.
+
+Data Basis Banner =
+VAR VolMonths = [Volume Months Covered]
+VAR TransitMonths = [Transit Months Covered]
+VAR ClaimsMonths = [Claims Months Covered]
+VAR Missing = [Missing Months List]
+VAR Recon = [Reconciliation Status]
+VAR Severity =
+    SWITCH (
+        TRUE (),
+        TransitMonths = 0, "NO RELIABILITY DATA",
+        TransitMonths < 6 || ClaimsMonths < 6, "PROVISIONAL",
+        VolMonths < 12, "PARTIAL YEAR",
+        "ANNUAL"
+    )
+RETURN
+    Severity & " - " & [Coverage Summary]
+        & IF ( LEN ( Missing ) > 0, "  |  Not yet loaded: " & Missing, "" )
+        & IF ( Recon <> "Reconciled" && LEFT ( Recon, 2 ) = "VA", "  |  " & Recon, "" )
+
+// Colour driver for the banner card. Wire to conditional formatting by field
+// value on the card background.
+Data Basis Banner Colour =
+SWITCH (
+    TRUE (),
+    [Transit Months Covered] = 0, "#B3261E",
+    [Transit Months Covered] < 6 || [Claims Months Covered] < 6, "#B26B00",
+    [Volume Months Covered] < 12, "#5B4B8A",
+    "#1F6F54"
+)
+
+
+// --- Dynamic titles --------------------------------------------------------
+//
+// A static title on a filtered visual is a defect: a reader who has sliced to
+// one quarter and one account will read the annual title and quote the number
+// as annual. Bind these to the title property of every headline visual.
+
+Title - Executive Overview =
+VAR Period =
+    IF (
+        ISFILTERED ( Dim_Date[MonthYearLabel] ) || ISFILTERED ( Dim_Date[Quarter] ),
+        CONCATENATEX (
+            VALUES ( Dim_Date[MonthYearLabel] ),
+            Dim_Date[MonthYearLabel], ", ", Dim_Date[SortOrder], ASC
+        ),
+        SELECTEDVALUE ( Dim_Date[Year], "2025" ) & " full year"
+    )
+VAR Scope =
+    IF (
+        ISFILTERED ( Dim_ServiceMapping[Scope] ),
+        SELECTEDVALUE ( Dim_ServiceMapping[Scope], "All scopes" ),
+        "Domestic and international"
+    )
+RETURN
+    "UPS Shipping Performance - " & Period & " - " & Scope
+
+Title - Service Scorecard =
+"Service scorecard - " & [Qualified Service Count] & " of "
+    & CALCULATE (
+        DISTINCTCOUNT ( Dim_ServiceMapping[ServiceGroup] ),
+        REMOVEFILTERS ( Dim_ServiceMapping ),
+        Dim_ServiceMapping[IncludeInRanking] = "Yes"
+    )
+    & " services qualify at "
+    & FORMAT ( [Minimum Shipment Threshold], "#,0" ) & " shipments / "
+    & FORMAT ( [Minimum Volume Share], "0.0%" ) & " share"
+
+Title - Claims =
+"Claims and loss risk - account level only ("
+    & [Claims Months Covered] & " month(s) loaded). "
+    & "Claims carry no service key."
