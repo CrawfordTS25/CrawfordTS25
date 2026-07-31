@@ -1,7 +1,10 @@
 # Account / Vendor drill-down — what shipped and what's left
 
-**File:** `Quantum_View_Exceptions_Dashboard_v2.pbix` (sensitivity label removed, so it
-opens; re-apply *Internal Use Only · Standard* in Desktop before sharing).
+> **Superseded.** This document records the account/vendor pass only. The current
+> deliverable is **`Quantum_View_Exceptions_Dashboard_v5.pbix`**, which carries this
+> work plus everything after it, and **`RUNBOOK.md`** is the single ordered guide to
+> the Desktop steps. Read this one for the reasoning behind the account derivation;
+> follow the runbook to actually apply anything.
 
 The account number is **embedded in the tracking number** — UPS 1Z format is
 `1Z` + 6-char shipper account + 2-char service + 8-char package ID. No join on

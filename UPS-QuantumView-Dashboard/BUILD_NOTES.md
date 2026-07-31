@@ -1,5 +1,12 @@
 # UPS Quantum View — Cross-Page Consistency Pass
 
+> **Historical.** This documents the original layout-consistency pass, against the
+> first file. It predates your rebuild and re-upload, so the `.pbix` names in it no
+> longer exist in this repo. The current deliverable is
+> **`Quantum_View_Exceptions_Dashboard_v5.pbix`**; **`RUNBOOK.md`** is the guide to
+> follow. Kept for the design rationale — the coordinate table, theme tokens and card
+> anatomy in §1–§3 are still what the report is built on.
+
 > ## Deliverable: `Quantum_View_Exceptions_Dashboard_FINAL.pbix`
 >
 > Built by `tools/package.py --strip-label`. It opens because the sensitivity label is
