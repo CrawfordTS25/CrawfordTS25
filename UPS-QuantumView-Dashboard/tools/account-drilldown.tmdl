@@ -1,0 +1,47 @@
+// =============================================================================
+// Account / Vendor drill-down - model wiring
+//
+// OPTIONAL FAST PATH.  This is untested against your model - review it in the TMDL
+// editor before you click Apply.  If the syntax argues with you, do it by hand
+// instead: ACCOUNT-DRILLDOWN.md section 2 is four clicks and is guaranteed.
+//
+// Adds two calculated columns and two relationships. Adds nothing else, and touches
+// no existing measure, column or relationship.
+//
+// The account is embedded in the tracking number - UPS 1Z format is
+//   1Z + 6-char shipper account + 2-char service + 8-char package id
+// so MID(...,3,6) recovers it. Verified 98.7-100% against Dim_Account across every
+// table in the model, with a single unmatched code (A25T52 - see the doc).
+// =============================================================================
+
+createOrReplace
+
+	ref table 'Resolutions Table'
+
+		/// Shipper account recovered from the tracking number. Matches the derivation
+		/// already used on Current_Open_Trace and Trace_Active.
+		column 'Account Key' = UPPER ( MID ( 'Resolutions Table'[Tracking Number], 3, 6 ) )
+			dataType: string
+			summarizeBy: none
+
+	ref table QV_Manifest
+
+		/// Same derivation on the shipment universe, so Total Shipments and therefore
+		/// Exception Rate respond to the account slicer. QV_Manifest currently has no
+		/// relationships at all, so this is its first.
+		column 'Account Key' = UPPER ( MID ( QV_Manifest[Tracking Number], 3, 6 ) )
+			dataType: string
+			summarizeBy: none
+
+	ref model Model
+
+		/// Dim_Account -> Resolutions Table -> QV_Output.
+		/// Deliberately NOT relating Dim_Account to QV_Output as well: QV_Output already
+		/// reaches Dim_Account through Resolutions Table, and a second path is ambiguous.
+		relationship Dim_Account_to_Resolutions
+			fromColumn: 'Resolutions Table'.'Account Key'
+			toColumn: Dim_Account.'Account Key'
+
+		relationship Dim_Account_to_QV_Manifest
+			fromColumn: QV_Manifest.'Account Key'
+			toColumn: Dim_Account.'Account Key'
