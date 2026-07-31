@@ -2114,7 +2114,7 @@
         "annotations": [
           {
             "name": "PBI_Id",
-            "value": "ecb7ca18ba9f49e2bbfc09db5b6813e3"
+            "value": "add45d00b2e546f1af467df406cc4e60"
           }
         ]
       },
@@ -2151,7 +2151,7 @@
         "annotations": [
           {
             "name": "PBI_Id",
-            "value": "daa6b9c04ec54f4aab5ece512ca6592e"
+            "value": "f9bdb04ba69846faa41860b2df5637bf"
           }
         ]
       },
@@ -2975,6 +2975,14 @@
               "    )",
               ")"
             ],
+            "displayFolder": "4 Scoring and Recommendation\\1. Qualification",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Claims Service Key Available",
+            "expression": [
+              "0"
+            ],
             "displayFolder": "4 Scoring and Recommendation\\2. Normalised component scores",
             "formatString": "#,0"
           },
@@ -3111,14 +3119,6 @@
             "formatString": "0%"
           },
           {
-            "name": "Claims Service Key Available",
-            "expression": [
-              "0"
-            ],
-            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
-            "formatString": "#,0"
-          },
-          {
             "name": "Effective Weight Total",
             "expression": [
               "VAR W =",
@@ -3153,7 +3153,11 @@
             "name": "Score Basis",
             "expression": [
               "VAR Covered =",
-              "    IF ( NOT ISBLANK ( [Score - Reliability] ), \"Reliability \" & FORMAT ( [Weight - Reliability] / [Effective Weight Total], \"0%\" ) & \"; \", \"\" )",
+              "    IF (",
+              "        NOT ISBLANK ( [Score - Reliability] ),",
+              "        \"Reliability \" & FORMAT ( [Weight - Reliability] / [Effective Weight Total], \"0%\" ) & \"; \",",
+              "        \"\"",
+              "    )",
               "        & IF ( NOT ISBLANK ( [Score - Loss Risk] ), \"Loss risk \" & FORMAT ( [Weight - Loss Risk] / [Effective Weight Total], \"0%\" ) & \"; \", \"\" )",
               "        & IF ( NOT ISBLANK ( [Score - Exception Risk] ), \"Exceptions \" & FORMAT ( [Weight - Exception Risk] / [Effective Weight Total], \"0%\" ) & \"; \", \"\" )",
               "        & IF ( NOT ISBLANK ( [Score - Cost] ), \"Cost \" & FORMAT ( [Weight - Cost] / [Effective Weight Total], \"0%\" ), \"\" )",

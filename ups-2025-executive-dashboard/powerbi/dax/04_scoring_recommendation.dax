@@ -89,6 +89,15 @@ COUNTROWS (
 )
 
 
+// 1 when the claims export carries a service or tracking key that lets claims
+// be attributed to a service group. Flip this to 1 by pointing it at the real
+// column once the source is upgraded; the score reweights itself.
+//
+// Declared here, ahead of the score components that reference it, so the
+// measures can be created top to bottom without transient errors.
+Claims Service Key Available = 0
+
+
 // --- 2. Normalised component scores ---------------------------------------
 //
 // Each helper returns 0-1 within the qualified peer set. Best performer scores
@@ -199,11 +208,6 @@ Weight - Loss Risk = 0.30
 Weight - Exception Risk = 0.20
 Weight - Cost = 0.10
 
-// 1 when the claims export carries a service or tracking key that lets claims
-// be attributed to a service group. Flip this to 1 by pointing it at the real
-// column once the source is upgraded; the score reweights itself.
-Claims Service Key Available = 0
-
 // Sum of the weights whose components actually returned a value. Dividing by
 // this - rather than by 1.00 - is what keeps the score on a comparable 0-1
 // scale when a component is missing.
@@ -232,7 +236,11 @@ RETURN
 // from. This is the subtitle for the scorecard visual.
 Score Basis =
 VAR Covered =
-    IF ( NOT ISBLANK ( [Score - Reliability] ), "Reliability " & FORMAT ( [Weight - Reliability] / [Effective Weight Total], "0%" ) & "; ", "" )
+    IF (
+        NOT ISBLANK ( [Score - Reliability] ),
+        "Reliability " & FORMAT ( [Weight - Reliability] / [Effective Weight Total], "0%" ) & "; ",
+        ""
+    )
         & IF ( NOT ISBLANK ( [Score - Loss Risk] ), "Loss risk " & FORMAT ( [Weight - Loss Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
         & IF ( NOT ISBLANK ( [Score - Exception Risk] ), "Exceptions " & FORMAT ( [Weight - Exception Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
         & IF ( NOT ISBLANK ( [Score - Cost] ), "Cost " & FORMAT ( [Weight - Cost] / [Effective Weight Total], "0%" ), "" )
