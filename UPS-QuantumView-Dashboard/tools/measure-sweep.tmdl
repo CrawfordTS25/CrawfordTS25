@@ -1,0 +1,61 @@
+// =============================================================================
+// Measure sweep - corrections
+//
+// Review in TMDL view, then Apply.  Keeps every measure NAME unchanged, so no visual
+// needs rebinding; only the expressions change.
+//
+// Deletions are NOT here - TMDL delete syntax is easy to get wrong and the three
+// measures involved are unused by any visual, so right-click > Delete in the Fields
+// pane is faster and safer.  See MEASURE-SWEEP.md section 3.
+// =============================================================================
+
+createOrReplace
+
+	ref table 'Resolutions Table'
+
+		/// Open exceptions aged 8+ days.  Excludes resolved items - without the status
+		/// filter this keeps counting cases after they close.  Invisible in the current
+		/// extract because Tracker Status only holds "New / Needs Review" and "Open";
+		/// it starts drifting the day resolution flows through.
+		measure 'Aged 8 Plus Days' =
+				
+				CALCULATE(
+				    COUNTROWS('Resolutions Table'),
+				    'Resolutions Table'[Age Bucket] = "8+ Days",
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: #,0
+
+		/// Average age of the OPEN queue only.  Same reason: a resolved case should stop
+		/// dragging the average up.
+		measure 'Avg Age (Days)' =
+				
+				CALCULATE(
+				    AVERAGE('Resolutions Table'[Age Days]),
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: 0.0
+
+	ref table QV_Output
+
+		/// Distinct SHIPMENTS carrying at least one exception.  The rate needs a
+		/// numerator on the same grain as its denominator (master spec p.8).
+		measure 'Affected Shipments' = DISTINCTCOUNT(QV_Output[Tracking Number])
+			formatString: #,0
+
+		/// Share of shipments that hit a problem.  Was
+		///     DIVIDE([Total Exceptions], [Total Shipments])
+		/// which put exception EVENTS over SHIPMENTS - mixed grain, and able to exceed
+		/// 100% in principle.  On the current data this moves 9.31% -> 8.60%.
+		measure 'Exception Rate' = DIVIDE([Affected Shipments], [Total Shipments])
+			formatString: 0.0%
+
+		/// Shipments with no exception at all.  Same grain correction.
+		measure 'Successful Shipments' = [Total Shipments] - [Affected Shipments]
+			formatString: #,0
+
+		/// Multiplicity, kept as its own measure rather than buried in the rate.
+		/// 1.08 on the current data - most affected shipments have exactly one exception.
+		measure 'Exceptions per Affected Shipment' =
+				DIVIDE([Total Exceptions], [Affected Shipments])
+			formatString: 0.00
