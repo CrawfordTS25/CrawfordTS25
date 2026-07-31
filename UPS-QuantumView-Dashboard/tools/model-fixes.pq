@@ -488,3 +488,66 @@ in
 //
 // Steps 2 and 3 come first for the same reason: automating the feed onto a moving
 // key and a broken anchor produces fresher wrong numbers, arriving daily.
+
+
+// =============================================================================
+// 9. TRACE DATE COLUMNS - type them so a calendar can reach the trace side
+//
+// Every date column on Current_Open_Trace and Trace_Active loads as TEXT, which is why
+// Dim Date cannot relate to either. No date slicer, no trend, no "opened vs closed",
+// and no SLA maths on the page whose entire job is SLA.
+//
+// The values are clean and consistent - all M/D/YYYY - with two things that must
+// become null rather than dates:
+//
+//   "Not Avail."   UPS placeholder            3 rows (Orig Sched), 2 rows (Sched)
+//   1/3/1900       Excel epoch artifact      28 of 95 Follow-up rows
+//
+// The 1900 one matters more than it looks. Type that column naively and Dim Date's
+// bounds stretch from 1900 to 2026 - about 46,000 rows - and every date axis becomes
+// unreadable. It is a blank cell that was date-formatted, not a real follow-up.
+//
+// Apply to BOTH Current_Open_Trace and Trace_Active. Place it AFTER the Trace_Notes
+// merge so the two merged columns are covered too.
+// =============================================================================
+let
+    Src = #"PREVIOUS STEP",
+
+    Sentinels = { "", "Not Avail.", "N/A", "NA", "TBD",
+                  "1/3/1900", "1/2/1900", "1/1/1900", "12/30/1899" },
+
+    // Culture is NOT optional. "7/8/2026" is 8 July under en-US and 7 August under
+    // en-GB - the same string, two different dates. Without an explicit culture a
+    // Service refresh can silently disagree with Desktop.
+    fnDate = (v) as nullable date =>
+        let
+            t     = if v = null then null else Text.Trim( Text.From(v) ),
+            clean = if t = null or List.Contains( Sentinels, t ) then null else t,
+            out   = if clean = null then null
+                    else try Date.FromText( clean, [Format = "M/d/yyyy", Culture = "en-US"] )
+                         otherwise null
+        in
+            out,
+
+    Typed = Table.TransformColumns( Src, {
+        { "Manifest Date",                    fnDate, type nullable date },
+        { "Original Scheduled Delivery Date", fnDate, type nullable date },
+        { "Scheduled Delivery",               fnDate, type nullable date },
+        { "Last Reviewed",                    fnDate, type nullable date },
+        { "Follow-up",                        fnDate, type nullable date },
+        { "Trace_Notes.Next Follow-up Date",  fnDate, type nullable date },
+        { "Trace_Notes.Closed Date",          fnDate, type nullable date }
+    })
+in
+    Typed
+
+// Once Last Reviewed is a real date, recompute Days Since Review against the Refresh
+// anchor from section 1 rather than whatever produced it before:
+//
+//     Table.AddColumn( Typed, "Days Since Review",
+//         each if [Last Reviewed] = null then null
+//              else Duration.Days( DateTime.Date( Refresh{0}[StampUTC] ) - [Last Reviewed] ),
+//         Int64.Type )
+//
+// Sanity check after refresh: Follow-up should have 28 nulls, not 28 dates in 1900,
+// and Dim Date should still start in 2026.

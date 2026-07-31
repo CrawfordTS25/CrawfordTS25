@@ -262,3 +262,25 @@ createOrReplace
 //     Exceptions by Due Date =
 //         CALCULATE ( [Total Exceptions],
 //             USERELATIONSHIP ( 'Resolutions Table'[Scheduled Delivery], 'Dim Date'[Date] ) )
+
+// -----------------------------------------------------------------------------
+// 7. DATE RELATIONSHIPS TO THE TRACE SIDE
+//
+//    APPLY THIS SECTION ONLY AFTER the trace date columns are typed
+//    (tools/model-fixes.pq section 9). Until then Current_Open_Trace[Manifest Date]
+//    is text and the relationship cannot be created.
+//
+//    Current_Open_Trace already relates to Dim_Account, and its relationships to
+//    Resolutions Table and Trace_Active are inactive, so there is no ambiguity.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship DimDate_to_CurrentOpenTrace_Manifest
+			fromColumn: Current_Open_Trace.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_CurrentOpenTrace_Review
+			isActive: false
+			fromColumn: Current_Open_Trace.'Last Reviewed'
+			toColumn: 'Dim Date'.Date
