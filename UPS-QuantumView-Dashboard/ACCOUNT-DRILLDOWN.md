@@ -79,38 +79,56 @@ Apply from TMDL view. It is untested against your model, so review it in the edi
 before applying; if the syntax argues with you, the four manual steps above are
 guaranteed and quicker than debugging it.
 
-## 3. One decision needed: account `A25T52`
+## 3. `A25T52` — added to the workbook
 
-Not in the workbook, and it is the only unmatched code anywhere:
+`UPS_Acct_Info_.xlsx` now has 24 accounts. Coverage is **100% on every table**:
 
-| Table | Unmapped rows | Share |
+| Table | Rows | Matched |
 |---|---|---|
-| Resolutions Table | 98 | 1.26% |
-| QV_Output | 382 | 0.94% |
-| QV_Manifest | 708 | 0.85% |
+| QV_Output | 40,735 | 100.00% |
+| QV_Manifest | 83,502 | 100.00% |
+| Resolutions Table | 7,775 | 100.00% |
+| Current_Open_Trace / Trace_Active | 95 | 100.00% |
 
-It resolves to `Shipper Location = "Other Branch Origin"` across **17 distinct shipper
-names**, with individual branch addresses including Canadian ones (`1931 MT NEWTON
-CROSS ROAD`, `178 PTH 12 N`). It looks like a branch-origin or Canada account that
-never made the sheet.
+No unmatched account codes remain anywhere in the model.
 
-Until it is mapped those rows sit under a **blank** member in the slicer, and any
-account selection excludes them silently. Two options:
+**What the row says, and why.** The evidence is unambiguously Canadian — ship-to
+provinces ON (574), BC (63), AB (36), NS (12); postal codes `L5L6B1`, `K7M4M8`,
+`T6M2J3`; services UPS Standard and Worldwide Saver. The dominant shipper is
+**CBIZ NS-EDWARD JONES** at 4020A Sladeview Cres, Mississauga — 324 of 382 exception
+rows and 279 of 708 manifest rows.
 
-1. Add a row to `UPS_Acct_Info_.xlsx` — `Account # = A25T52`, name it whatever the
-   business calls it — and refresh. Cleanest.
-2. Give the blank a name so it is visibly unmapped rather than invisible:
+| Field | Value |
+|---|---|
+| Account # | `A25T52` |
+| Account Name | `EDWARD JONES CANADA / CBIZ NS` |
+| Address | `4020A SLADEVIEW CRES, MISSISSAUGA ON L5L 6B1` |
+| City / St | `MISSISSAUGA` / `ON` |
+| Status | `Active` |
+| Internal Contact Name | `UNVERIFIED - derived from shipment data` |
 
-```dax
-Account Label =
-VAR k = UPPER ( MID ( 'Resolutions Table'[Tracking Number], 3, 6 ) )
-RETURN COALESCE (
-    LOOKUPVALUE ( Dim_Account[Account Label], Dim_Account[Account Key], k ),
-    k & " — UNMAPPED" )
-```
+> **The name is inferred from shipment data, not from UPS billing.** That is flagged
+> in the Internal Contact Name cell so nobody mistakes it for verified. Replace both
+> fields once someone confirms what the business actually calls this account — the
+> slicer label is built from Account Name, so it will follow automatically.
 
-I'd do option 1. Silent exclusion is the worse failure mode, especially on a page
-whose whole purpose is finding which vendor is causing problems.
+**Two mechanical notes:**
+
+*The Excel table range was extended* from `A1:L24` to `A1:L25`. The sheet is backed by
+a named table (`tbl_Account_List`) and Power Query almost certainly sources from it —
+appending a row without extending the range means the refresh never sees it.
+
+*Zip Code was left blank on purpose.* That column is formatted `00000` and holds
+numbers; putting the Canadian postal code `L5L 6B1` there would make the column mixed
+type, and a Power Query "Changed Type" step expecting a number would throw a refresh
+error. The postal code is in the Address field instead. Three existing rows already
+have a blank Zip, so this is precedented and nothing is lost — `Zip Code` feeds no
+relationship or measure.
+
+> Unrelated but worth knowing: `Zip Code` is numeric with an `00000` display format, so
+> leading zeros survive on screen but the stored value is an integer. Kennesaw GA shows
+> `8054` on two rows, which is not a Kennesaw zip (`30144`) — it looks copied from the
+> Mount Laurel NJ row. Your data, not something I changed.
 
 ---
 
