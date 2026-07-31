@@ -27,11 +27,46 @@ CALCULATE (
     KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
 )
 
+// ---------------------------------------------------------------------------
+// A NOTE ON TIME INTELLIGENCE
+//
+// Dim_Date is MONTH grain - one row per month, twelve rows a year - because
+// every fact in this model is month grain. There is no daily shipment data to
+// join to.
+//
+// That makes the standard DAX time-intelligence functions unusable here.
+// TOTALYTD, SAMEPERIODLASTYEAR, DATEADD and DATESYTD all require a contiguous
+// table of *days*; handed twelve first-of-month rows they return blank or
+// silently wrong values rather than raising an error.
+//
+// The period comparisons below are therefore written against MonthKey
+// (Year * 100 + MonthNumber) arithmetic, which is exact at this grain.
+//
+// If daily shipment detail becomes available - via a tracking or shipment-event
+// feed - regenerate Dim_Date at day grain, mark it as a date table on
+// [DateKey], and these measures can revert to the built-in functions.
+// ---------------------------------------------------------------------------
+
 YTD Shipments =
-TOTALYTD ( [Total Shipments], Dim_Date[DateKey] )
+VAR CurrentYear = MAX ( Dim_Date[Year] )
+VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )
+RETURN
+    CALCULATE (
+        [Total Shipments],
+        REMOVEFILTERS ( Dim_Date ),
+        Dim_Date[Year] = CurrentYear,
+        Dim_Date[MonthNumber] <= CurrentMonth
+    )
 
 Shipments PY =
-CALCULATE ( [Total Shipments], SAMEPERIODLASTYEAR ( Dim_Date[DateKey] ) )
+VAR PriorKeys =
+    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), "@Key", Dim_Date[MonthKey] - 100 )
+RETURN
+    CALCULATE (
+        [Total Shipments],
+        REMOVEFILTERS ( Dim_Date ),
+        TREATAS ( PriorKeys, Dim_Date[MonthKey] )
+    )
 
 Shipments YoY % =
 VAR Current = [Total Shipments]
@@ -64,10 +99,25 @@ Incentive % =
 DIVIDE ( [Total Incentive], [Total Gross Spend] )
 
 YTD Net Spend =
-TOTALYTD ( [Total Net Spend], Dim_Date[DateKey] )
+VAR CurrentYear = MAX ( Dim_Date[Year] )
+VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )
+RETURN
+    CALCULATE (
+        [Total Net Spend],
+        REMOVEFILTERS ( Dim_Date ),
+        Dim_Date[Year] = CurrentYear,
+        Dim_Date[MonthNumber] <= CurrentMonth
+    )
 
 Net Spend PY =
-CALCULATE ( [Total Net Spend], SAMEPERIODLASTYEAR ( Dim_Date[DateKey] ) )
+VAR PriorKeys =
+    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), "@Key", Dim_Date[MonthKey] - 100 )
+RETURN
+    CALCULATE (
+        [Total Net Spend],
+        REMOVEFILTERS ( Dim_Date ),
+        TREATAS ( PriorKeys, Dim_Date[MonthKey] )
+    )
 
 Net Spend YoY % =
 DIVIDE ( [Total Net Spend] - [Net Spend PY], [Net Spend PY] )
@@ -127,7 +177,7 @@ Weight-Adjusted Cost Premium =
 VAR BlendedRatePerLb =
     CALCULATE (
         [Avg Net Spend per Billed Lb],
-        REMOVEFILTERS ( Dim_ServiceMapping ),
+        REMOVEFILTERS ( Dim_Service ),
         VALUES ( Dim_Date[MonthKey] )
     )
 VAR ExpectedSpend = [Total Billed Weight] * BlendedRatePerLb
@@ -140,13 +190,13 @@ RETURN
 Service Volume Mix % =
 DIVIDE (
     [Rankable Shipments],
-    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_ServiceMapping ) )
+    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
 )
 
 Service Spend Mix % =
 DIVIDE (
     [Total Net Spend],
-    CALCULATE ( [Total Net Spend], REMOVEFILTERS ( Dim_ServiceMapping ) )
+    CALCULATE ( [Total Net Spend], REMOVEFILTERS ( Dim_Service ) )
 )
 
 Account Volume Mix % =

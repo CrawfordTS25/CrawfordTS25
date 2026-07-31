@@ -63,6 +63,12 @@ Keep `Dim_ServiceMapping` loaded but hidden from the report view. It is needed f
 the Data Quality page's mapping inventory and it documents the transformation, but it
 must never appear in a slicer.
 
+**No measure may filter it.** Because it has no relationship to any fact, a
+`REMOVEFILTERS ( Dim_ServiceMapping )` inside a measure is a no-op: the filter it
+was meant to clear is still applied, and the result — a mix percentage, a firm-wide
+benchmark — comes back silently wrong with no error. Every measure filters
+`Dim_Service`. `build_pbit.py` validates this on each build.
+
 ### 2. Why there is no relationship from `Dim_Service` to `Fact_Claims`
 
 There is no key to join on. The claims extract carries Sub-Parent, Account and Claims
@@ -99,7 +105,13 @@ page.
 
 ## Model hygiene checklist
 
-- [ ] `Dim_Date` marked as a date table on `[DateKey]`.
+- [ ] `Dim_Date` is **month grain** — one row per month. Do **not** mark it as a
+      date table, and do not use `TOTALYTD`, `SAMEPERIODLASTYEAR`, `DATEADD` or any
+      other DAX time-intelligence function against it. Those require a contiguous
+      table of *days*; handed twelve first-of-month rows they return blank or
+      silently wrong values rather than erroring. Period comparisons in this model
+      use `MonthKey` arithmetic instead — see the note at the top of
+      `dax/01_base_measures.dax`.
 - [ ] `MonthName` and `MonthYearLabel` sorted by `[SortOrder]` — otherwise every month
       axis renders alphabetically (Apr, Aug, Dec, Feb…).
 - [ ] All raw numeric fact columns hidden; only measures exposed to the report view.

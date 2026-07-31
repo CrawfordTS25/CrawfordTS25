@@ -101,7 +101,7 @@ DIVIDE ( [Paid Claims Amount], [Rankable Shipments] ) * 1000
 Firm-wide Loss Rate per 10k =
 CALCULATE (
     [Loss Claim Rate per 10k],
-    REMOVEFILTERS ( Dim_Account, Dim_ServiceMapping )
+    REMOVEFILTERS ( Dim_Account, Dim_Service )
 )
 
 // How many times the firm average this account's loss rate runs. Anything
@@ -162,9 +162,9 @@ RETURN
 Loss Claims (Allocated Proxy) =
 SUMX (
     VALUES ( Dim_Account[AccountKey] ),
-    VAR AccountLoss = CALCULATE ( [Loss Claims], REMOVEFILTERS ( Dim_ServiceMapping ) )
+    VAR AccountLoss = CALCULATE ( [Loss Claims], REMOVEFILTERS ( Dim_Service ) )
     VAR AccountVolumeAllServices =
-        CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_ServiceMapping ) )
+        CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
     VAR VolumeInScope = [Rankable Shipments]
     RETURN
         AccountLoss * DIVIDE ( VolumeInScope, AccountVolumeAllServices )

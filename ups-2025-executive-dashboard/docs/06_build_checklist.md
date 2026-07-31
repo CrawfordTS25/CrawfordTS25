@@ -31,7 +31,9 @@ downstream inherits a load error and looks internally consistent while doing so.
 ## Stage 2 — Model
 
 - [ ] `Dim_Date` generated for the full calendar year, not derived from the facts.
-- [ ] `Dim_Date` marked as a date table on `[DateKey]`.
+- [ ] `Dim_Date` left **unmarked** as a date table. It is month grain, and DAX time
+      intelligence needs day grain — see `powerbi/model/relationships.md`. Verify:
+      `[YTD Shipments]` and `[OTD % PM]` return values, not blanks.
 - [ ] **`MonthName` and `MonthYearLabel` sorted by `[SortOrder]`.** Verify: a month axis
       reads Jan, Feb, Mar — not Apr, Aug, Dec. This silently resets when a column is
       retyped; re-check after any model edit.
@@ -59,6 +61,9 @@ downstream inherits a load error and looks internally consistent while doing so.
       accessorial detail.
 - [ ] Verify `[Annual Qualification Flag]` responds to the What-If sliders.
 - [ ] Verify `[Score Basis]` reports the *effective* weights, not the specified ones.
+- [ ] Verify `[Service Volume Mix %]` sums to 100% across services. If it returns
+      100% on *every* row, a measure is filtering an unrelated table and the
+      `REMOVEFILTERS` is a no-op.
 
 ---
 

@@ -59,8 +59,22 @@ DIVIDE ( [Late by Day], [Total Late] )
 
 // --- Trend and stability ---------------------------------------------------
 
+// Previous month by MonthKey arithmetic - see the time-intelligence note in
+// 01_base_measures.dax. MonthKey is Year * 100 + MonthNumber, so the January
+// rollover has to step back a year and forward eleven months.
 OTD % PM =
-CALCULATE ( [On-Time Delivery %], DATEADD ( Dim_Date[DateKey], -1, MONTH ) )
+VAR CurrentKey = SELECTEDVALUE ( Dim_Date[MonthKey] )
+VAR PriorKey =
+    IF ( MOD ( CurrentKey, 100 ) = 1, CurrentKey - 89, CurrentKey - 1 )
+RETURN
+    IF (
+        NOT ISBLANK ( CurrentKey ),
+        CALCULATE (
+            [On-Time Delivery %],
+            REMOVEFILTERS ( Dim_Date ),
+            Dim_Date[MonthKey] = PriorKey
+        )
+    )
 
 OTD % Delta MoM =
 VAR Current = [On-Time Delivery %]
@@ -169,7 +183,7 @@ RETURN
 Months with Transit Data =
 CALCULATE (
     DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ),
-    REMOVEFILTERS ( Dim_ServiceMapping, Dim_Account )
+    REMOVEFILTERS ( Dim_Service, Dim_Account )
 )
 
 Transit Coverage % =
@@ -177,7 +191,7 @@ DIVIDE (
     CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ) ),
     CALCULATE (
         DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ),
-        REMOVEFILTERS ( Dim_ServiceMapping )
+        REMOVEFILTERS ( Dim_Service )
     )
 )
 

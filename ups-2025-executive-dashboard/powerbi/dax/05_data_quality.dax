@@ -81,7 +81,7 @@ CALCULATE (
 Excluded Adjustment Spend % =
 DIVIDE (
     [Excluded Adjustment Spend],
-    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_ServiceMapping ) )
+    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
 )
 
 Spend-Only Adjustment Rows =
@@ -102,7 +102,7 @@ CALCULATE (
 Unattributed Spend % =
 DIVIDE (
     [Spend-Only Adjustment Value],
-    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_ServiceMapping ) )
+    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
 )
 
 Unmapped Product Rows =
@@ -130,9 +130,9 @@ SUM ( Fact_Accessorial[NetSpend] )
 
 Spend Reconciliation Variance =
 VAR VolumeSpendTotal =
-    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_ServiceMapping ) )
+    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
 VAR AccessorialTotal =
-    CALCULATE ( [Accessorial Net Spend], REMOVEFILTERS ( Dim_ServiceMapping ) )
+    CALCULATE ( [Accessorial Net Spend], REMOVEFILTERS ( Dim_Service ) )
 RETURN
     IF ( AccessorialTotal <> 0, VolumeSpendTotal - AccessorialTotal )
 
@@ -210,8 +210,8 @@ VAR Period =
     )
 VAR Scope =
     IF (
-        ISFILTERED ( Dim_ServiceMapping[Scope] ),
-        SELECTEDVALUE ( Dim_ServiceMapping[Scope], "All scopes" ),
+        ISFILTERED ( Dim_Service[Scope] ),
+        SELECTEDVALUE ( Dim_Service[Scope], "All scopes" ),
         "Domestic and international"
     )
 RETURN
@@ -220,9 +220,9 @@ RETURN
 Title - Service Scorecard =
 "Service scorecard - " & [Qualified Service Count] & " of "
     & CALCULATE (
-        DISTINCTCOUNT ( Dim_ServiceMapping[ServiceGroup] ),
-        REMOVEFILTERS ( Dim_ServiceMapping ),
-        Dim_ServiceMapping[IncludeInRanking] = "Yes"
+        DISTINCTCOUNT ( Dim_Service[ServiceGroup] ),
+        REMOVEFILTERS ( Dim_Service ),
+        Dim_Service[IncludeInRanking] = "Yes"
     )
     & " services qualify at "
     & FORMAT ( [Minimum Shipment Threshold], "#,0" ) & " shipments / "

@@ -44,18 +44,17 @@ Minimum Measured Packages = 384
 Service Volume Share =
 DIVIDE (
     [Rankable Shipments],
-    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_ServiceMapping ) )
+    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
 )
 
 Annual Qualification Flag =
 VAR MeetsAbsolute = [Rankable Shipments] >= [Minimum Shipment Threshold]
 VAR MeetsShare = [Service Volume Share] >= [Minimum Volume Share]
 VAR MeetsMeasurement = [Packages Measured] >= [Minimum Measured Packages]
-VAR IsRankableService =
-    CALCULATE (
-        SELECTEDVALUE ( Dim_ServiceMapping[IncludeInRanking] ),
-        REMOVEFILTERS ( Dim_ServiceMapping[RawProduct] )
-    ) = "Yes"
+// Dim_Service is one row per Service Group, so the flag reads directly. The
+// two-vocabulary Dim_ServiceMapping is not related to the facts and must never
+// be used for filtering - see model/relationships.md.
+VAR IsRankableService = SELECTEDVALUE ( Dim_Service[IncludeInRanking] ) = "Yes"
 RETURN
     IF ( MeetsAbsolute && MeetsShare && MeetsMeasurement && IsRankableService, 1, 0 )
 
@@ -82,8 +81,8 @@ Qualified Service Count =
 COUNTROWS (
     FILTER (
         CALCULATETABLE (
-            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-            REMOVEFILTERS ( Dim_ServiceMapping )
+            VALUES ( Dim_Service[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_Service )
         ),
         [Annual Qualification Flag] = 1
     )
@@ -104,8 +103,8 @@ Score - Reliability =
 VAR QualifiedSet =
     FILTER (
         CALCULATETABLE (
-            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-            REMOVEFILTERS ( Dim_ServiceMapping )
+            VALUES ( Dim_Service[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_Service )
         ),
         [Annual Qualification Flag] = 1
     )
@@ -129,8 +128,8 @@ Score - Loss Risk =
 VAR QualifiedSet =
     FILTER (
         CALCULATETABLE (
-            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-            REMOVEFILTERS ( Dim_ServiceMapping )
+            VALUES ( Dim_Service[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_Service )
         ),
         [Annual Qualification Flag] = 1
     )
@@ -150,8 +149,8 @@ Score - Exception Risk =
 VAR QualifiedSet =
     FILTER (
         CALCULATETABLE (
-            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-            REMOVEFILTERS ( Dim_ServiceMapping )
+            VALUES ( Dim_Service[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_Service )
         ),
         [Annual Qualification Flag] = 1
     )
@@ -176,8 +175,8 @@ Score - Cost =
 VAR QualifiedSet =
     FILTER (
         CALCULATETABLE (
-            VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-            REMOVEFILTERS ( Dim_ServiceMapping )
+            VALUES ( Dim_Service[ServiceGroup] ),
+            REMOVEFILTERS ( Dim_Service )
         ),
         [Annual Qualification Flag] = 1
     )
@@ -249,8 +248,8 @@ IF (
     RANKX (
         FILTER (
             CALCULATETABLE (
-                VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-                REMOVEFILTERS ( Dim_ServiceMapping )
+                VALUES ( Dim_Service[ServiceGroup] ),
+                REMOVEFILTERS ( Dim_Service )
             ),
             [Annual Qualification Flag] = 1
         ),
@@ -267,24 +266,17 @@ IF (
 Recommendation Category =
 VAR Qualified = [Annual Qualification Flag] = 1
 VAR QualCount = [Qualified Service Count]
-VAR Tier =
-    CALCULATE (
-        SELECTEDVALUE ( Dim_ServiceMapping[ServiceTier] ),
-        REMOVEFILTERS ( Dim_ServiceMapping[RawProduct] )
-    )
+VAR Tier = SELECTEDVALUE ( Dim_Service[ServiceTier] )
 VAR Rank = [Service Rank]
 VAR BestPremiumRank =
     RANKX (
         FILTER (
             CALCULATETABLE (
-                VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-                REMOVEFILTERS ( Dim_ServiceMapping )
+                VALUES ( Dim_Service[ServiceGroup] ),
+                REMOVEFILTERS ( Dim_Service )
             ),
             [Annual Qualification Flag] = 1
-                && CALCULATE (
-                    SELECTEDVALUE ( Dim_ServiceMapping[ServiceTier] ),
-                    REMOVEFILTERS ( Dim_ServiceMapping[RawProduct] )
-                ) = "Premium"
+                && SELECTEDVALUE ( Dim_Service[ServiceTier] ) = "Premium"
         ),
         [OTD Wilson Lower Bound],
         ,
@@ -293,7 +285,7 @@ VAR BestPremiumRank =
     )
 VAR IsVolumeAnchor = [Service Volume Share] >= 0.50
 VAR Volatile = [OTD Volatility (pp)] > 1.5
-VAR BelowFirmOTD = [On-Time Delivery %] < CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_ServiceMapping ) )
+VAR BelowFirmOTD = [On-Time Delivery %] < CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )
 RETURN
     SWITCH (
         TRUE (),
@@ -322,17 +314,17 @@ VAR BestService =
             1,
             FILTER (
                 CALCULATETABLE (
-                    VALUES ( Dim_ServiceMapping[ServiceGroup] ),
-                    REMOVEFILTERS ( Dim_ServiceMapping )
+                    VALUES ( Dim_Service[ServiceGroup] ),
+                    REMOVEFILTERS ( Dim_Service )
                 ),
                 [Annual Qualification Flag] = 1
             ),
             [Service Consistency Score],
             DESC
         ),
-        Dim_ServiceMapping[ServiceGroup]
+        Dim_Service[ServiceGroup]
     )
-VAR FirmOTD = CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_ServiceMapping ) )
+VAR FirmOTD = CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )
 RETURN
     SWITCH (
         TRUE (),

@@ -10,7 +10,30 @@ monthly UPS billing extracts.
 
 ---
 
-## Quick start
+## Quick start — Power BI
+
+```bash
+pip install -r etl/requirements.txt
+python etl/ups_etl.py --raw data/raw --out data/processed --report   # or make_sample_data.py
+python powerbi/build_pbit.py --data-folder "C:\\full\\path\\to\\data\\processed"
+```
+
+Open `dist/UPS_2025_Executive_Dashboard.pbit` in Power BI Desktop, confirm the
+parameters, then **File → Save As → .pbix**. Full steps, including the two manual
+model settings, in [`docs/08_opening_the_powerbi_file.md`](docs/08_opening_the_powerbi_file.md).
+
+A .pbix cannot be authored outside Desktop — its `DataModel` part is a proprietary
+compressed Analysis Services blob. The .pbit carries the same model (8 tables, 11
+relationships, 112 measures) and an 8-page report, and becomes the .pbix on first
+save. `dist/pbip/` holds the same content as a Power BI Project for source control
+and as a fallback loader.
+
+**It has not been opened in Power BI Desktop** — there is none in the environment
+this was built in. The generator validates everything checkable without one
+(encodings, package manifest, TMSL structure, every field reference in every visual)
+and refuses to emit a file that fails. Treat the first open as a test.
+
+## Quick start — HTML dashboard
 
 ```bash
 pip install -r etl/requirements.txt
@@ -58,8 +81,11 @@ etl/
   make_sample_data.py     Synthetic data generator
 
 powerbi/
+  build_pbit.py           Generates the .pbit template and PBIP project from the
+                          .dax files, with a validator that fails the build on
+                          unknown references, no-op filters and grain mismatches
   powerquery/*.m          Power Query implementation of the same rules
-  dax/*.dax               Measure library, five files, ~70 measures
+  dax/*.dax               Measure library, five files, 112 measures
   model/relationships.md  Star schema, and why three specific joins are as they are
   report_spec/            Page layouts, slicer matrix, interaction and bookmark spec
   theme/                  Report theme JSON (CVD-validated palette)
@@ -77,6 +103,11 @@ docs/
   05_automation_api_path.md       Source upgrades, ordered by value
   06_build_checklist.md           Build steps with verification for each
   07_talk_track.md                How to present it, and the questions to expect
+  08_opening_the_powerbi_file.md  Opening the .pbit, and what it does not include
+
+dist/
+  UPS_2025_Executive_Dashboard.pbit   The Power BI template
+  pbip/                               Same content as a Power BI Project
 ```
 
 ---

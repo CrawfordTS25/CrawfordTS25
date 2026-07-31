@@ -1,0 +1,3704 @@
+{
+  "name": "UPS2025ExecutiveDashboard",
+  "compatibilityLevel": 1550,
+  "model": {
+    "culture": "en-US",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "Fact_VolumeSpend",
+        "columns": [
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthNumber",
+            "dataType": "int64",
+            "sourceColumn": "MonthNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "MonthName",
+            "dataType": "string",
+            "sourceColumn": "MonthName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthKey",
+            "dataType": "int64",
+            "sourceColumn": "MonthKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "DateKey",
+            "dataType": "dateTime",
+            "sourceColumn": "DateKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true,
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "AccountKey",
+            "dataType": "string",
+            "sourceColumn": "AccountKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubNumber",
+            "dataType": "string",
+            "sourceColumn": "SubNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubName",
+            "dataType": "string",
+            "sourceColumn": "SubName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsMaskedSubParent",
+            "dataType": "string",
+            "sourceColumn": "IsMaskedSubParent",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountNumber",
+            "dataType": "string",
+            "sourceColumn": "AccountNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountName",
+            "dataType": "string",
+            "sourceColumn": "AccountName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "sourceColumn": "State",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ZIP",
+            "dataType": "string",
+            "sourceColumn": "ZIP",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "RawProduct",
+            "dataType": "string",
+            "sourceColumn": "RawProduct",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroup",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroup",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroupShort",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroupShort",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceTier",
+            "dataType": "string",
+            "sourceColumn": "ServiceTier",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Scope",
+            "dataType": "string",
+            "sourceColumn": "Scope",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IncludeInRanking",
+            "dataType": "string",
+            "sourceColumn": "IncludeInRanking",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Volume",
+            "dataType": "double",
+            "sourceColumn": "Volume",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "GrossSpend",
+            "dataType": "double",
+            "sourceColumn": "GrossSpend",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "NetSpend",
+            "dataType": "double",
+            "sourceColumn": "NetSpend",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Incentive",
+            "dataType": "double",
+            "sourceColumn": "Incentive",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "BilledWeightLbs",
+            "dataType": "double",
+            "sourceColumn": "BilledWeightLbs",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "VolumeLY",
+            "dataType": "double",
+            "sourceColumn": "VolumeLY",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "NetSpendLY",
+            "dataType": "double",
+            "sourceColumn": "NetSpendLY",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "IsNonServiceRow",
+            "dataType": "string",
+            "sourceColumn": "IsNonServiceRow",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "HasVolume",
+            "dataType": "string",
+            "sourceColumn": "HasVolume",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsSpendOnlyAdjustment",
+            "dataType": "string",
+            "sourceColumn": "IsSpendOnlyAdjustment",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsNegativeSpend",
+            "dataType": "string",
+            "sourceColumn": "IsNegativeSpend",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "SourceFile",
+            "dataType": "string",
+            "sourceColumn": "SourceFile",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SourceLayout",
+            "dataType": "string",
+            "sourceColumn": "SourceLayout",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "ViewType",
+            "dataType": "string",
+            "sourceColumn": "ViewType",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_VolumeSpend",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(",
+                "        File.Contents(p_DataFolder & \"\\Fact_VolumeSpend.csv\"),",
+                "        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Typed = Table.TransformColumnTypes(Promoted, {{\"Year\", Int64.Type}, {\"MonthNumber\", Int64.Type}, {\"MonthName\", type text}, {\"MonthKey\", Int64.Type}, {\"Quarter\", type text}, {\"DateKey\", type date}, {\"AccountKey\", type text}, {\"SubNumber\", type text}, {\"SubName\", type text}, {\"IsMaskedSubParent\", type text}, {\"AccountNumber\", type text}, {\"AccountName\", type text}, {\"City\", type text}, {\"State\", type text}, {\"ZIP\", type text}, {\"RawProduct\", type text}, {\"ServiceGroup\", type text}, {\"ServiceGroupShort\", type text}, {\"ServiceTier\", type text}, {\"Scope\", type text}, {\"IncludeInRanking\", type text}, {\"Volume\", type number}, {\"GrossSpend\", type number}, {\"NetSpend\", type number}, {\"Incentive\", type number}, {\"BilledWeightLbs\", type number}, {\"VolumeLY\", type number}, {\"NetSpendLY\", type number}, {\"IsNonServiceRow\", type text}, {\"HasVolume\", type text}, {\"IsSpendOnlyAdjustment\", type text}, {\"IsNegativeSpend\", type text}, {\"SourceFile\", type text}, {\"SourceLayout\", type text}, {\"ViewType\", type text}})",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_TimeInTransit",
+        "columns": [
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthNumber",
+            "dataType": "int64",
+            "sourceColumn": "MonthNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "MonthName",
+            "dataType": "string",
+            "sourceColumn": "MonthName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthKey",
+            "dataType": "int64",
+            "sourceColumn": "MonthKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "DateKey",
+            "dataType": "dateTime",
+            "sourceColumn": "DateKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true,
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "AccountKey",
+            "dataType": "string",
+            "sourceColumn": "AccountKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubNumber",
+            "dataType": "string",
+            "sourceColumn": "SubNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubName",
+            "dataType": "string",
+            "sourceColumn": "SubName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsMaskedSubParent",
+            "dataType": "string",
+            "sourceColumn": "IsMaskedSubParent",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountNumber",
+            "dataType": "string",
+            "sourceColumn": "AccountNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountName",
+            "dataType": "string",
+            "sourceColumn": "AccountName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "sourceColumn": "State",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ZIP",
+            "dataType": "string",
+            "sourceColumn": "ZIP",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "RawProduct",
+            "dataType": "string",
+            "sourceColumn": "RawProduct",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroup",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroup",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroupShort",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroupShort",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceTier",
+            "dataType": "string",
+            "sourceColumn": "ServiceTier",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Scope",
+            "dataType": "string",
+            "sourceColumn": "Scope",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IncludeInRanking",
+            "dataType": "string",
+            "sourceColumn": "IncludeInRanking",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "PackagesMeasured",
+            "dataType": "double",
+            "sourceColumn": "PackagesMeasured",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "LateByTime",
+            "dataType": "double",
+            "sourceColumn": "LateByTime",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "LateByDay",
+            "dataType": "double",
+            "sourceColumn": "LateByDay",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "TotalLate",
+            "dataType": "double",
+            "sourceColumn": "TotalLate",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "OnTimePackages",
+            "dataType": "double",
+            "sourceColumn": "OnTimePackages",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "SourceFile",
+            "dataType": "string",
+            "sourceColumn": "SourceFile",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "ViewType",
+            "dataType": "string",
+            "sourceColumn": "ViewType",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_TimeInTransit",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(",
+                "        File.Contents(p_DataFolder & \"\\Fact_TimeInTransit.csv\"),",
+                "        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Typed = Table.TransformColumnTypes(Promoted, {{\"Year\", Int64.Type}, {\"MonthNumber\", Int64.Type}, {\"MonthName\", type text}, {\"MonthKey\", Int64.Type}, {\"Quarter\", type text}, {\"DateKey\", type date}, {\"AccountKey\", type text}, {\"SubNumber\", type text}, {\"SubName\", type text}, {\"IsMaskedSubParent\", type text}, {\"AccountNumber\", type text}, {\"AccountName\", type text}, {\"City\", type text}, {\"State\", type text}, {\"ZIP\", type text}, {\"RawProduct\", type text}, {\"ServiceGroup\", type text}, {\"ServiceGroupShort\", type text}, {\"ServiceTier\", type text}, {\"Scope\", type text}, {\"IncludeInRanking\", type text}, {\"PackagesMeasured\", type number}, {\"LateByTime\", type number}, {\"LateByDay\", type number}, {\"TotalLate\", type number}, {\"OnTimePackages\", type number}, {\"SourceFile\", type text}, {\"ViewType\", type text}})",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_Claims",
+        "columns": [
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthNumber",
+            "dataType": "int64",
+            "sourceColumn": "MonthNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "MonthName",
+            "dataType": "string",
+            "sourceColumn": "MonthName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthKey",
+            "dataType": "int64",
+            "sourceColumn": "MonthKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "DateKey",
+            "dataType": "dateTime",
+            "sourceColumn": "DateKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true,
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "AccountKey",
+            "dataType": "string",
+            "sourceColumn": "AccountKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubNumber",
+            "dataType": "string",
+            "sourceColumn": "SubNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubName",
+            "dataType": "string",
+            "sourceColumn": "SubName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsMaskedSubParent",
+            "dataType": "string",
+            "sourceColumn": "IsMaskedSubParent",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountNumber",
+            "dataType": "string",
+            "sourceColumn": "AccountNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountName",
+            "dataType": "string",
+            "sourceColumn": "AccountName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ClaimsCategory",
+            "dataType": "string",
+            "sourceColumn": "ClaimsCategory",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsLoss",
+            "dataType": "string",
+            "sourceColumn": "IsLoss",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IssuedClaimsQty",
+            "dataType": "double",
+            "sourceColumn": "IssuedClaimsQty",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "IssuedClaimsPkgQty",
+            "dataType": "double",
+            "sourceColumn": "IssuedClaimsPkgQty",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "PaidClaimsQty",
+            "dataType": "double",
+            "sourceColumn": "PaidClaimsQty",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "PaidClaimsPkgQty",
+            "dataType": "double",
+            "sourceColumn": "PaidClaimsPkgQty",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "RegisteredClaimsQty",
+            "dataType": "double",
+            "sourceColumn": "RegisteredClaimsQty",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "RegisteredClaimsPkgQty",
+            "dataType": "double",
+            "sourceColumn": "RegisteredClaimsPkgQty",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "PaidClaimsAmount",
+            "dataType": "double",
+            "sourceColumn": "PaidClaimsAmount",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "ClaimsDeclaredValue",
+            "dataType": "double",
+            "sourceColumn": "ClaimsDeclaredValue",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "ServiceAttribution",
+            "dataType": "string",
+            "sourceColumn": "ServiceAttribution",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "SourceFile",
+            "dataType": "string",
+            "sourceColumn": "SourceFile",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_Claims",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(",
+                "        File.Contents(p_DataFolder & \"\\Fact_Claims.csv\"),",
+                "        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Typed = Table.TransformColumnTypes(Promoted, {{\"Year\", Int64.Type}, {\"MonthNumber\", Int64.Type}, {\"MonthName\", type text}, {\"MonthKey\", Int64.Type}, {\"Quarter\", type text}, {\"DateKey\", type date}, {\"AccountKey\", type text}, {\"SubNumber\", type text}, {\"SubName\", type text}, {\"IsMaskedSubParent\", type text}, {\"AccountNumber\", type text}, {\"AccountName\", type text}, {\"ClaimsCategory\", type text}, {\"IsLoss\", type text}, {\"IssuedClaimsQty\", type number}, {\"IssuedClaimsPkgQty\", type number}, {\"PaidClaimsQty\", type number}, {\"PaidClaimsPkgQty\", type number}, {\"RegisteredClaimsQty\", type number}, {\"RegisteredClaimsPkgQty\", type number}, {\"PaidClaimsAmount\", type number}, {\"ClaimsDeclaredValue\", type number}, {\"ServiceAttribution\", type text}, {\"SourceFile\", type text}})",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_Accessorial",
+        "columns": [
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthNumber",
+            "dataType": "int64",
+            "sourceColumn": "MonthNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "MonthName",
+            "dataType": "string",
+            "sourceColumn": "MonthName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthKey",
+            "dataType": "int64",
+            "sourceColumn": "MonthKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "DateKey",
+            "dataType": "dateTime",
+            "sourceColumn": "DateKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true,
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "AccountKey",
+            "dataType": "string",
+            "sourceColumn": "AccountKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubName",
+            "dataType": "string",
+            "sourceColumn": "SubName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountNumber",
+            "dataType": "string",
+            "sourceColumn": "AccountNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountName",
+            "dataType": "string",
+            "sourceColumn": "AccountName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "sourceColumn": "State",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "RawProduct",
+            "dataType": "string",
+            "sourceColumn": "RawProduct",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroup",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroup",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroupShort",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroupShort",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "FreightTypeDescription",
+            "dataType": "string",
+            "sourceColumn": "FreightTypeDescription",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ChargeCategory",
+            "dataType": "string",
+            "sourceColumn": "ChargeCategory",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsAccessorial",
+            "dataType": "string",
+            "sourceColumn": "IsAccessorial",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "NumberOfUnits",
+            "dataType": "double",
+            "sourceColumn": "NumberOfUnits",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "AccessorialSpend",
+            "dataType": "double",
+            "sourceColumn": "AccessorialSpend",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "GrossSpend",
+            "dataType": "double",
+            "sourceColumn": "GrossSpend",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "NetSpend",
+            "dataType": "double",
+            "sourceColumn": "NetSpend",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "SourceFile",
+            "dataType": "string",
+            "sourceColumn": "SourceFile",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_Accessorial",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(",
+                "        File.Contents(p_DataFolder & \"\\Fact_Accessorial.csv\"),",
+                "        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Typed = Table.TransformColumnTypes(Promoted, {{\"Year\", Int64.Type}, {\"MonthNumber\", Int64.Type}, {\"MonthName\", type text}, {\"MonthKey\", Int64.Type}, {\"Quarter\", type text}, {\"DateKey\", type date}, {\"AccountKey\", type text}, {\"SubName\", type text}, {\"AccountNumber\", type text}, {\"AccountName\", type text}, {\"State\", type text}, {\"RawProduct\", type text}, {\"ServiceGroup\", type text}, {\"ServiceGroupShort\", type text}, {\"FreightTypeDescription\", type text}, {\"ChargeCategory\", type text}, {\"IsAccessorial\", type text}, {\"NumberOfUnits\", type number}, {\"AccessorialSpend\", type number}, {\"GrossSpend\", type number}, {\"NetSpend\", type number}, {\"SourceFile\", type text}})",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Date",
+        "columns": [
+          {
+            "name": "DateKey",
+            "dataType": "dateTime",
+            "sourceColumn": "DateKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true,
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "MonthNumber",
+            "dataType": "int64",
+            "sourceColumn": "MonthNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "MonthName",
+            "dataType": "string",
+            "sourceColumn": "MonthName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "sortByColumn": "SortOrder"
+          },
+          {
+            "name": "MonthNameLong",
+            "dataType": "string",
+            "sourceColumn": "MonthNameLong",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "sortByColumn": "SortOrder"
+          },
+          {
+            "name": "MonthKey",
+            "dataType": "int64",
+            "sourceColumn": "MonthKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "MonthYearLabel",
+            "dataType": "string",
+            "sourceColumn": "MonthYearLabel",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "sortByColumn": "SortOrder"
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "QuarterKey",
+            "dataType": "int64",
+            "sourceColumn": "QuarterKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "MonthEndDate",
+            "dataType": "dateTime",
+            "sourceColumn": "MonthEndDate",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true,
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "IsCompletedMonth",
+            "dataType": "string",
+            "sourceColumn": "IsCompletedMonth",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsLoaded",
+            "dataType": "string",
+            "sourceColumn": "IsLoaded",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IsReportable",
+            "dataType": "string",
+            "sourceColumn": "IsReportable",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "SortOrder",
+            "dataType": "int64",
+            "sourceColumn": "SortOrder",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Date",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(",
+                "        File.Contents(p_DataFolder & \"\\Dim_Date.csv\"),",
+                "        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Typed = Table.TransformColumnTypes(Promoted, {{\"DateKey\", type date}, {\"Year\", Int64.Type}, {\"MonthNumber\", Int64.Type}, {\"MonthName\", type text}, {\"MonthNameLong\", type text}, {\"MonthKey\", Int64.Type}, {\"MonthYearLabel\", type text}, {\"Quarter\", type text}, {\"QuarterKey\", Int64.Type}, {\"MonthEndDate\", type date}, {\"IsCompletedMonth\", type text}, {\"IsLoaded\", type text}, {\"IsReportable\", type text}, {\"SortOrder\", Int64.Type}})",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Account",
+        "columns": [
+          {
+            "name": "AccountKey",
+            "dataType": "string",
+            "sourceColumn": "AccountKey",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubNumber",
+            "dataType": "string",
+            "sourceColumn": "SubNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "SubName",
+            "dataType": "string",
+            "sourceColumn": "SubName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountNumber",
+            "dataType": "string",
+            "sourceColumn": "AccountNumber",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "AccountName",
+            "dataType": "string",
+            "sourceColumn": "AccountName",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "sourceColumn": "State",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ZIP",
+            "dataType": "string",
+            "sourceColumn": "ZIP",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "PresentIn",
+            "dataType": "string",
+            "sourceColumn": "PresentIn",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "isHidden": true
+          },
+          {
+            "name": "HasTransitData",
+            "dataType": "string",
+            "sourceColumn": "HasTransitData",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "HasClaimsData",
+            "dataType": "string",
+            "sourceColumn": "HasClaimsData",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Region",
+            "dataType": "string",
+            "sourceColumn": "Region",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Account",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(",
+                "        File.Contents(p_DataFolder & \"\\Dim_Account.csv\"),",
+                "        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Typed = Table.TransformColumnTypes(Promoted, {{\"AccountKey\", type text}, {\"SubNumber\", type text}, {\"SubName\", type text}, {\"AccountNumber\", type text}, {\"AccountName\", type text}, {\"City\", type text}, {\"State\", type text}, {\"ZIP\", type text}, {\"PresentIn\", type text}, {\"HasTransitData\", type text}, {\"HasClaimsData\", type text}, {\"Region\", type text}})",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_ServiceMapping",
+        "columns": [
+          {
+            "name": "SourceSystem",
+            "dataType": "string",
+            "sourceColumn": "SourceSystem",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "RawProduct",
+            "dataType": "string",
+            "sourceColumn": "RawProduct",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroup",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroup",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroupShort",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroupShort",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceTier",
+            "dataType": "string",
+            "sourceColumn": "ServiceTier",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Scope",
+            "dataType": "string",
+            "sourceColumn": "Scope",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IncludeInRanking",
+            "dataType": "string",
+            "sourceColumn": "IncludeInRanking",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServicePriority",
+            "dataType": "int64",
+            "sourceColumn": "ServicePriority",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Notes",
+            "dataType": "string",
+            "sourceColumn": "Notes",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_ServiceMapping",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(",
+                "        File.Contents(p_DataFolder & \"\\Dim_ServiceMapping.csv\"),",
+                "        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    Typed = Table.TransformColumnTypes(Promoted, {{\"SourceSystem\", type text}, {\"RawProduct\", type text}, {\"ServiceGroup\", type text}, {\"ServiceGroupShort\", type text}, {\"ServiceTier\", type text}, {\"Scope\", type text}, {\"IncludeInRanking\", type text}, {\"ServicePriority\", Int64.Type}, {\"Notes\", type text}})",
+                "in",
+                "    Typed"
+              ]
+            }
+          }
+        ],
+        "isHidden": true
+      },
+      {
+        "name": "Dim_Service",
+        "columns": [
+          {
+            "name": "ServiceGroup",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroup",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceGroupShort",
+            "dataType": "string",
+            "sourceColumn": "ServiceGroupShort",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServiceTier",
+            "dataType": "string",
+            "sourceColumn": "ServiceTier",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Scope",
+            "dataType": "string",
+            "sourceColumn": "Scope",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "IncludeInRanking",
+            "dataType": "string",
+            "sourceColumn": "IncludeInRanking",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "ServicePriority",
+            "dataType": "int64",
+            "sourceColumn": "ServicePriority",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Service",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    // One row per Service Group. Dim_ServiceMapping has grain",
+                "    // (SourceSystem, RawProduct) and so cannot be the one side of a",
+                "    // relationship - RawProduct is not unique across it.",
+                "    Source = Dim_ServiceMapping,",
+                "    Trimmed = Table.SelectColumns(Source, {\"ServiceGroup\", \"ServiceGroupShort\",",
+                "        \"ServiceTier\", \"Scope\", \"IncludeInRanking\", \"ServicePriority\"}),",
+                "    Distinct = Table.Distinct(Trimmed, {\"ServiceGroup\"}),",
+                "    // Review buckets so an unmapped fact row finds a parent instead of",
+                "    // becoming a blank-key orphan on every visual.",
+                "    WithReview = Table.Combine({Distinct, #table(",
+                "        type table [ServiceGroup = text, ServiceGroupShort = text,",
+                "                    ServiceTier = text, Scope = text, IncludeInRanking = text,",
+                "                    ServicePriority = Int64.Type],",
+                "        {{\"Unmapped - Review\", \"Unmapped\", \"Unmapped\", \"Unknown\", \"No\", 98}})}),",
+                "    Deduped = Table.Distinct(WithReview, {\"ServiceGroup\"}),",
+                "    Sorted = Table.Sort(Deduped, {{\"ServicePriority\", Order.Ascending}})",
+                "in",
+                "    Sorted"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Volume Threshold",
+        "columns": [
+          {
+            "name": "Volume Threshold",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Value]",
+            "formatString": "#,0",
+            "summarizeBy": "none",
+            "type": "calculatedTableColumn",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Volume Threshold",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "GENERATESERIES(0, 10000, 250)"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_Id",
+            "value": "95d8e0ca2f434042954fec9db6564a4b"
+          }
+        ]
+      },
+      {
+        "name": "Share Threshold",
+        "columns": [
+          {
+            "name": "Share Threshold",
+            "dataType": "double",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Value]",
+            "formatString": "0.0%",
+            "summarizeBy": "none",
+            "type": "calculatedTableColumn",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Share Threshold",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "GENERATESERIES(0, 0.1, 0.005)"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_Id",
+            "value": "ca9e483f7f4043e89736bce810d40b83"
+          }
+        ]
+      },
+      {
+        "name": "_Measures",
+        "columns": [
+          {
+            "name": "_",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "_",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "_Measures",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #table(type table [_ = Int64.Type], {{0}})",
+                "in",
+                "    Source"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Shipments",
+            "expression": [
+              "SUM ( Fact_VolumeSpend[Volume] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Shipment volume",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Rankable Shipments",
+            "expression": [
+              "CALCULATE (",
+              "    [Total Shipments],",
+              "    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = \"Yes\" ),",
+              "    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = \"Yes\" )",
+              ")"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Shipment volume",
+            "formatString": "#,0"
+          },
+          {
+            "name": "YTD Shipments",
+            "expression": [
+              "VAR CurrentYear = MAX ( Dim_Date[Year] )",
+              "VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )",
+              "RETURN",
+              "    CALCULATE (",
+              "        [Total Shipments],",
+              "        REMOVEFILTERS ( Dim_Date ),",
+              "        Dim_Date[Year] = CurrentYear,",
+              "        Dim_Date[MonthNumber] <= CurrentMonth",
+              "    )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Shipment volume",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Shipments PY",
+            "expression": [
+              "VAR PriorKeys =",
+              "    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), \"@Key\", Dim_Date[MonthKey] - 100 )",
+              "RETURN",
+              "    CALCULATE (",
+              "        [Total Shipments],",
+              "        REMOVEFILTERS ( Dim_Date ),",
+              "        TREATAS ( PriorKeys, Dim_Date[MonthKey] )",
+              "    )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Shipment volume",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Shipments YoY %",
+            "expression": [
+              "VAR Current = [Total Shipments]",
+              "VAR Prior = [Shipments PY]",
+              "RETURN",
+              "    DIVIDE ( Current - Prior, Prior )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Shipment volume",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Shipments LY (Source)",
+            "expression": [
+              "SUM ( Fact_VolumeSpend[VolumeLY] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Spend",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Total Net Spend",
+            "expression": [
+              "SUM ( Fact_VolumeSpend[NetSpend] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Spend",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Total Gross Spend",
+            "expression": [
+              "SUM ( Fact_VolumeSpend[GrossSpend] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Spend",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Total Incentive",
+            "expression": [
+              "SUM ( Fact_VolumeSpend[Incentive] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Spend",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Incentive %",
+            "expression": [
+              "DIVIDE ( [Total Incentive], [Total Gross Spend] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Spend",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "YTD Net Spend",
+            "expression": [
+              "VAR CurrentYear = MAX ( Dim_Date[Year] )",
+              "VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )",
+              "RETURN",
+              "    CALCULATE (",
+              "        [Total Net Spend],",
+              "        REMOVEFILTERS ( Dim_Date ),",
+              "        Dim_Date[Year] = CurrentYear,",
+              "        Dim_Date[MonthNumber] <= CurrentMonth",
+              "    )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Spend",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Net Spend PY",
+            "expression": [
+              "VAR PriorKeys =",
+              "    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), \"@Key\", Dim_Date[MonthKey] - 100 )",
+              "RETURN",
+              "    CALCULATE (",
+              "        [Total Net Spend],",
+              "        REMOVEFILTERS ( Dim_Date ),",
+              "        TREATAS ( PriorKeys, Dim_Date[MonthKey] )",
+              "    )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Spend",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Net Spend YoY %",
+            "expression": [
+              "DIVIDE ( [Total Net Spend] - [Net Spend PY], [Net Spend PY] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Cost efficiency",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Avg Net Spend per Shipment",
+            "expression": [
+              "DIVIDE (",
+              "    CALCULATE (",
+              "        [Total Net Spend],",
+              "        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = \"Yes\" ),",
+              "        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = \"Yes\" )",
+              "    ),",
+              "    [Rankable Shipments]",
+              ")"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Cost efficiency",
+            "formatString": "\\$#,0.00"
+          },
+          {
+            "name": "Total Billed Weight",
+            "expression": [
+              "CALCULATE (",
+              "    SUM ( Fact_VolumeSpend[BilledWeightLbs] ),",
+              "    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = \"Yes\" ),",
+              "    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = \"Yes\" )",
+              ")"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Cost efficiency",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Avg Billed Weight per Shipment",
+            "expression": [
+              "DIVIDE ( [Total Billed Weight], [Rankable Shipments] )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Cost efficiency",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "Avg Net Spend per Billed Lb",
+            "expression": [
+              "DIVIDE (",
+              "    CALCULATE (",
+              "        [Total Net Spend],",
+              "        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = \"Yes\" ),",
+              "        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = \"Yes\" )",
+              "    ),",
+              "    [Total Billed Weight]",
+              ")"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Cost efficiency",
+            "formatString": "\\$#,0.000"
+          },
+          {
+            "name": "Weight-Adjusted Cost Premium",
+            "expression": [
+              "VAR BlendedRatePerLb =",
+              "    CALCULATE (",
+              "        [Avg Net Spend per Billed Lb],",
+              "        REMOVEFILTERS ( Dim_Service ),",
+              "        VALUES ( Dim_Date[MonthKey] )",
+              "    )",
+              "VAR ExpectedSpend = [Total Billed Weight] * BlendedRatePerLb",
+              "RETURN",
+              "    DIVIDE ( [Total Net Spend] - ExpectedSpend, ExpectedSpend )"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Mix",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Service Volume Mix %",
+            "expression": [
+              "DIVIDE (",
+              "    [Rankable Shipments],",
+              "    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )",
+              ")"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Mix",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Service Spend Mix %",
+            "expression": [
+              "DIVIDE (",
+              "    [Total Net Spend],",
+              "    CALCULATE ( [Total Net Spend], REMOVEFILTERS ( Dim_Service ) )",
+              ")"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Mix",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Account Volume Mix %",
+            "expression": [
+              "DIVIDE (",
+              "    [Rankable Shipments],",
+              "    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Account ) )",
+              ")"
+            ],
+            "displayFolder": "1 Volume, Spend and Cost\\Mix",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Packages Measured",
+            "expression": [
+              "SUM ( Fact_TimeInTransit[PackagesMeasured] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Total Late",
+            "expression": [
+              "SUM ( Fact_TimeInTransit[TotalLate] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Late by Day",
+            "expression": [
+              "SUM ( Fact_TimeInTransit[LateByDay] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Late by Time",
+            "expression": [
+              "SUM ( Fact_TimeInTransit[LateByTime] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "#,0"
+          },
+          {
+            "name": "On-Time Packages",
+            "expression": [
+              "SUM ( Fact_TimeInTransit[OnTimePackages] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "#,0"
+          },
+          {
+            "name": "On-Time Delivery %",
+            "expression": [
+              "DIVIDE ( [On-Time Packages], [Packages Measured] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "Late Delivery %",
+            "expression": [
+              "DIVIDE ( [Total Late], [Packages Measured] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Late by Day %",
+            "expression": [
+              "DIVIDE ( [Late by Day], [Packages Measured] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Late by Time %",
+            "expression": [
+              "DIVIDE ( [Late by Time], [Packages Measured] )"
+            ],
+            "displayFolder": "2 Reliability",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Severity Mix (Day Share of Late)",
+            "expression": [
+              "DIVIDE ( [Late by Day], [Total Late] )"
+            ],
+            "displayFolder": "2 Reliability\\Trend and stability",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "OTD % PM",
+            "expression": [
+              "VAR CurrentKey = SELECTEDVALUE ( Dim_Date[MonthKey] )",
+              "VAR PriorKey =",
+              "    IF ( MOD ( CurrentKey, 100 ) = 1, CurrentKey - 89, CurrentKey - 1 )",
+              "RETURN",
+              "    IF (",
+              "        NOT ISBLANK ( CurrentKey ),",
+              "        CALCULATE (",
+              "            [On-Time Delivery %],",
+              "            REMOVEFILTERS ( Dim_Date ),",
+              "            Dim_Date[MonthKey] = PriorKey",
+              "        )",
+              "    )"
+            ],
+            "displayFolder": "2 Reliability\\Trend and stability",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "OTD % Delta MoM",
+            "expression": [
+              "VAR Current = [On-Time Delivery %]",
+              "VAR Prior = [OTD % PM]",
+              "RETURN",
+              "    IF ( NOT ISBLANK ( Current ) && NOT ISBLANK ( Prior ), Current - Prior )"
+            ],
+            "displayFolder": "2 Reliability\\Trend and stability",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "OTD % Annual Benchmark",
+            "expression": [
+              "CALCULATE (",
+              "    [On-Time Delivery %],",
+              "    REMOVEFILTERS ( Dim_Date[MonthNumber], Dim_Date[MonthName], Dim_Date[Quarter],",
+              "        Dim_Date[MonthYearLabel], Dim_Date[MonthKey] )",
+              ")"
+            ],
+            "displayFolder": "2 Reliability\\Trend and stability",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "OTD Volatility (pp)",
+            "expression": [
+              "VAR MonthlySeries =",
+              "    ADDCOLUMNS (",
+              "        CALCULATETABLE (",
+              "            VALUES ( Dim_Date[MonthKey] ),",
+              "            Dim_Date[IsReportable] = \"Yes\"",
+              "        ),",
+              "        \"@OTD\", [On-Time Delivery %]",
+              "    )",
+              "VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )",
+              "RETURN",
+              "    IF ( COUNTROWS ( Clean ) >= 2, STDEVX.P ( Clean, [@OTD] ) * 100 )"
+            ],
+            "displayFolder": "2 Reliability\\Trend and stability",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Worst OTD Month",
+            "expression": [
+              "VAR MonthlySeries =",
+              "    ADDCOLUMNS (",
+              "        CALCULATETABLE (",
+              "            VALUES ( Dim_Date[MonthYearLabel] ),",
+              "            Dim_Date[IsReportable] = \"Yes\"",
+              "        ),",
+              "        \"@OTD\", [On-Time Delivery %]",
+              "    )",
+              "VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )",
+              "RETURN",
+              "    IF (",
+              "        NOT ISEMPTY ( Clean ),",
+              "        CONCATENATEX (",
+              "            TOPN ( 1, Clean, [@OTD], ASC ),",
+              "            Dim_Date[MonthYearLabel] & \" (\" & FORMAT ( [@OTD], \"0.0%\" ) & \")\"",
+              "        )",
+              "    )"
+            ],
+            "displayFolder": "2 Reliability\\Statistical confidence"
+          },
+          {
+            "name": "OTD Wilson Lower Bound",
+            "expression": [
+              "VAR N = [Packages Measured]",
+              "VAR Successes = [On-Time Packages]",
+              "VAR Z = 1.96                                  // 95% two-sided",
+              "VAR P = DIVIDE ( Successes, N )",
+              "VAR Denominator = 1 + DIVIDE ( Z * Z, N )",
+              "VAR Centre = P + DIVIDE ( Z * Z, 2 * N )",
+              "VAR Margin =",
+              "    Z * SQRT ( DIVIDE ( P * ( 1 - P ), N ) + DIVIDE ( Z * Z, 4 * N * N ) )",
+              "RETURN",
+              "    IF ( N > 0, DIVIDE ( Centre - Margin, Denominator ) )"
+            ],
+            "displayFolder": "2 Reliability\\Statistical confidence",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "OTD Confidence Gap (pp)",
+            "expression": [
+              "VAR Gap = [On-Time Delivery %] - [OTD Wilson Lower Bound]",
+              "RETURN",
+              "    IF ( NOT ISBLANK ( Gap ), Gap * 100 )"
+            ],
+            "displayFolder": "2 Reliability\\Statistical confidence",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "OTD Confidence Label",
+            "expression": [
+              "VAR Gap = [OTD Confidence Gap (pp)]",
+              "RETURN",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        ISBLANK ( Gap ), \"No transit data\",",
+              "        Gap <= 0.5, \"High confidence\",",
+              "        Gap <= 2.0, \"Moderate confidence\",",
+              "        Gap <= 10.0, \"Low confidence - small sample\",",
+              "        \"Not interpretable - sample too small\"",
+              "    )"
+            ],
+            "displayFolder": "2 Reliability\\Coverage"
+          },
+          {
+            "name": "Months with Transit Data",
+            "expression": [
+              "CALCULATE (",
+              "    DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ),",
+              "    REMOVEFILTERS ( Dim_Service, Dim_Account )",
+              ")"
+            ],
+            "displayFolder": "2 Reliability\\Coverage",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Transit Coverage %",
+            "expression": [
+              "DIVIDE (",
+              "    CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ) ),",
+              "    CALCULATE (",
+              "        DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ),",
+              "        REMOVEFILTERS ( Dim_Service )",
+              "    )",
+              ")"
+            ],
+            "displayFolder": "2 Reliability\\Coverage",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Has Transit Data",
+            "expression": [
+              "IF ( [Packages Measured] > 0, \"Yes\", \"No\" )"
+            ],
+            "displayFolder": "2 Reliability\\Coverage"
+          },
+          {
+            "name": "Issued Claims Pkgs",
+            "expression": [
+              "SUM ( Fact_Claims[IssuedClaimsPkgQty] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Paid Claims Pkgs",
+            "expression": [
+              "SUM ( Fact_Claims[PaidClaimsPkgQty] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Registered Claims Pkgs",
+            "expression": [
+              "SUM ( Fact_Claims[RegisteredClaimsPkgQty] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Paid Claims Amount",
+            "expression": [
+              "SUM ( Fact_Claims[PaidClaimsAmount] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Claims Declared Value",
+            "expression": [
+              "SUM ( Fact_Claims[ClaimsDeclaredValue] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Loss Claims",
+            "expression": [
+              "CALCULATE (",
+              "    [Issued Claims Pkgs],",
+              "    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = \"Loss\" )",
+              ")"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Damage Claims",
+            "expression": [
+              "CALCULATE (",
+              "    [Issued Claims Pkgs],",
+              "    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = \"Damage\" )",
+              ")"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Loss Claims Paid Amount",
+            "expression": [
+              "CALCULATE (",
+              "    [Paid Claims Amount],",
+              "    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = \"Loss\" )",
+              ")"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Claims Recovery Rate",
+            "expression": [
+              "DIVIDE ( [Paid Claims Pkgs], [Issued Claims Pkgs] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Avg Paid per Claim",
+            "expression": [
+              "DIVIDE ( [Paid Claims Amount], [Paid Claims Pkgs] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "\\$#,0.00"
+          },
+          {
+            "name": "Loss Claim Rate per 10k",
+            "expression": [
+              "DIVIDE ( [Loss Claims], [Rankable Shipments] ) * 10000"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Claims Rate per 10k",
+            "expression": [
+              "DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] ) * 10000"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Loss Claim Rate",
+            "expression": [
+              "DIVIDE ( [Loss Claims], [Rankable Shipments] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "Exception / Claims Rate",
+            "expression": [
+              "DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier B: supported claim measures (account grain)",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "Claims Cost per 1k Shipments",
+            "expression": [
+              "DIVIDE ( [Paid Claims Amount], [Rankable Shipments] ) * 1000"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Concentration",
+            "formatString": "\\$#,0.00"
+          },
+          {
+            "name": "Firm-wide Loss Rate per 10k",
+            "expression": [
+              "CALCULATE (",
+              "    [Loss Claim Rate per 10k],",
+              "    REMOVEFILTERS ( Dim_Account, Dim_Service )",
+              ")"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Concentration",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Loss Rate Index vs Firm",
+            "expression": [
+              "DIVIDE ( [Loss Claim Rate per 10k], [Firm-wide Loss Rate per 10k] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Concentration",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Loss Risk Flag",
+            "expression": [
+              "VAR Idx = [Loss Rate Index vs Firm]",
+              "VAR Vol = [Rankable Shipments]",
+              "RETURN",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        ISBLANK ( [Loss Claims] ) || [Loss Claims] = 0, \"No loss activity\",",
+              "        Vol < 500, \"Insufficient volume to rate\",",
+              "        Idx >= 3, \"Critical - investigate\",",
+              "        Idx >= 2, \"Elevated - monitor\",",
+              "        Idx >= 1, \"Above firm average\",",
+              "        \"At or below firm average\"",
+              "    )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Concentration"
+          },
+          {
+            "name": "Top Account Share of Loss Claims",
+            "expression": [
+              "VAR ByAccount =",
+              "    ADDCOLUMNS (",
+              "        CALCULATETABLE ( VALUES ( Dim_Account[AccountKey] ), REMOVEFILTERS ( Dim_Account ) ),",
+              "        \"@Loss\", [Loss Claims]",
+              "    )",
+              "VAR TotalLoss = SUMX ( ByAccount, [@Loss] )",
+              "VAR TopLoss = MAXX ( ByAccount, [@Loss] )",
+              "RETURN",
+              "    DIVIDE ( TopLoss, TotalLoss )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Concentration",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Top Account by Loss Claims",
+            "expression": [
+              "VAR ByAccount =",
+              "    ADDCOLUMNS (",
+              "        CALCULATETABLE ( VALUES ( Dim_Account[AccountName] ), REMOVEFILTERS ( Dim_Account ) ),",
+              "        \"@Loss\", [Loss Claims]",
+              "    )",
+              "RETURN",
+              "    CONCATENATEX ( TOPN ( 1, ByAccount, [@Loss], DESC ), Dim_Account[AccountName] )"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier C: allocated service proxy - handle with care"
+          },
+          {
+            "name": "Loss Claims (Allocated Proxy)",
+            "expression": [
+              "SUMX (",
+              "    VALUES ( Dim_Account[AccountKey] ),",
+              "    VAR AccountLoss = CALCULATE ( [Loss Claims], REMOVEFILTERS ( Dim_Service ) )",
+              "    VAR AccountVolumeAllServices =",
+              "        CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )",
+              "    VAR VolumeInScope = [Rankable Shipments]",
+              "    RETURN",
+              "        AccountLoss * DIVIDE ( VolumeInScope, AccountVolumeAllServices )",
+              ")"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier C: allocated service proxy - handle with care",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "Loss Claim Rate per 10k (Allocated Proxy)",
+            "expression": [
+              "DIVIDE ( [Loss Claims (Allocated Proxy)], [Rankable Shipments] ) * 10000"
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier C: allocated service proxy - handle with care",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Claims Attribution Warning",
+            "expression": [
+              "\"Allocated estimate. The claims extract carries no service or tracking key; \"",
+              "    & \"account-level claims are distributed across services by shipment volume. \"",
+              "    & \"Not a measured service-level loss rate. Do not use for service selection.\""
+            ],
+            "displayFolder": "3 Claims and Loss Risk\\Tier C: allocated service proxy - handle with care"
+          },
+          {
+            "name": "Minimum Shipment Threshold",
+            "expression": [
+              "SELECTEDVALUE ( 'Volume Threshold'[Volume Threshold], 1000 )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\1. Qualification",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Minimum Volume Share",
+            "expression": [
+              "SELECTEDVALUE ( 'Share Threshold'[Share Threshold], 0.01 )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\1. Qualification",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Minimum Measured Packages",
+            "expression": [
+              "384"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\1. Qualification",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Service Volume Share",
+            "expression": [
+              "DIVIDE (",
+              "    [Rankable Shipments],",
+              "    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )",
+              ")"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\1. Qualification",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Annual Qualification Flag",
+            "expression": [
+              "VAR MeetsAbsolute = [Rankable Shipments] >= [Minimum Shipment Threshold]",
+              "VAR MeetsShare = [Service Volume Share] >= [Minimum Volume Share]",
+              "VAR MeetsMeasurement = [Packages Measured] >= [Minimum Measured Packages]",
+              "",
+              "",
+              "",
+              "VAR IsRankableService = SELECTEDVALUE ( Dim_Service[IncludeInRanking] ) = \"Yes\"",
+              "RETURN",
+              "    IF ( MeetsAbsolute && MeetsShare && MeetsMeasurement && IsRankableService, 1, 0 )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\1. Qualification",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Qualification Status",
+            "expression": [
+              "VAR Vol = [Rankable Shipments]",
+              "VAR Measured = [Packages Measured]",
+              "RETURN",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        [Annual Qualification Flag] = 1, \"Qualified\",",
+              "        ISBLANK ( Vol ) || Vol = 0, \"No shipment volume\",",
+              "        Measured < [Minimum Measured Packages],",
+              "            \"Transit sample too small (\" & FORMAT ( Measured, \"#,0\" ) & \" measured, \"",
+              "                & FORMAT ( [Minimum Measured Packages], \"#,0\" ) & \" required)\",",
+              "        Vol < [Minimum Shipment Threshold],",
+              "            \"Below volume floor (\" & FORMAT ( Vol, \"#,0\" ) & \" of \"",
+              "                & FORMAT ( [Minimum Shipment Threshold], \"#,0\" ) & \")\",",
+              "        [Service Volume Share] < [Minimum Volume Share],",
+              "            \"Below \" & FORMAT ( [Minimum Volume Share], \"0.0%\" ) & \" volume share\",",
+              "        \"Excluded from ranking by service mapping\"",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\1. Qualification"
+          },
+          {
+            "name": "Qualified Service Count",
+            "expression": [
+              "COUNTROWS (",
+              "    FILTER (",
+              "        CALCULATETABLE (",
+              "            VALUES ( Dim_Service[ServiceGroup] ),",
+              "            REMOVEFILTERS ( Dim_Service )",
+              "        ),",
+              "        [Annual Qualification Flag] = 1",
+              "    )",
+              ")"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\2. Normalised component scores",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Score - Reliability",
+            "expression": [
+              "VAR QualifiedSet =",
+              "    FILTER (",
+              "        CALCULATETABLE (",
+              "            VALUES ( Dim_Service[ServiceGroup] ),",
+              "            REMOVEFILTERS ( Dim_Service )",
+              "        ),",
+              "        [Annual Qualification Flag] = 1",
+              "    )",
+              "VAR WithMetric = ADDCOLUMNS ( QualifiedSet, \"@M\", [OTD Wilson Lower Bound] )",
+              "VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )",
+              "VAR MinV = MINX ( Populated, [@M] )",
+              "VAR MaxV = MAXX ( Populated, [@M] )",
+              "VAR Self = [OTD Wilson Lower Bound]",
+              "RETURN",
+              "    IF (",
+              "        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),",
+              "        IF ( MaxV = MinV, 1, DIVIDE ( Self - MinV, MaxV - MinV ) )",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\2. Normalised component scores",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Score - Loss Risk",
+            "expression": [
+              "VAR QualifiedSet =",
+              "    FILTER (",
+              "        CALCULATETABLE (",
+              "            VALUES ( Dim_Service[ServiceGroup] ),",
+              "            REMOVEFILTERS ( Dim_Service )",
+              "        ),",
+              "        [Annual Qualification Flag] = 1",
+              "    )",
+              "VAR WithMetric = ADDCOLUMNS ( QualifiedSet, \"@M\", [Loss Claim Rate per 10k] )",
+              "VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )",
+              "VAR MinV = MINX ( Populated, [@M] )",
+              "VAR MaxV = MAXX ( Populated, [@M] )",
+              "VAR Self = [Loss Claim Rate per 10k]",
+              "RETURN",
+              "    IF (",
+              "        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,",
+              "        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\2. Normalised component scores",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Score - Exception Risk",
+            "expression": [
+              "VAR QualifiedSet =",
+              "    FILTER (",
+              "        CALCULATETABLE (",
+              "            VALUES ( Dim_Service[ServiceGroup] ),",
+              "            REMOVEFILTERS ( Dim_Service )",
+              "        ),",
+              "        [Annual Qualification Flag] = 1",
+              "    )",
+              "VAR WithMetric = ADDCOLUMNS ( QualifiedSet, \"@M\", [Claims Rate per 10k] )",
+              "VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )",
+              "VAR MinV = MINX ( Populated, [@M] )",
+              "VAR MaxV = MAXX ( Populated, [@M] )",
+              "VAR Self = [Claims Rate per 10k]",
+              "RETURN",
+              "    IF (",
+              "        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,",
+              "        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\2. Normalised component scores",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Score - Cost",
+            "expression": [
+              "VAR QualifiedSet =",
+              "    FILTER (",
+              "        CALCULATETABLE (",
+              "            VALUES ( Dim_Service[ServiceGroup] ),",
+              "            REMOVEFILTERS ( Dim_Service )",
+              "        ),",
+              "        [Annual Qualification Flag] = 1",
+              "    )",
+              "VAR WithMetric = ADDCOLUMNS ( QualifiedSet, \"@M\", [Avg Net Spend per Billed Lb] )",
+              "VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )",
+              "VAR MinV = MINX ( Populated, [@M] )",
+              "VAR MaxV = MAXX ( Populated, [@M] )",
+              "VAR Self = [Avg Net Spend per Billed Lb]",
+              "RETURN",
+              "    IF (",
+              "        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),",
+              "        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Weight - Reliability",
+            "expression": [
+              "0.40"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "0%"
+          },
+          {
+            "name": "Weight - Loss Risk",
+            "expression": [
+              "0.30"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "0%"
+          },
+          {
+            "name": "Weight - Exception Risk",
+            "expression": [
+              "0.20"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "0%"
+          },
+          {
+            "name": "Weight - Cost",
+            "expression": [
+              "0.10"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "0%"
+          },
+          {
+            "name": "Claims Service Key Available",
+            "expression": [
+              "0"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Effective Weight Total",
+            "expression": [
+              "VAR W =",
+              "    IF ( NOT ISBLANK ( [Score - Reliability] ), [Weight - Reliability], 0 )",
+              "        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Weight - Loss Risk], 0 )",
+              "        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Weight - Exception Risk], 0 )",
+              "        + IF ( NOT ISBLANK ( [Score - Cost] ), [Weight - Cost], 0 )",
+              "RETURN",
+              "    IF ( W > 0, W )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Service Consistency Score",
+            "expression": [
+              "VAR Weighted =",
+              "    IF ( NOT ISBLANK ( [Score - Reliability] ), [Score - Reliability] * [Weight - Reliability], 0 )",
+              "        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Score - Loss Risk] * [Weight - Loss Risk], 0 )",
+              "        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Score - Exception Risk] * [Weight - Exception Risk], 0 )",
+              "        + IF ( NOT ISBLANK ( [Score - Cost] ), [Score - Cost] * [Weight - Cost], 0 )",
+              "RETURN",
+              "    IF (",
+              "        [Annual Qualification Flag] = 1,",
+              "        DIVIDE ( Weighted, [Effective Weight Total] ) * 100",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation",
+            "formatString": "#,0.0"
+          },
+          {
+            "name": "Score Basis",
+            "expression": [
+              "VAR Covered =",
+              "    IF ( NOT ISBLANK ( [Score - Reliability] ), \"Reliability \" & FORMAT ( [Weight - Reliability] / [Effective Weight Total], \"0%\" ) & \"; \", \"\" )",
+              "        & IF ( NOT ISBLANK ( [Score - Loss Risk] ), \"Loss risk \" & FORMAT ( [Weight - Loss Risk] / [Effective Weight Total], \"0%\" ) & \"; \", \"\" )",
+              "        & IF ( NOT ISBLANK ( [Score - Exception Risk] ), \"Exceptions \" & FORMAT ( [Weight - Exception Risk] / [Effective Weight Total], \"0%\" ) & \"; \", \"\" )",
+              "        & IF ( NOT ISBLANK ( [Score - Cost] ), \"Cost \" & FORMAT ( [Weight - Cost] / [Effective Weight Total], \"0%\" ), \"\" )",
+              "VAR Missing =",
+              "    IF ( ISBLANK ( [Score - Loss Risk] ) || ISBLANK ( [Score - Exception Risk] ),",
+              "        \" | Claims components unavailable at service grain - weights reallocated.\", \"\" )",
+              "RETURN",
+              "    \"Effective weights: \" & Covered & Missing"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\3. Weighted blend with reallocation"
+          },
+          {
+            "name": "Service Rank",
+            "expression": [
+              "IF (",
+              "    [Annual Qualification Flag] = 1,",
+              "    RANKX (",
+              "        FILTER (",
+              "            CALCULATETABLE (",
+              "                VALUES ( Dim_Service[ServiceGroup] ),",
+              "                REMOVEFILTERS ( Dim_Service )",
+              "            ),",
+              "            [Annual Qualification Flag] = 1",
+              "        ),",
+              "        [Service Consistency Score],",
+              "        ,",
+              "        DESC,",
+              "        DENSE",
+              "    )",
+              ")"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\4. Recommendation categories",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Recommendation Category",
+            "expression": [
+              "VAR Qualified = [Annual Qualification Flag] = 1",
+              "VAR QualCount = [Qualified Service Count]",
+              "VAR Tier = SELECTEDVALUE ( Dim_Service[ServiceTier] )",
+              "VAR Rank = [Service Rank]",
+              "VAR BestPremiumRank =",
+              "    RANKX (",
+              "        FILTER (",
+              "            CALCULATETABLE (",
+              "                VALUES ( Dim_Service[ServiceGroup] ),",
+              "                REMOVEFILTERS ( Dim_Service )",
+              "            ),",
+              "            [Annual Qualification Flag] = 1",
+              "                && SELECTEDVALUE ( Dim_Service[ServiceTier] ) = \"Premium\"",
+              "        ),",
+              "        [OTD Wilson Lower Bound],",
+              "        ,",
+              "        DESC,",
+              "        DENSE",
+              "    )",
+              "VAR IsVolumeAnchor = [Service Volume Share] >= 0.50",
+              "VAR Volatile = [OTD Volatility (pp)] > 1.5",
+              "VAR BelowFirmOTD = [On-Time Delivery %] < CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )",
+              "RETURN",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        NOT Qualified, \"Not ranked - \" & [Qualification Status],",
+              "        QualCount <= 1, \"Single qualified service - no comparison possible\",",
+              "        // The service the firm actually runs on. It is the default by",
+              "        // economics; the question the dashboard answers is whether its",
+              "        // reliability is acceptable, not whether to replace it.",
+              "        IsVolumeAnchor && BelowFirmOTD, \"Volume anchor - reliability below firm average, monitor\",",
+              "        IsVolumeAnchor, \"Recommended default service\",",
+              "        Rank = 1 && Tier <> \"Premium\", \"Recommended default service\",",
+              "        Rank = 1, \"Best overall performer\",",
+              "        BestPremiumRank = 1, \"Recommended premium service\",",
+              "        Volatile, \"Service to monitor - inconsistent month to month\",",
+              "        \"Qualified alternative\"",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\4. Recommendation categories"
+          },
+          {
+            "name": "Recommendation Callout",
+            "expression": [
+              "VAR MonthsCovered = [Months with Transit Data]",
+              "VAR BestService =",
+              "    CONCATENATEX (",
+              "        TOPN (",
+              "            1,",
+              "            FILTER (",
+              "                CALCULATETABLE (",
+              "                    VALUES ( Dim_Service[ServiceGroup] ),",
+              "                    REMOVEFILTERS ( Dim_Service )",
+              "                ),",
+              "                [Annual Qualification Flag] = 1",
+              "            ),",
+              "            [Service Consistency Score],",
+              "            DESC",
+              "        ),",
+              "        Dim_Service[ServiceGroup]",
+              "    )",
+              "VAR FirmOTD = CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )",
+              "RETURN",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        MonthsCovered = 0,",
+              "            \"No Time-in-Transit data loaded. Reliability cannot be assessed and no service recommendation can be made.\",",
+              "        MonthsCovered < 6,",
+              "            \"PROVISIONAL - based on \" & MonthsCovered & \" month(s) of Time-in-Transit data. \"",
+              "                & \"Highest-scoring qualified service: \" & BestService & \". \"",
+              "                & \"Firm-wide on-time delivery \" & FORMAT ( FirmOTD, \"0.0%\" ) & \". \"",
+              "                & \"Do not issue as an annual service policy until at least six completed months are loaded.\",",
+              "        \"Highest-scoring qualified service: \" & BestService & \". Firm-wide on-time delivery \"",
+              "            & FORMAT ( FirmOTD, \"0.0%\" ) & \" across \" & MonthsCovered & \" months.\"",
+              "    )"
+            ],
+            "displayFolder": "4 Scoring and Recommendation\\4. Recommendation categories"
+          },
+          {
+            "name": "Months Loaded",
+            "expression": [
+              "CALCULATE (",
+              "    DISTINCTCOUNT ( Dim_Date[MonthKey] ),",
+              "    Dim_Date[IsLoaded] = \"Yes\",",
+              "    REMOVEFILTERS ( Dim_Date )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Completed Months Loaded",
+            "expression": [
+              "CALCULATE (",
+              "    DISTINCTCOUNT ( Dim_Date[MonthKey] ),",
+              "    Dim_Date[IsReportable] = \"Yes\",",
+              "    REMOVEFILTERS ( Dim_Date )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Missing Months",
+            "expression": [
+              "VAR Expected =",
+              "    CALCULATE (",
+              "        DISTINCTCOUNT ( Dim_Date[MonthKey] ),",
+              "        Dim_Date[IsCompletedMonth] = \"Yes\",",
+              "        REMOVEFILTERS ( Dim_Date )",
+              "    )",
+              "RETURN",
+              "    Expected - [Completed Months Loaded]"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Missing Months List",
+            "expression": [
+              "CONCATENATEX (",
+              "    CALCULATETABLE (",
+              "        VALUES ( Dim_Date[MonthYearLabel] ),",
+              "        Dim_Date[IsCompletedMonth] = \"Yes\",",
+              "        Dim_Date[IsLoaded] = \"No\",",
+              "        REMOVEFILTERS ( Dim_Date )",
+              "    ),",
+              "    Dim_Date[MonthYearLabel],",
+              "    \", \",",
+              "    Dim_Date[SortOrder],",
+              "    ASC",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage"
+          },
+          {
+            "name": "Annual Completeness %",
+            "expression": [
+              "DIVIDE ( [Months Loaded], 12 )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Volume Months Covered",
+            "expression": [
+              "CALCULATE ( DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Transit Months Covered",
+            "expression": [
+              "CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Claims Months Covered",
+            "expression": [
+              "CALCULATE ( DISTINCTCOUNT ( Fact_Claims[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Coverage",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Coverage Summary",
+            "expression": [
+              "\"Volume & Spend: \" & [Volume Months Covered] & \" mo  |  \"",
+              "    & \"Time-in-Transit: \" & [Transit Months Covered] & \" mo  |  \"",
+              "    & \"Claims: \" & [Claims Months Covered] & \" mo\""
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Exclusions"
+          },
+          {
+            "name": "Excluded Adjustment Spend",
+            "expression": [
+              "CALCULATE (",
+              "    SUM ( Fact_VolumeSpend[NetSpend] ),",
+              "    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = \"No\" )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Exclusions",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Excluded Adjustment Spend %",
+            "expression": [
+              "DIVIDE (",
+              "    [Excluded Adjustment Spend],",
+              "    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Exclusions",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Spend-Only Adjustment Rows",
+            "expression": [
+              "CALCULATE (",
+              "    COUNTROWS ( Fact_VolumeSpend ),",
+              "    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = \"Yes\" )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Exclusions",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Spend-Only Adjustment Value",
+            "expression": [
+              "CALCULATE (",
+              "    SUM ( Fact_VolumeSpend[NetSpend] ),",
+              "    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = \"Yes\" )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Exclusions",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Unattributed Spend %",
+            "expression": [
+              "DIVIDE (",
+              "    [Spend-Only Adjustment Value],",
+              "    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Exclusions",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Unmapped Product Rows",
+            "expression": [
+              "CALCULATE (",
+              "    COUNTROWS ( Fact_VolumeSpend ),",
+              "    KEEPFILTERS ( Fact_VolumeSpend[ServiceGroup] = \"Unmapped - Review\" )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Exclusions",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Masked Sub-Parent Volume",
+            "expression": [
+              "CALCULATE (",
+              "    [Total Shipments],",
+              "    KEEPFILTERS ( Fact_VolumeSpend[IsMaskedSubParent] = \"Yes\" )",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Reconciliation",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Accessorial Net Spend",
+            "expression": [
+              "SUM ( Fact_Accessorial[NetSpend] )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Reconciliation",
+            "formatString": "\\$#,0"
+          },
+          {
+            "name": "Spend Reconciliation Variance",
+            "expression": [
+              "VAR VolumeSpendTotal =",
+              "    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )",
+              "VAR AccessorialTotal =",
+              "    CALCULATE ( [Accessorial Net Spend], REMOVEFILTERS ( Dim_Service ) )",
+              "RETURN",
+              "    IF ( AccessorialTotal <> 0, VolumeSpendTotal - AccessorialTotal )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Reconciliation",
+            "formatString": "\\$#,0.00"
+          },
+          {
+            "name": "Reconciliation Status",
+            "expression": [
+              "VAR Variance = [Spend Reconciliation Variance]",
+              "RETURN",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        ISBLANK ( Variance ), \"No accessorial detail for this period\",",
+              "        ABS ( Variance ) < 1, \"Reconciled\",",
+              "        ABS ( Variance ) < 100, \"Rounding variance - \" & FORMAT ( Variance, \"$#,0.00\" ),",
+              "        \"VARIANCE - \" & FORMAT ( Variance, \"$#,0.00\" ) & \" - investigate before publishing\"",
+              "    )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Reconciliation"
+          },
+          {
+            "name": "Measured vs Billed Coverage %",
+            "expression": [
+              "DIVIDE ( [Packages Measured], [Rankable Shipments] )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Banner narrative",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Data Basis Banner",
+            "expression": [
+              "VAR VolMonths = [Volume Months Covered]",
+              "VAR TransitMonths = [Transit Months Covered]",
+              "VAR ClaimsMonths = [Claims Months Covered]",
+              "VAR Missing = [Missing Months List]",
+              "VAR Recon = [Reconciliation Status]",
+              "VAR Severity =",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        TransitMonths = 0, \"NO RELIABILITY DATA\",",
+              "        TransitMonths < 6 || ClaimsMonths < 6, \"PROVISIONAL\",",
+              "        VolMonths < 12, \"PARTIAL YEAR\",",
+              "        \"ANNUAL\"",
+              "    )",
+              "RETURN",
+              "    Severity & \" - \" & [Coverage Summary]",
+              "        & IF ( LEN ( Missing ) > 0, \"  |  Not yet loaded: \" & Missing, \"\" )",
+              "        & IF ( Recon <> \"Reconciled\" && LEFT ( Recon, 2 ) = \"VA\", \"  |  \" & Recon, \"\" )"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Banner narrative"
+          },
+          {
+            "name": "Data Basis Banner Colour",
+            "expression": [
+              "SWITCH (",
+              "    TRUE (),",
+              "    [Transit Months Covered] = 0, \"#B3261E\",",
+              "    [Transit Months Covered] < 6 || [Claims Months Covered] < 6, \"#B26B00\",",
+              "    [Volume Months Covered] < 12, \"#5B4B8A\",",
+              "    \"#1F6F54\"",
+              ")"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Dynamic titles"
+          },
+          {
+            "name": "Title - Executive Overview",
+            "expression": [
+              "VAR Period =",
+              "    IF (",
+              "        ISFILTERED ( Dim_Date[MonthYearLabel] ) || ISFILTERED ( Dim_Date[Quarter] ),",
+              "        CONCATENATEX (",
+              "            VALUES ( Dim_Date[MonthYearLabel] ),",
+              "            Dim_Date[MonthYearLabel], \", \", Dim_Date[SortOrder], ASC",
+              "        ),",
+              "        SELECTEDVALUE ( Dim_Date[Year], \"2025\" ) & \" full year\"",
+              "    )",
+              "VAR Scope =",
+              "    IF (",
+              "        ISFILTERED ( Dim_Service[Scope] ),",
+              "        SELECTEDVALUE ( Dim_Service[Scope], \"All scopes\" ),",
+              "        \"Domestic and international\"",
+              "    )",
+              "RETURN",
+              "    \"UPS Shipping Performance - \" & Period & \" - \" & Scope"
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Dynamic titles"
+          },
+          {
+            "name": "Title - Service Scorecard",
+            "expression": [
+              "\"Service scorecard - \" & [Qualified Service Count] & \" of \"",
+              "    & CALCULATE (",
+              "        DISTINCTCOUNT ( Dim_Service[ServiceGroup] ),",
+              "        REMOVEFILTERS ( Dim_Service ),",
+              "        Dim_Service[IncludeInRanking] = \"Yes\"",
+              "    )",
+              "    & \" services qualify at \"",
+              "    & FORMAT ( [Minimum Shipment Threshold], \"#,0\" ) & \" shipments / \"",
+              "    & FORMAT ( [Minimum Volume Share], \"0.0%\" ) & \" share\""
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Dynamic titles"
+          },
+          {
+            "name": "Title - Claims",
+            "expression": [
+              "\"Claims and loss risk - account level only (\"",
+              "    & [Claims Months Covered] & \" month(s) loaded). \"",
+              "    & \"Claims carry no service key.\""
+            ],
+            "displayFolder": "5 Data Quality and Narrative\\Dynamic titles"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "8bf625ce-1a57-5959-9f8a-80fd8fe3ae25",
+        "fromTable": "Fact_VolumeSpend",
+        "fromColumn": "MonthKey",
+        "toTable": "Dim_Date",
+        "toColumn": "MonthKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "92d77c06-e177-5b5c-8cc5-5a819ec3e540",
+        "fromTable": "Fact_TimeInTransit",
+        "fromColumn": "MonthKey",
+        "toTable": "Dim_Date",
+        "toColumn": "MonthKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "5c29cd11-f678-5a37-a722-008c1132a2f0",
+        "fromTable": "Fact_Claims",
+        "fromColumn": "MonthKey",
+        "toTable": "Dim_Date",
+        "toColumn": "MonthKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "5e01883b-539d-5bcf-818f-c6680a6d1840",
+        "fromTable": "Fact_Accessorial",
+        "fromColumn": "MonthKey",
+        "toTable": "Dim_Date",
+        "toColumn": "MonthKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "a752cf5e-9d43-5d3e-bd67-17eede30db90",
+        "fromTable": "Fact_VolumeSpend",
+        "fromColumn": "AccountKey",
+        "toTable": "Dim_Account",
+        "toColumn": "AccountKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "359cfd88-5aee-50fa-9179-141d17483092",
+        "fromTable": "Fact_TimeInTransit",
+        "fromColumn": "AccountKey",
+        "toTable": "Dim_Account",
+        "toColumn": "AccountKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "628fbc11-e8ae-5b28-a68a-f3ae228a2a09",
+        "fromTable": "Fact_Claims",
+        "fromColumn": "AccountKey",
+        "toTable": "Dim_Account",
+        "toColumn": "AccountKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "82e34376-bad4-57fd-84b2-ef4b1ac2e839",
+        "fromTable": "Fact_Accessorial",
+        "fromColumn": "AccountKey",
+        "toTable": "Dim_Account",
+        "toColumn": "AccountKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "edd95797-914b-53f5-b237-09708988ea74",
+        "fromTable": "Fact_VolumeSpend",
+        "fromColumn": "ServiceGroup",
+        "toTable": "Dim_Service",
+        "toColumn": "ServiceGroup",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "6e6b7509-3eae-5891-b43b-410c8f6085a3",
+        "fromTable": "Fact_TimeInTransit",
+        "fromColumn": "ServiceGroup",
+        "toTable": "Dim_Service",
+        "toColumn": "ServiceGroup",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "c168cc2b-90e5-5b83-9f10-4a4422b201d9",
+        "fromTable": "Fact_Accessorial",
+        "fromColumn": "ServiceGroup",
+        "toTable": "Dim_Service",
+        "toColumn": "ServiceGroup",
+        "crossFilteringBehavior": "oneDirection"
+      }
+    ],
+    "expressions": [
+      {
+        "name": "p_DataFolder",
+        "kind": "m",
+        "expression": [
+          "\"C:\\UPS\\2025\\processed\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]"
+        ],
+        "annotations": [
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Navigation"
+          }
+        ]
+      },
+      {
+        "name": "p_ReportingYear",
+        "kind": "m",
+        "expression": [
+          "2025 meta [IsParameterQuery=true, Type=\"Number\", IsParameterQueryRequired=true]"
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"p_DataFolder\", \"p_ReportingYear\", \"Fact_VolumeSpend\", \"Fact_TimeInTransit\", \"Fact_Claims\", \"Fact_Accessorial\", \"Dim_Date\", \"Dim_Account\", \"Dim_ServiceMapping\", \"Dim_Service\", \"_Measures\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      },
+      {
+        "name": "PBI_ProTooling",
+        "value": "[\"DaxQueryView\"]"
+      }
+    ]
+  }
+}
