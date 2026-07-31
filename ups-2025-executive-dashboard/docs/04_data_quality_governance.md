@@ -52,8 +52,10 @@ it out with the Grand Total rows — is wrong. The account number, address and a
 on those rows are real:
 
 ```
-@@ | @@ | J222E7 | EDWARD JONES / TCO | Whippany NJ 07981 | WW EXPRESS PM / SAVER PKG | 11 pcs | $1,790.28
+@@ | @@ | <account no.> | <account name> | <city, state> | WW EXPRESS PM / SAVER PKG | 11 pcs | $1,790.28
 ```
+
+*(Account identifiers are masked here; the real values are in the local extracts.)*
 
 `@@` masks the *sub-parent assignment*, not the shipment.
 

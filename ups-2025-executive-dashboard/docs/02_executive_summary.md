@@ -1,5 +1,8 @@
 # UPS 2025 Shipping Performance — Executive Summary
 
+*Account names are genericised in this public copy; the local analysis carries the real
+identifiers.*
+
 **Reporting basis: PROVISIONAL.** Volume and spend cover January–April 2025.
 Time-in-Transit and Claims cover **March 2025 only**. Every reliability and loss
 figure below therefore rests on a single month and must not be issued as an annual
@@ -31,7 +34,7 @@ This is the most actionable result in the data set.
 
 | | Loss claims | Shipments | Loss rate / 10k | vs firm |
 |---|---|---|---|---|
-| **EDWARD JONES / CVS** | 28 | 12,466 | **22.5** | **4.4×** |
+| **Branch Retail account** | 28 | 12,466 | **22.5** | **4.4×** |
 | All other accounts | 7 | 56,061 | 1.2 | 0.2× |
 | **Firm-wide** | **35** | **68,527** | **5.1** | 1.0× |
 
@@ -137,7 +140,7 @@ Stated as what the data currently supports, with the confidence each deserves.
 | **Recommended expedited service** | **2nd Day Air / Expedited.** Best on-time rate among qualified services (98.23%), highest consistency score, and materially cheaper per pound than either overnight option. It should be the default when Ground transit time is insufficient. | Medium — one month of transit data |
 | **Recommended premium service** | **Next Day Air Saver** over Next Day Air where an end-of-day commitment is acceptable: better on-time rate (97.67% vs 96.78%) at a lower cost per shipment. Reserve Next Day Air for genuine morning-critical shipments. | Medium — one month of transit data |
 | **Service requiring monitoring** | **Ground**, on reliability rather than cost. At 96.04% it is the lowest-performing qualified service and it carries 72% of volume, so it sets the firm's overall on-time rate almost single-handedly. | High |
-| **Immediate operational action** | **EDWARD JONES / CVS site review.** 4.4× the firm loss rate, 80% of all loss claims. | High — independent of transit coverage |
+| **Immediate operational action** | **Branch Retail account site review.** 4.4× the firm loss rate, 80% of all loss claims. | High — independent of transit coverage |
 | **Immediate cost action** | **Address validation at point of shipment.** ~$123k annualised, fully avoidable. | High |
 
 ### What this analysis cannot tell you

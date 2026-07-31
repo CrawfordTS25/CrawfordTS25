@@ -9,7 +9,7 @@
 // ---------------------------------------------------------------------------
 // fnCleanText
 // UPS prefixes ID-like columns with an apostrophe to stop Excel reformatting
-// them. Left in place, "'2W2107" and "2W2107" are different keys and the
+// them. Left in place, "'ABC123" and "ABC123" are different keys and the
 // account relationship silently half-fails.
 // ---------------------------------------------------------------------------
 let

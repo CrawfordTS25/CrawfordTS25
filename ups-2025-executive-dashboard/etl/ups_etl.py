@@ -64,10 +64,10 @@ QUARTER_OF = {m: (m - 1) // 3 + 1 for m in range(1, 13)}
 SENTINEL_KEYS = {"grand total", "total", "", "none"}
 
 # UPS masks the sub-parent on some accounts with '@@'. This is NOT a sentinel:
-# the account number, address and shipment activity on those rows are real
-# (J222E7 / EDWARD JONES / TCO carries genuine international volume). Dropping
-# them on a naive '@@' match silently loses shipments, so they are retained and
-# relabelled instead.
+# the account number, address and shipment activity on those rows are real - in
+# the source files one such account carries genuine international volume and
+# spend. Dropping them on a naive '@@' match silently loses shipments, so they
+# are retained and relabelled instead.
 MASKED_SUB_PARENT = "@@"
 MASKED_SUB_PARENT_LABEL = "Unassigned Sub-Parent"
 
