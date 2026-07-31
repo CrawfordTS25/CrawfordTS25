@@ -114,3 +114,151 @@ createOrReplace
 		relationship Dim_Account_to_QV_Manifest
 			fromColumn: QV_Manifest.'Account Key'
 			toColumn: Dim_Account.'Account Key'
+
+// -----------------------------------------------------------------------------
+// 5. DIM DATE - one conformed calendar for both fact tables
+//
+//    Turn OFF Auto Date/Time FIRST: File > Options > Data Load > uncheck
+//    "Auto date/time". Otherwise Power BI keeps generating a hidden date table per
+//    date column and you get two competing calendars.
+//
+//    Bounds are derived from the data, so the calendar grows on its own as the feed
+//    extends. Current data spans 2026-05-09 to 2026-08-06.
+//
+//    All four join columns are clean midnight dates - verified - so these
+//    relationships join exactly with no time-component mismatch.
+// -----------------------------------------------------------------------------
+
+	ref table 'Dim Date'
+		dataCategory: Time
+
+		partition 'Dim Date' = calculated
+			mode: import
+			source =
+					
+					VAR lo = MIN ( QV_Manifest[Manifest Date] )
+					VAR hi = MAX (
+					             MAX ( QV_Manifest[Manifest Date] ),
+					             MAX ( QV_Manifest[Scheduled Delivery] )
+					         )
+					RETURN
+					ADDCOLUMNS (
+					    CALENDAR ( DATE ( YEAR ( lo ), 1, 1 ), DATE ( YEAR ( hi ), 12, 31 ) ),
+					    "Date Key",       FORMAT ( [Date], "YYYYMMDD" ) + 0,
+					    "Year",           YEAR ( [Date] ),
+					    "Quarter No",     QUARTER ( [Date] ),
+					    "Quarter",        "Q" & QUARTER ( [Date] ),
+					    "Month No",       MONTH ( [Date] ),
+					    "Month",          FORMAT ( [Date], "MMMM" ),
+					    "Month Year",     FORMAT ( [Date], "MMM YYYY" ),
+					    "Month Year Sort", YEAR ( [Date] ) * 100 + MONTH ( [Date] ),
+					    "Day",            DAY ( [Date] ),
+					    "Day of Week No", WEEKDAY ( [Date], 2 ),
+					    "Day of Week",    FORMAT ( [Date], "dddd" ),
+					    "Is Workday",     WEEKDAY ( [Date], 2 ) <= 5
+					)
+
+		column Date
+			dataType: dateTime
+			formatString: Short Date
+			isKey
+			summarizeBy: none
+
+		column 'Date Key'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column Year
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column 'Quarter No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column Quarter
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Quarter No'
+
+		column 'Month No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column Month
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Month No'
+
+		column 'Month Year Sort'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column 'Month Year'
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Month Year Sort'
+
+		column Day
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column 'Day of Week No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column 'Day of Week'
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Day of Week No'
+
+		column 'Is Workday'
+			dataType: boolean
+			summarizeBy: none
+
+// -----------------------------------------------------------------------------
+// 6. DATE RELATIONSHIPS - two roles, one calendar        (trace spec p.7)
+//
+//    Manifest Date is the ACTIVE role - "when did we ship it".
+//    Scheduled Delivery is INACTIVE - reach it with USERELATIONSHIP when you want
+//    "when was it due", rather than building a second date table.
+//
+//    Dim Date is deliberately NOT related to QV_Output directly: QV_Output already
+//    reaches it through Resolutions Table, and a second path would be ambiguous.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship DimDate_to_QV_Manifest_Manifest
+			fromColumn: QV_Manifest.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_Resolutions_Manifest
+			fromColumn: 'Resolutions Table'.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_QV_Manifest_Delivery
+			isActive: false
+			fromColumn: QV_Manifest.'Scheduled Delivery'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_Resolutions_Delivery
+			isActive: false
+			fromColumn: 'Resolutions Table'.'Scheduled Delivery'
+			toColumn: 'Dim Date'.Date
+
+// Example of using the inactive role:
+//     Exceptions by Due Date =
+//         CALCULATE ( [Total Exceptions],
+//             USERELATIONSHIP ( 'Resolutions Table'[Scheduled Delivery], 'Dim Date'[Date] ) )

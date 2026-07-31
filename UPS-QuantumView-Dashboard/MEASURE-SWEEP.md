@@ -1,6 +1,6 @@
 # Measure sweep, source flexibility, and what's left for full completion
 
-**File:** `Quantum_View_Exceptions_Dashboard_v4.pbix` — label removed so it opens;
+**File:** `Quantum_View_Exceptions_Dashboard_v5.pbix` — label removed so it opens;
 re-apply *Internal Use Only · Standard* before sharing. `DataModel` byte-identical to
 your upload, 169 field references resolve, no overlaps.
 
@@ -23,7 +23,21 @@ lose little. Right edge lands on 1256, the page margin. The chart is a clone of
 "Exceptions by Category" from the same page with only name, position, query and title
 changed.
 
-`QV_Manifest` is also wired up in this pass — see §3.
+**Manifest Date slicer** in rail slot 7 (`36, 604, 126×56`) on OVERVIEW and RESOLUTION
+QUEUE, bound to `'Resolutions Table'[Manifest Date]` — a column that exists today, so
+it works on open with no dependency on `Dim Date`. Filtering flows Resolutions Table →
+QV_Output, so it drives the OVERVIEW charts as well as the queue.
+
+> Deliberately **not** bound to `'Dim Date'[Date]`. That table doesn't exist in the
+> model yet, and binding a visual to a missing table is the exact risk profile that
+> produced the unopenable files earlier in this build. Repoint it after applying the
+> script — see §3c — which additionally makes Total Shipments date-responsive.
+
+ACTIVE TRACES gets no date slicer: **every date column on `Current_Open_Trace` is
+text**, so no date table can reach it until those are typed. That's now the main thing
+standing between you and full date coverage.
+
+`QV_Manifest` and `Dim Date` are both wired up by the script — see §3.
 
 ## 1. The headline: four of five ACTIVE TRACES cards were wrong
 
@@ -97,9 +111,22 @@ QV_Output[Exceptions Resolved]
 **consolidated** script — it supersedes `account-drilldown.tmdl` and
 `measure-sweep.tmdl`, which stay in the repo for reference. Do not run all three.
 
-It does four things: the two account key columns, the two status-aware aging measures,
-the rate-grain correction, and the two relationships. Every measure keeps its name, so
-**no visual needs rebinding**.
+It does six things: the two account key columns, the two status-aware aging measures,
+the rate-grain correction, the two account relationships, the **`Dim Date` calendar**,
+and its **four date relationships**. Every measure keeps its name, so **no visual needs
+rebinding**.
+
+> **Turn off Auto Date/Time first** — File → Options → Data Load → uncheck *Auto
+> date/time*. Otherwise Power BI keeps generating a hidden calendar per date column and
+> you end up with two competing date tables.
+
+**c. Two optional 20-second follow-ups** once the script has run:
+
+- Repoint the Manifest Date slicers from `'Resolutions Table'[Manifest Date]` to
+  `'Dim Date'[Date]`. Same slot, broader reach — it then filters `QV_Manifest` too, so
+  Total Shipments and Exception Rate become date-responsive.
+- Confirm `Dim Date` is marked as a date table (Table tools → Mark as date table →
+  `Date`). The script sets `dataCategory: Time`, but the ribbon is the guaranteed way.
 
 Deletions are deliberately not in the script — the TMDL delete syntax is easy to get
 wrong and three right-clicks is faster than debugging it.
@@ -179,10 +206,11 @@ so an API path must stamp it at retrieval from the `Refresh` anchor.
 
 ## 6. To strengthen the build — ranked by payoff
 
-**1. Build `Dim Date` and retire Auto Date/Time.** One date table, related to both
-facts, with `USERELATIONSHIP` for the manifest/delivery roles. This is what makes
-"exception rate for this vendor last week" possible — today you can have the vendor or
-the week, not both. It is also the star schema Trace spec p.7 asks for.
+**1. Type the date columns on `Current_Open_Trace`.** Every one of them — `Manifest
+Date`, `Last Reviewed`, `Follow-up`, `Next Follow-up Date`, `Closed Date` — loads as
+**text**, so `Dim Date` cannot reach the trace side at all. No date slicer, no trend, no
+"traces opened vs closed" chart, and no SLA maths on the page whose whole job is SLA.
+Now that the calendar exists this is the single highest-value fix left.
 
 **2. Settle the exception grain, once, in writing.** Three defensible numbers exist:
 7,775 distinct Exception Keys, 29,957 rows flagged `Is Issue`, 40,735 total rows. Pick
