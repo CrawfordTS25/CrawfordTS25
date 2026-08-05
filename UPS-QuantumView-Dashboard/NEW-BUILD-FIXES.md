@@ -220,12 +220,8 @@ explicit `LOOKUPVALUE` — same name, same home table, so the card doesn't need 
 
 ## 6. Smaller things worth knowing
 
-**`Branch_Contacts` is completely empty.** 500 rows, every column null on every row —
-the `Promoted Headers` step is promoting a header row from a sheet whose data doesn't
-line up beneath it. It loads without error, which is why nobody noticed. This is the FA
-roster the mail merge needs for `{Owner.Email}`, so it has to be fixed before Flow 2 can
-address anything. `Current_Open_Trace[CONTACT INFO]` does hold real addresses — 72 of 95
-— and is the working recipient source on the trace side today.
+**`Branch_Contacts` was completely empty** — 500 rows, every column null on every row.
+Rebuilt; see §7.
 
 **`Review Status` writes `"Escalate "` with a trailing space** while the measure
 `Escalated Traces` matches `"Escalate"` with none. DAX doesn't trim. It reads 67 today,
@@ -249,7 +245,116 @@ empty across all 8,724 rows, which is the write-back gap; see
 
 ---
 
-## 7. What I changed inside the file
+## 7. Branch contacts, and refresh stamps in the title bars
+
+Both ship as `tools/contacts-and-freshness.pq` + `tools/contacts-and-freshness.tmdl`.
+Neither is in the `.pbix` — see the note under Step 8b in §9 for why.
+
+### `Branch_Contacts` — 500 rows of nothing
+
+The query navigates to the `branch email` **sheet** and promotes row 1 to headers. Row 1
+isn't the header row, and two of the column names it produced say so out loud:
+
+```
+"Source"                            <- a metadata label, not a field name
+"X:\hrdi_report_pickup\FA_Roster\"  <- a FILE PATH became a column name
+```
+
+So there's a title/provenance block above the real header and the promote grabbed that.
+Everything below it came through as null, the table loaded 500 empty rows, and no error
+was raised — which is precisely why it survived this long.
+
+I can't see the workbook from here, so §1 of the `.pq` is a **discovery query**: it lists
+every item in the file with its kind, its non-blank row count, which row contains the word
+"Email", and a preview of the first real row. Run it once, read three values off it, set
+three constants in §2, delete it. If it shows a `Kind = "Table"` item, use that instead —
+a named Excel table carries its own header and can't drift the way a sheet range does, and
+the query collapses to six lines.
+
+§2 is the rebuild. It:
+
+- **finds the header row** instead of assuming row 1 — that's the actual bug
+- drops fully-blank rows before *and* after the promote, so trailing formatted-but-empty
+  rows stop inflating it to 500
+- **identifies the email column by content** (>50% of values contain `@`) rather than by
+  name, so a header rename can't quietly break it again
+- keeps only rows carrying a plausible address, so a half-filled roster row can never be
+  emailed
+- dedupes on the key — the "one" side of a relationship has to be unique
+- **never errors.** A roster that comes back empty must not take the daily refresh down
+  with it. `[Branch Contacts Loaded]` surfaces it instead, as a number you can put on a
+  page.
+
+### The roster can only reach the trace side — and that's the whole story
+
+Worth knowing before you build Flow 2, because it changes the plan.
+
+**Trace side: clean.** `Current_Open_Trace[FA #]` is populated on all 95 rows — 66 as
+`I######`, 28 as `H#####`, one literal `"0"` — and **no FA # maps to two different
+emails**, so the join is unambiguous. 23 of the 95 have an FA # but a blank `CONTACT INFO`;
+those are exactly the rows the roster rescues.
+
+**Exceptions side: there is nothing to join to.** The queue carries no FA identity at all.
+`QV_Output[Ship To Name]` is `EDWARD JONES` on 35,126 of 46,594 rows and a client's name on
+most of the remainder; `QV_Manifest[Ship To Attention]` is `EDWARD JONES` or blank on
+40,770. Neither identifies a person.
+
+So the exceptions mail merge has to take its recipient from the SharePoint List's `Owner`
+column, populated by the Power Apps panel from `User()`. `WRITEBACK-AND-MAILMERGE.md`
+offered that as the interim route pending a roster fix — it turns out to be the only
+route, and it works from day one. Fixing this query buys you the trace-side contact
+lookup and a real roster for branch traffic, not an exceptions recipient.
+
+### Per-source refresh stamps
+
+`File.Contents` hands back bytes and nothing else — there's no modified date in it. So
+`Refresh Status` (§3 of the `.pq`) locates each source by listing its **folder** and
+picking the file out by name, which does carry `Date modified`. One row per source:
+
+| Source | SLA | What it feeds |
+|---|---|---|
+| QV export feed | 18h | `QV_Output` · `QV_Manifest` · `Resolutions Table` |
+| Trace workbook | 30h | `Trace_Active` · `Current_Open_Trace` · `Trace_Notes` · `Branch_Contacts` |
+| Resolution tracker | 30h | `tbl_Resolution_Input` · `Res_Tracker` |
+| Account list | 180d | `Dim_Account` |
+| Coordinate table | 365d | `Master Coordinate Table` |
+
+The SLA is per source because the sources move at wildly different speeds — the feed runs
+twice a day, so 18 hours means you missed a run; the account list changes a few times a
+year. They only drive the warning, never the data.
+
+Two details that earn their place. Subdirectories are filtered out, and so is anything
+starting with `~$` — Excel writes a lock file the moment somebody opens a workbook, so
+without that filter the stamp would read "modified 10 seconds ago" for as long as anyone
+had the file open, which is exactly backwards.
+
+**In the title bar**, `[Data As Of]` renders compact when everything's current and names
+the problem when it isn't:
+
+```
+8/5 2:32 PM
+8/5 2:32 PM   ·   1 SOURCE STALE
+NO FEED FILES FOUND
+```
+
+The trace pages get `[Trace Data As Of]`, which reads the tracing workbook instead — those
+pages aren't driven by the QV export, so today's card is showing them the wrong file's
+date. Both measures wrap their scan in `ALL('Refresh Status')`, so "data as of" stays a
+property of the data rather than of your slicer selection; right now Exception Details
+reports the file date of whichever single exception you drilled into.
+
+`[Source Health]` returns all five sources one per line for a tooltip or an admin panel,
+and `[Stalest Source]` names the worst offender with missing files outranking merely-old
+ones.
+
+> This also retires a column on `Current_Open_Trace` literally named
+> `Updated 7/20/2026 at 1:59:16 PM - (98) Rows of delivery information updated in 31
+> minute(s), 9 second(s)`. Somebody needed a freshness stamp and the only place to put it
+> was a column header, where it froze the instant it was typed.
+
+---
+
+## 8. What I changed inside the file
 
 Report layer only — `DataModel` is untouched and verifiably byte-identical.
 
@@ -290,7 +395,7 @@ want to see it work.
 
 ---
 
-## 8. Desktop steps, in order — about 40 minutes
+## 9. Desktop steps, in order — about 55 minutes
 
 Do these in order; each one gates the next.
 
@@ -361,7 +466,49 @@ Trace_Notes merge step.
 ### Step 7 · Relate the calendar to the trace side · 2 min
 Re-run §9 of the TMDL script, the part you skipped.
 
-### Step 8 · Two follow-ups · 2 min
+### Step 8 · Branch contacts and refresh stamps · 12 min
+`Home → Transform data` again, then `tools/contacts-and-freshness.pq`:
+
+1. **§1 discovery** — new blank query, paste, look at the four columns it returns.
+   Note the item name, its `Kind`, and which row holds "Email". Then delete the query.
+2. **§2 `Branch_Contacts`** — set `ItemName`, `ItemKind` and `KeyColumn` from what §1
+   showed you, then replace the whole existing query.
+3. **§3 `Refresh Status`** — new blank query, rename it exactly `Refresh Status`.
+
+`Close & Apply`. Then `View → TMDL view` → paste `tools/contacts-and-freshness.tmdl` →
+**Apply**. That adds the roster relationship and nine measures; it touches nothing that
+already exists.
+
+✅ `Branch_Contacts` has real rows with real addresses — **not 500, and not 0**.
+✅ `Refresh Status` has 5 rows and every `Modified` is populated. A null means that
+   source's folder or filename doesn't match what §3 expects — fix the pattern, not the
+   data.
+
+### Step 8b · Point the title bars at the right source · 3 min
+Five cards, one per page, at `x 868 · y 27 · 372×38`. Each currently shows
+`Max(QV_Output[Date modified])`. For each: click the card, drag the measure below into the
+**Data** well, remove the old field, and set the field's rename to `DATA AS OF` so the
+label doesn't change.
+
+| Page | Measure |
+|---|---|
+| OVERVIEW | `[Data As Of]` |
+| RESOLUTION QUEUE | `[Data As Of]` |
+| Exception Details | `[Data As Of]` |
+| ACTIVE TRACES | `[Trace Data As Of]` |
+| Trace Details | `[Trace Data As Of]` |
+
+The trace pages get the tracing workbook's stamp because that's what actually feeds them —
+right now they're showing the QV export's date, which has nothing to do with what's on the
+page.
+
+> **Why this isn't already done in the file.** Both measures live on `Refresh Status`, a
+> table that doesn't exist until Step 8 runs. Binding a visual to a missing table is the
+> exact risk profile that produced the unopenable files earlier in this build, and I'm not
+> spending your openability on a three-minute step. Same reason the Manifest Date slicer
+> shipped bound to `'Resolutions Table'[Manifest Date]` rather than `'Dim Date'[Date]`.
+
+### Step 9 · Two follow-ups · 2 min
 - **Repoint the date slicers.** On OVERVIEW and RESOLUTION QUEUE the Manifest Date slicer
   is bound to `'Resolutions Table'[Manifest Date]` — chosen so it worked before
   `Dim Date` existed. Swap it for `'Dim Date'[Date]`; it then also filters `QV_Manifest`,
@@ -372,37 +519,38 @@ Re-run §9 of the TMDL script, the part you skipped.
 - **Mark the date table** if it isn't already: `Dim Date` → `Table tools → Mark as date
   table` → column `Date`.
 
-### Step 9 · Verify · 5 min
-`View → DAX query view`. The six tabs in `tools/checks/` are read-only. The two new ones
-matter most here:
+### Step 10 · Verify · 5 min
+`View → DAX query view`. The seven tabs in `tools/checks/` are read-only. The three new
+ones matter most here:
 
 | Query | Confirms |
 |---|---|
 | `7-classification-coverage.dax` | **Unclassified = 0**, no fact type without a dim row |
 | `8-dedupe-recency.dax` | **Stale rows = 0** — the queue is showing current state |
+| `9-sources-and-contacts.dax` | **Branch contacts loaded > 0**, 5 sources current, and the 23 traces the roster rescues |
 | `4-kpi-reconciliation.dax` | rate 8.60% |
 | `5-status-vocabulary.dax` | the exact strings the status measures match on |
 
 Then click each page: every KPI should move with the Vendor Acct # slicer, and ACTIVE
 TRACES should read **95 / 67 / 28 / 27 / 86**.
 
-### Step 10 · Re-apply the sensitivity label · 1 min
+### Step 11 · Re-apply the sensitivity label · 1 min
 `Sensitivity → Internal Use Only · Standard`. **Before the file leaves your machine.**
 
 ---
 
-## 9. Still open after this
+## 10. Still open after this
 
 | | Why it can wait |
 |---|---|
 | Write-back + mail merge | the biggest remaining build — `WRITEBACK-AND-MAILMERGE.md` |
-| `Branch_Contacts` returns 500 empty rows | blocks `{Owner.Email}`; fix before Flow 2, not before rollout |
 | Exception grain decision — 8,724 keys vs 29,957 `Is Issue` rows vs 46,594 rows | needs a business answer, not a build |
 | Confirm the resolved/escalated literals against production | needs live data flowing |
+| The one trace row whose `FA #` is the literal string `"0"` | data entry on the trace sheet; it can never resolve to a contact |
 | Trim `QV_Manifest`, drop `Res_Tracker` | performance, not correctness |
 | Folder ingest + dedupe (`model-fixes.pq` §6–8) | only once the feed is automated |
 
 **One to watch, not fix:** `Resolved Exceptions` and `Escalated Exceptions` return **0**
 today because nothing in the extract is resolved. Correct behaviour on this data — but
-indistinguishable from a literal mismatch, which is why Step 9's vocabulary check matters
+indistinguishable from a literal mismatch, which is why Step 10's vocabulary check matters
 the moment real resolutions start flowing.

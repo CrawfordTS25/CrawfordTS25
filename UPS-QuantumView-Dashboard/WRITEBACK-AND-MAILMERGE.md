@@ -234,22 +234,31 @@ Spec p.13. **The preview gate is non-negotiable** — the Send button opens a pr
 merged batch and nothing dispatches until the analyst confirms count and template. That's
 the guardrail against a 148-email misfire.
 
-### Blocker first: `Branch_Contacts` returns 500 empty rows
+### Recipients: the List's `Owner`, and it isn't a compromise
 
-Every column is null on every row. The `Promoted Headers` step is promoting a header row
-from a sheet whose data doesn't line up beneath it, and it loads without erroring, which
-is why it went unnoticed. **`{Owner.Email}` has nothing to resolve against until this is
-fixed.** Open the query, look at what `#"branch email_Sheet"` actually returns before the
-promote, and adjust the navigation — it's almost certainly reading the wrong sheet range.
+`Branch_Contacts` is fixed — `tools/contacts-and-freshness.pq` §2, and
+`NEW-BUILD-FIXES.md` §7 explains what was wrong with it. But fixing it does **not** give
+the exceptions mail merge a recipient, and it's worth being clear about why before you
+plan around it.
 
-`Current_Open_Trace[CONTACT INFO]` does hold real addresses (72 of 95) and is the working
-recipient source on the trace side today. Two viable routes:
+**The exceptions queue carries no FA identity to join a roster to.**
+`QV_Output[Ship To Name]` is `EDWARD JONES` on 35,126 of 46,594 rows and a client's name
+on most of the rest. `QV_Manifest[Ship To Attention]` is `EDWARD JONES` or blank on
+40,770. Neither identifies a person, so there is no key — a working roster has nothing to
+attach to.
 
-- **Preferred** — fix `Branch_Contacts`, relate it to the queue on FA number, resolve
-  `{Owner.Email}` from the roster.
-- **Interim** — use the List's `Owner` person column, populated by the Power Apps panel
-  from `User()`. Every emailed exception has an owner because somebody touched it. This
-  works from day one and needs no roster.
+So for Flow 2, **the recipient comes from the List's `Owner` person column**, populated by
+the Power Apps panel from `User()` on save. Every exception in the List has an owner
+because somebody touched it to get it there. That is the design, not a fallback: it needs
+no roster, it works from day one, and it addresses the person who actually took the case
+rather than whoever the shipment happened to be addressed to.
+
+**The roster's job is the trace side.** `Current_Open_Trace[FA #]` is populated on all 95
+rows and no FA # maps to two different emails, so the join is clean.
+`Current_Open_Trace[CONTACT INFO]` covers 72 of 95; the roster fills the other 23. The
+`[Selected Branch Email]` measure in `tools/contacts-and-freshness.tmdl` resolves the case
+contact first and falls back to the roster, and `[Unreachable Traces]` tells you how many
+you still can't reach — that number should trend to zero and is worth a KPI slot.
 
 ### The flow
 
@@ -345,7 +354,7 @@ reason, and it decides whether Steps 9 and 9b are two days or two weeks.
 | 3 | Repoint `tbl_Resolution_Input` at the List | List exists |
 | 4 | Embed the Power Apps panel, test the round trip | List + repointed query |
 | 5 | Flow 1 audit log | round trip proven |
-| 6 | Fix `Branch_Contacts` **or** commit to the List `Owner` route | — |
+| 6 | Confirm the List `Owner` is populating — it is the exceptions recipient | Power Apps panel live |
 | 7 | Flow 2 mail merge behind the preview gate | Flow 1 + a recipient source |
 | 8 | Flow 3 digest | Flow 2 proven on 2–3 rows |
 

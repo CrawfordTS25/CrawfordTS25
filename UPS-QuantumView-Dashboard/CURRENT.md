@@ -1,7 +1,7 @@
 # Start here
 
 **Deliverable:** `NEWQuantum_View_Exceptions_Dashboard_fixed.pbix`
-**Guide:** `NEW-BUILD-FIXES.md` — what was wrong, plus 10 ordered Desktop steps, ~40 min
+**Guide:** `NEW-BUILD-FIXES.md` — what was wrong, plus 12 ordered Desktop steps, ~55 min
 
 Built from your `NEWQuantum_View_Exceptions_Dashboard.pbix` upload — the one with
 `Dim_Account` and `Dim_ExceptionReason` in it. **`DataModel` is byte-identical to that
@@ -34,11 +34,24 @@ Full evidence and row counts in `NEW-BUILD-FIXES.md`.
 Verified: 180 field references resolve · 0 overlaps · nothing off-canvas · 106 report JSON
 parts parse · `DataModel` SHA-256 unchanged.
 
-## What's still ahead — all of it in `NEW-BUILD-FIXES.md` §8
+## Two additions
+
+| | |
+|---|---|
+| **`Branch_Contacts` rebuilt** | it was loading 500 rows of pure nulls — row 1 of the sheet isn't the header row. Now finds the header, detects the email column by content, keys on `FA #`, and can't silently return empty again |
+| **Per-source refresh stamps** | `Refresh Status` carries the last-modified time of all five source files. `[Data As Of]` renders it in the title bar and names any source that's past its own SLA; the trace pages get the tracing workbook's stamp instead of the QV export's |
+
+One structural finding that changes the mail-merge plan: **the roster can only reach the
+trace side.** The exceptions queue carries no FA identity to join to — `Ship To Name` is
+"EDWARD JONES" on 35,126 of 46,594 rows. Exception recipients have to come from the
+SharePoint List's `Owner`.
+
+## What's still ahead — all of it in `NEW-BUILD-FIXES.md` §9
 
 Turn off Auto Date/Time · delete 4 fields · work `tools/model-fixes-v2.pq` §1–9 · add
 `A25T52` to the workbook · apply `tools/model-updates-v2.tmdl` · type the trace dates ·
-relate the calendar · repoint the date slicers · verify · re-apply the label.
+relate the calendar · run `tools/contacts-and-freshness.pq` + `.tmdl` · repoint the 5
+title-bar cards and the date slicers · verify · re-apply the label.
 
 ## Document map
 
@@ -48,8 +61,10 @@ relate the calendar · repoint the date slicers · verify · re-apply the label.
 | `WRITEBACK-AND-MAILMERGE.md` | List schema, Power Apps formulas, both flows, the blocked-tenant fallback |
 | `tools/model-fixes-v2.pq` | Power Query: the missing function, the taxonomy, the dedupe fix, account keys, trace dates |
 | `tools/model-updates-v2.tmdl` | the one model script — measures, relationships, `Dim Date` |
+| `tools/contacts-and-freshness.pq` | roster discovery + rebuild, and the `Refresh Status` source scan |
+| `tools/contacts-and-freshness.tmdl` | the roster relationship and the nine freshness / contact measures |
 | `tools/fix_new_dashboard.py` | the report-layer pass, re-runnable against the original |
-| `tools/checks/*.dax` | 6 read-only verification queries |
+| `tools/checks/*.dax` | 7 read-only verification queries |
 | `UPS_Acct_Info_.xlsx` | 24 accounts, `A25T52` added, table range extended |
 
 ### Earlier passes — kept for the reasoning, superseded as instructions

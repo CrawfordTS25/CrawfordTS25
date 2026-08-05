@@ -1,0 +1,61 @@
+// Check - are all five sources current, and does the roster actually load?
+//
+// Run after contacts-and-freshness.pq and .tmdl.
+//
+// "Branch Contacts Loaded" is the one that matters most. It read 500 before the
+// fix - 500 rows in which every column was null on every row - and an empty table
+// looks exactly like a working one until you count it. If it reads 0 here, the
+// query is broken again and the discovery query in §1 of the .pq is how you find
+// out why.
+
+EVALUATE
+	ROW(
+		"Refreshed at",            [Refreshed At],
+		"-- feed --",              BLANK(),
+		"QV feed modified",        [Feed Modified],
+		"Trace workbook modified", [Trace Modified],
+		"Stale sources",           [Stale Sources],
+		"Stalest",                 [Stalest Source],
+		"-- title bar strings --", BLANK(),
+		"Data As Of",              [Data As Of],
+		"Trace Data As Of",        [Trace Data As Of],
+		"-- roster --",            BLANK(),
+		"Branch contacts loaded",  [Branch Contacts Loaded],
+		"Active traces",           [Total Active Traces],
+		"Contactable",             [Contactable Traces],
+		"Unreachable",             [Unreachable Traces]
+	)
+
+// Expect: Branch contacts loaded > 0, Stale sources 0, Unreachable well under 23
+// (23 is what it is today, when CONTACT INFO is the only route).
+
+// Every source, with its own SLA and how far past it we are.
+EVALUATE
+	SELECTCOLUMNS(
+		'Refresh Status',
+		"Source",       'Refresh Status'[Source],
+		"File",         'Refresh Status'[File],
+		"Modified",     'Refresh Status'[Modified],
+		"Age (h)",      ROUND( 'Refresh Status'[Age Hours], 1 ),
+		"SLA (h)",      'Refresh Status'[Stale After Hours],
+		"Stale",        IF(
+		                    ISBLANK( 'Refresh Status'[Modified] )
+		                        || 'Refresh Status'[Age Hours] > 'Refresh Status'[Stale After Hours],
+		                    "YES", "" )
+	)
+	ORDER BY [Age (h)] DESC
+
+// The 23 traces the roster is supposed to rescue: an FA number, no case contact.
+EVALUATE
+	SELECTCOLUMNS(
+		FILTER( Current_Open_Trace, ISBLANK( Current_Open_Trace[CONTACT INFO] ) ),
+		"CASE #",        Current_Open_Trace[CASE #],
+		"FA #",          Current_Open_Trace[#"FA #"],
+		"Roster email",  RELATED( Branch_Contacts[Email] ),
+		"Roster name",   RELATED( Branch_Contacts[Name] )
+	)
+	ORDER BY [FA #]
+
+// Any row here with a blank "Roster email" is an FA number the roster doesn't
+// carry. One of them is the literal string "0" and will never resolve - that is a
+// data-entry issue on the trace sheet, not a query problem.

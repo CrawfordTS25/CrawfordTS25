@@ -1,0 +1,205 @@
+// =============================================================================
+// Quantum View - contacts + freshness, model side
+//
+// View > TMDL view > new script > paste > Apply.
+//
+// APPLY contacts-and-freshness.pq FIRST.  This script references the
+// 'Refresh Status' table and Branch_Contacts[FA #], neither of which exists until
+// that file has been through Close & Apply.  Applying this first will fail.
+//
+// Nothing here touches an existing measure, so nothing can regress.  Everything is
+// additive: one relationship and nine measures.
+// =============================================================================
+
+createOrReplace
+
+// -----------------------------------------------------------------------------
+// 1. BRANCH CONTACTS -> the trace side
+//
+//    Current_Open_Trace[FA #] is populated on all 95 rows and no FA # maps to two
+//    different emails, so this is a clean many-to-one.  23 of the 95 have an FA #
+//    but a blank CONTACT INFO - those are the rows the roster fills.
+//
+//    Only the trace side.  The exceptions queue carries no FA identity to join on
+//    (Ship To Name is "EDWARD JONES" on 35,126 of 46,594 QV_Output rows), so its
+//    mail-merge recipient has to come from the SharePoint List's Owner column.
+//    See WRITEBACK-AND-MAILMERGE.md.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship BranchContacts_to_CurrentOpenTrace
+			fromColumn: Current_Open_Trace.'FA #'
+			toColumn: Branch_Contacts.'FA #'
+
+// -----------------------------------------------------------------------------
+// 2. CONTACT RESOLUTION
+//
+//    CONTACT INFO first because it is hand-entered against a specific case and is
+//    therefore the more specific answer; the roster is the fallback.  Never blank
+//    - a mail merge must be able to tell "no address" apart from "address is
+//    empty string".
+// -----------------------------------------------------------------------------
+
+	ref table Current_Open_Trace
+
+		/// Email for the selected trace: the case contact, else the branch roster.
+		measure 'Selected Branch Email' =
+
+				VAR Direct = SELECTEDVALUE ( Current_Open_Trace[CONTACT INFO] )
+				VAR Fa     = SELECTEDVALUE ( Current_Open_Trace[#"FA #"] )
+				VAR Roster = LOOKUPVALUE ( Branch_Contacts[Email], Branch_Contacts[#"FA #"], Fa )
+				RETURN
+				COALESCE ( Direct, Roster, "No contact on file" )
+
+		/// Traces we can actually email, by either route. Flow 2's addressable set.
+		measure 'Contactable Traces' =
+
+				COUNTROWS (
+				    FILTER (
+				        Current_Open_Trace,
+				        NOT ISBLANK ( Current_Open_Trace[CONTACT INFO] )
+				            || NOT ISBLANK ( RELATED ( Branch_Contacts[Email] ) )
+				    )
+				)
+			formatString: #,0
+
+		/// Traces with no reachable address by any route. Should trend to zero.
+		measure 'Unreachable Traces' = [Total Active Traces] - [Contactable Traces]
+			formatString: #,0
+
+// -----------------------------------------------------------------------------
+// 3. REFRESH STATUS - the numbers behind the title bar
+//
+//    Every one of these wraps its scan in ALL ( 'Refresh Status' ).  "Data as of"
+//    is a property of the data, not of your slicer selection - without ALL, the
+//    Exception Details card would report the file date of whichever single
+//    exception you drilled into, which is what it does today.
+// -----------------------------------------------------------------------------
+
+	ref table 'Refresh Status'
+
+		/// When the model last refreshed, from the source scan itself.
+		measure 'Refreshed At' = CALCULATE ( MAX ( 'Refresh Status'[Refreshed At] ), ALL ( 'Refresh Status' ) )
+			formatString: m/d/yyyy h:mm AM/PM
+
+		/// Newest file in the QV export folder.
+		measure 'Feed Modified' =
+				CALCULATE ( MAX ( 'Refresh Status'[Modified] ),
+				    ALL ( 'Refresh Status' ), 'Refresh Status'[Source] = "QV export feed" )
+			formatString: m/d/yyyy h:mm AM/PM
+
+		/// Last save of the tracing workbook.
+		measure 'Trace Modified' =
+				CALCULATE ( MAX ( 'Refresh Status'[Modified] ),
+				    ALL ( 'Refresh Status' ), 'Refresh Status'[Source] = "Trace workbook" )
+			formatString: m/d/yyyy h:mm AM/PM
+
+		/// Sources past their own SLA, or missing entirely.
+		measure 'Stale Sources' =
+
+				COALESCE (
+				    COUNTROWS (
+				        FILTER (
+				            ALL ( 'Refresh Status' ),
+				            ISBLANK ( 'Refresh Status'[Modified] )
+				                || 'Refresh Status'[Age Hours] > 'Refresh Status'[Stale After Hours]
+				        )
+				    ),
+				    0
+				)
+			formatString: #,0
+
+		/// The worst offender, named. Missing files outrank merely-old ones.
+		measure 'Stalest Source' =
+
+				VAR Bad =
+				    ADDCOLUMNS (
+				        FILTER (
+				            ALL ( 'Refresh Status' ),
+				            ISBLANK ( 'Refresh Status'[Modified] )
+				                || 'Refresh Status'[Age Hours] > 'Refresh Status'[Stale After Hours]
+				        ),
+				        "@Over",
+				            IF (
+				                ISBLANK ( 'Refresh Status'[Modified] ),
+				                1000000,
+				                'Refresh Status'[Age Hours] - 'Refresh Status'[Stale After Hours]
+				            )
+				    )
+				VAR Worst = TOPN ( 1, Bad, [@Over], DESC )
+				RETURN
+				CONCATENATEX ( Worst, 'Refresh Status'[Source], ", " )
+
+		/// TITLE BAR - exception pages. Compact when healthy, loud when not.
+		measure 'Data As Of' =
+
+				VAR Feed  = [Feed Modified]
+				VAR Stale = [Stale Sources]
+				RETURN
+				IF (
+				    ISBLANK ( Feed ),
+				    "NO FEED FILES FOUND",
+				    UPPER ( FORMAT ( Feed, "M/d h:mm AM/PM" ) )
+				        & IF (
+				            Stale = 0,
+				            "",
+				            "   ·   " & Stale
+				                & IF ( Stale = 1, " SOURCE STALE", " SOURCES STALE" )
+				        )
+				)
+
+		/// TITLE BAR - trace pages. Same shape, different source file.
+		measure 'Trace Data As Of' =
+
+				VAR Saved = [Trace Modified]
+				VAR Stale = [Stale Sources]
+				RETURN
+				IF (
+				    ISBLANK ( Saved ),
+				    "TRACE WORKBOOK NOT FOUND",
+				    UPPER ( FORMAT ( Saved, "M/d h:mm AM/PM" ) )
+				        & IF (
+				            Stale = 0,
+				            "",
+				            "   ·   " & Stale
+				                & IF ( Stale = 1, " SOURCE STALE", " SOURCES STALE" )
+				        )
+				)
+
+		/// Every source, one per line. For a tooltip or an admin panel.
+		measure 'Source Health' =
+
+				CONCATENATEX (
+				    ALL ( 'Refresh Status' ),
+				    'Refresh Status'[Source] & "  —  "
+				        & IF (
+				            ISBLANK ( 'Refresh Status'[Modified] ),
+				            "NO FILE FOUND",
+				            FORMAT ( 'Refresh Status'[Modified], "M/d h:mm AM/PM" )
+				                & "  ("
+				                & FORMAT ( 'Refresh Status'[Age Hours], "0" )
+				                & "h)"
+				                & IF (
+				                    'Refresh Status'[Age Hours] > 'Refresh Status'[Stale After Hours],
+				                    "  STALE",
+				                    ""
+				                )
+				        ),
+				    UNICHAR ( 10 ),
+				    'Refresh Status'[Source], ASC
+				)
+
+// -----------------------------------------------------------------------------
+// 4. ROSTER HEALTH
+//
+//    Branch_Contacts loaded 500 rows of pure nulls and nobody noticed, because an
+//    empty table is indistinguishable from a working one until you go looking.
+//    This makes it a number you can put on a page.
+// -----------------------------------------------------------------------------
+
+	ref table Branch_Contacts
+
+		/// Usable roster rows. If this reads 0, the query is broken again.
+		measure 'Branch Contacts Loaded' = COALESCE ( COUNTROWS ( Branch_Contacts ), 0 )
+			formatString: #,0
