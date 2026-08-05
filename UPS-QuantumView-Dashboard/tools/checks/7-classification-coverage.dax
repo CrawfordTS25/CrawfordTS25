@@ -1,0 +1,42 @@
+// Check - does every exception land on a real Dim_ExceptionReason member?
+//
+// Run this BEFORE the fixes and again AFTER.  The number that matters is
+// "Unclassified", which is the count of rows the dimension cannot describe.
+//
+//   before   1,406 of 8,724   (16.1%)   they fall onto the dimension's blank row
+//   after           0                   "Other Exception" is a real member
+//
+// The second table lists the leaf types alongside their rollup.  Before the fix,
+// Resolutions Table[Exception Category] and Dim_ExceptionReason[Exception Category]
+// disagreed on 36.5% of matched rows, because the fact's column is an alias of the
+// TYPE - "Access Point Hold", "Wrong Recipient" - wearing a category's name.
+// After the fix there is only one category column and nothing to disagree with.
+
+EVALUATE
+	ROW(
+		"Resolutions rows",              COUNTROWS( 'Resolutions Table' ),
+		"Unclassified",                  CALCULATE(
+		                                     COUNTROWS( 'Resolutions Table' ),
+		                                     ISBLANK( 'Resolutions Table'[Exception Type] ) ),
+		"Falls to Other Exception",      CALCULATE(
+		                                     COUNTROWS( 'Resolutions Table' ),
+		                                     'Resolutions Table'[Exception Type] = "Other Exception" ),
+		"Distinct types in the fact",    DISTINCTCOUNT( 'Resolutions Table'[Exception Type] ),
+		"Rows in Dim_ExceptionReason",   COUNTROWS( Dim_ExceptionReason ),
+		"-- orphans --",                 BLANK(),
+		"Fact types with no dim row",    COUNTROWS(
+		                                     EXCEPT(
+		                                         VALUES( 'Resolutions Table'[Exception Type] ),
+		                                         VALUES( Dim_ExceptionReason[Exception Type] ) ) )
+	)
+
+// Expect: Unclassified 0, "Fact types with no dim row" blank.
+
+EVALUATE
+	SUMMARIZECOLUMNS(
+		Dim_ExceptionReason[Exception Category],
+		Dim_ExceptionReason[Exception Type],
+		"Exceptions", [Total Exceptions],
+		"Queue rows", COUNTROWS( 'Resolutions Table' )
+	)
+	ORDER BY [Exceptions] DESC

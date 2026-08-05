@@ -1,0 +1,53 @@
+// Check - is the resolution queue showing each exception's LATEST state?
+//
+// Resolutions Table dedupes QV_Output down to one row per Exception Key, sorting
+// Date modified descending first so the newest sighting wins.  Table.Distinct does
+// not honour an unbuffered Table.Sort, so before the fix the OLDEST row won
+// instead - measured, on all 4,075 exception keys that appear in more than one
+// export.  Every attribute on the queue was the first-known state, not the current
+// one.
+//
+// This query compares the row that survived against the newest row available for
+// the same key.  "Stale rows" must be 0 after model-fixes-v2.pq section 8.
+
+DEFINE
+	// newest Date modified seen for each Exception Key, across every export
+	TABLE Newest =
+		SUMMARIZE(
+			'QV_Output',
+			'QV_Output'[Exception Key],
+			"Newest Seen", MAX( 'QV_Output'[Date modified] ),
+			"Oldest Seen", MIN( 'QV_Output'[Date modified] ),
+			"Sightings",   COUNTROWS( 'QV_Output' )
+		)
+
+	TABLE Compared =
+		ADDCOLUMNS(
+			FILTER( Newest, [Sightings] > 1 ),
+			"Kept", LOOKUPVALUE(
+			            'Resolutions Table'[Date modified],
+			            'Resolutions Table'[Exception Key], [Exception Key] )
+		)
+
+EVALUATE
+	ROW(
+		"Keys seen more than once", COUNTROWS( Compared ),
+		"Kept the NEWEST row",      COUNTROWS( FILTER( Compared, [Kept] = [Newest Seen] ) ),
+		"Kept the OLDEST row",      COUNTROWS( FILTER( Compared, [Kept] = [Oldest Seen] ) ),
+		"Stale rows",               COUNTROWS( FILTER( Compared, [Kept] <> [Newest Seen] ) )
+	)
+
+// Expect after the fix: Kept the NEWEST row = Keys seen more than once, Stale 0.
+//
+// Ageing is a separate column now.  Age Days runs off First Seen, so a recurring
+// exception keeps ageing instead of resetting to zero every time it reappears.
+// 1,110 rows change Age Bucket when this lands, mostly out of "0-1" into "8+".
+
+EVALUATE
+	SUMMARIZECOLUMNS(
+		'Resolutions Table'[Age Bucket],
+		"Rows",       COUNTROWS( 'Resolutions Table' ),
+		"Min age",    MIN( 'Resolutions Table'[Age Days] ),
+		"Max age",    MAX( 'Resolutions Table'[Age Days] )
+	)
+	ORDER BY 'Resolutions Table'[Age Bucket]

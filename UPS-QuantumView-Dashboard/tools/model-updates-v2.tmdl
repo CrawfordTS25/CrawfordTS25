@@ -1,0 +1,364 @@
+// =============================================================================
+// Quantum View - model updates for NEWQuantum_View_Exceptions_Dashboard.pbix
+//
+// View > TMDL view > new script > paste > read it > Apply.
+//
+// Supersedes model-updates.tmdl.  The new file went back to the pre-sweep measure
+// set, so this re-applies the sweep on top of the two dimensions you added, plus
+// the fixes those dimensions need.
+//
+// Every measure keeps its NAME, so no visual needs rebinding - only expressions
+// change.
+//
+// RUN model-fixes-v2.pq SECTIONS 1-8 FIRST.  Section 1 of that file is the missing
+// fnClassifyException; without it the next refresh fails.  Sections 2, 5 and 6
+// create the Exception Type column this script's relationship depends on.
+//
+// DELETIONS ARE NOT IN THIS SCRIPT - the TMDL delete syntax is easy to get wrong
+// and four right-clicks is faster than debugging it.  Fields pane > right-click >
+// Delete from model:
+//
+//     QV_Output[Exception Type]                 DAX calculated column.  MAXX picks
+//                                               the alphabetically last matching
+//                                               type, so it is wrong by
+//                                               construction - "MISSING SUITE
+//                                               NUMBER" scores Package Issue.
+//                                               Delete BEFORE applying
+//                                               model-fixes-v2.pq section 6.
+//     'Resolutions Table'[Exceptions Total]     byte-identical to QV_Output[Total Exceptions]
+//     QV_Output[Open Exceptions]                byte-identical to 'Resolutions Table'[Open Ex]
+//     QV_Output[Exceptions Resolved]            byte-identical to 'Resolutions Table'[Resolved Exceptions]
+//
+// All four are verified unused by any visual in the report.
+// =============================================================================
+
+createOrReplace
+
+// -----------------------------------------------------------------------------
+// 1. ACCOUNT KEYS
+//
+//    Only needed if you did NOT take model-fixes-v2.pq sections 6 and 8, which do
+//    the same thing in Power Query (preferred - it keeps the key with the data and
+//    off the calculation engine).  If you took the M route, skip this section.
+//
+//    UPS 1Z format is 1Z + 6-char shipper account + service + package id, so
+//    MID(...,3,6) recovers it.  99% on every table today; 100% once A25T52 is in
+//    the workbook.  Matches the derivation already used on Trace_Active.
+// -----------------------------------------------------------------------------
+
+	ref table 'Resolutions Table'
+
+		column 'Account Key' = UPPER ( MID ( 'Resolutions Table'[Tracking Number], 3, 6 ) )
+			dataType: string
+			summarizeBy: none
+
+	ref table QV_Manifest
+
+		column 'Account Key' = UPPER ( MID ( QV_Manifest[Tracking Number], 3, 6 ) )
+			dataType: string
+			summarizeBy: none
+
+// -----------------------------------------------------------------------------
+// 2. AGING - status aware
+//
+//    Neither measure excluded resolved cases, so both keep counting after close.
+//    Invisible today because Tracker Status only holds "New / Needs Review" in this
+//    extract; it starts drifting the day resolution flows through.
+// -----------------------------------------------------------------------------
+
+	ref table 'Resolutions Table'
+
+		/// Open exceptions aged 8+ days. Excludes resolved.
+		measure 'Aged 8 Plus Days' =
+
+				CALCULATE(
+				    COUNTROWS('Resolutions Table'),
+				    'Resolutions Table'[Age Bucket] = "8+ Days",
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: #,0
+
+		/// Average age of the OPEN queue only.
+		measure 'Avg Age (Days)' =
+
+				CALCULATE(
+				    AVERAGE('Resolutions Table'[Age Days]),
+				    'Resolutions Table'[Tracker Status] <> "Resolved"
+				)
+			formatString: 0.0
+
+// -----------------------------------------------------------------------------
+// 3. EXCEPTION RATE - one grain on both sides            (master spec p.8)
+//
+//    Was DIVIDE([Total Exceptions],[Total Shipments]) - exception EVENTS over
+//    SHIPMENTS.  Mixed grain, and able to exceed 100% in principle.
+//    On current data: 9.31% -> 8.60%.
+// -----------------------------------------------------------------------------
+
+	ref table QV_Output
+
+		/// Distinct shipments carrying at least one exception.
+		measure 'Affected Shipments' = DISTINCTCOUNT(QV_Output[Tracking Number])
+			formatString: #,0
+
+		/// Share of shipments that hit a problem.
+		measure 'Exception Rate' = DIVIDE([Affected Shipments], [Total Shipments])
+			formatString: 0.0%
+
+		/// Shipments with no exception at all. Same grain correction.
+		measure 'Successful Shipments' = [Total Shipments] - [Affected Shipments]
+			formatString: #,0
+
+		/// Multiplicity kept separate rather than buried in the rate.
+		measure 'Exceptions per Affected Shipment' =
+				DIVIDE([Total Exceptions], [Affected Shipments])
+			formatString: 0.00
+
+// -----------------------------------------------------------------------------
+// 4. SELECTED EXCEPTION CATEGORY - reads the dimension
+//
+//    The card on Exception Details is bound to this measure, which reads
+//    QV_Output[Exception Category] - the column that holds a TYPE under a
+//    category's name.  It has to become a real lookup rather than
+//    SELECTEDVALUE(Dim_ExceptionReason[Exception Category]), because the
+//    QV_Output -> Resolutions Table relationship is single-direction: filtering
+//    QV_Output by drill-through does not propagate up to the dimension, so a plain
+//    SELECTEDVALUE on the dim would always return "Multiple".
+//
+//    Same name, same home table, so the card needs no rebinding.
+// -----------------------------------------------------------------------------
+
+	ref table QV_Output
+
+		/// Rollup category of the drilled-through exception.
+		measure 'Selected Exception Category' =
+
+				VAR SelectedType = SELECTEDVALUE ( QV_Output[Exception Type] )
+				RETURN
+				COALESCE (
+				    LOOKUPVALUE (
+				        Dim_ExceptionReason[Exception Category],
+				        Dim_ExceptionReason[Exception Type], SelectedType
+				    ),
+				    "Multiple"
+				)
+
+// -----------------------------------------------------------------------------
+// 5. RELATIONSHIPS - accounts
+//
+//    Dim_Account -> Resolutions Table -> QV_Output.  Deliberately NOT relating
+//    Dim_Account to QV_Output as well: QV_Output already reaches Dim_Account
+//    through Resolutions Table, and a second path is ambiguous - Power BI will
+//    refuse it or silently deactivate one.
+//
+//    Dim_Account -> QV_Manifest is QV_Manifest's FIRST relationship.  Until this
+//    exists, Total Shipments is a flat 92,630 under every filter and Exception Rate
+//    is wrong on any sliced view.  It is also what makes the vendor ranking chart
+//    on OVERVIEW show real per-vendor numbers instead of the same total on every
+//    bar.
+//
+//    Do NOT try to relate anything to Dim_Account[Shipper Match Key].  Five
+//    accounts share the name "EDWARD JONES MAIL SERVICES"; the "one" side of a
+//    many-to-one has to be unique, so Power BI rejects it.  That is the error you
+//    were hitting.  model-fixes-v2.pq section 7 removes the column.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship Dim_Account_to_Resolutions
+			fromColumn: 'Resolutions Table'.'Account Key'
+			toColumn: Dim_Account.'Account Key'
+
+		relationship Dim_Account_to_QV_Manifest
+			fromColumn: QV_Manifest.'Account Key'
+			toColumn: Dim_Account.'Account Key'
+
+// -----------------------------------------------------------------------------
+// 6. RELATIONSHIP - exception reason.  CHECK IT, DO NOT SCRIPT IT.
+//
+//    Your existing relationship points at 'Resolutions Table'[Exception Type ] -
+//    with a trailing space.  After model-fixes-v2.pq section 5 that column is
+//    called 'Exception Type' with no trailing space, and Power BI normally carries
+//    the rename straight through, so the relationship keeps working untouched.
+//
+//    This section is deliberately NOT a createOrReplace.  Power BI allows only one
+//    relationship between a given pair of columns, so scripting a second one under
+//    a new name would either error or silently deactivate the original.
+//
+//    In Model view, confirm you have exactly ONE relationship:
+//        'Resolutions Table'[Exception Type]  ->  Dim_ExceptionReason[Exception Type]
+//        many-to-one, single direction, ACTIVE
+//    If the rename did not carry through, delete the broken one and drag a new one.
+//
+//    Dim_ExceptionReason is deliberately related to Resolutions Table only.
+//    QV_Output reaches it through Resolutions Table, and relating both would be
+//    ambiguous.  Filtering flows
+//        Dim_ExceptionReason -> Resolutions Table -> QV_Output
+//    which is what makes the OVERVIEW category chart and both detail tables work.
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// 7. DIM DATE - one conformed calendar for both fact tables
+//
+//    Turn OFF Auto Date/Time FIRST: File > Options and settings > Options >
+//    Current File > Data Load > uncheck "Auto date/time".  The file currently
+//    carries twelve hidden LocalDateTable_* tables plus a template; leave it on and
+//    you end up with two competing calendars.
+//
+//    Bounds are derived from the data, so the calendar grows on its own as the feed
+//    extends.
+// -----------------------------------------------------------------------------
+
+	ref table 'Dim Date'
+		dataCategory: Time
+
+		partition 'Dim Date' = calculated
+			mode: import
+			source =
+
+					VAR lo = MIN ( QV_Manifest[Manifest Date] )
+					VAR hi = MAX (
+					             MAX ( QV_Manifest[Manifest Date] ),
+					             MAX ( QV_Manifest[Scheduled Delivery] )
+					         )
+					RETURN
+					ADDCOLUMNS (
+					    CALENDAR ( DATE ( YEAR ( lo ), 1, 1 ), DATE ( YEAR ( hi ), 12, 31 ) ),
+					    "Date Key",       FORMAT ( [Date], "YYYYMMDD" ) + 0,
+					    "Year",           YEAR ( [Date] ),
+					    "Quarter No",     QUARTER ( [Date] ),
+					    "Quarter",        "Q" & QUARTER ( [Date] ),
+					    "Month No",       MONTH ( [Date] ),
+					    "Month",          FORMAT ( [Date], "MMMM" ),
+					    "Month Year",     FORMAT ( [Date], "MMM YYYY" ),
+					    "Month Year Sort", YEAR ( [Date] ) * 100 + MONTH ( [Date] ),
+					    "Day",            DAY ( [Date] ),
+					    "Day of Week No", WEEKDAY ( [Date], 2 ),
+					    "Day of Week",    FORMAT ( [Date], "dddd" ),
+					    "Is Workday",     WEEKDAY ( [Date], 2 ) <= 5
+					)
+
+		column Date
+			dataType: dateTime
+			formatString: Short Date
+			isKey
+			summarizeBy: none
+
+		column 'Date Key'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column Year
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column 'Quarter No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column Quarter
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Quarter No'
+
+		column 'Month No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column Month
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Month No'
+
+		column 'Month Year Sort'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column 'Month Year'
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Month Year Sort'
+
+		column Day
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column 'Day of Week No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column 'Day of Week'
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Day of Week No'
+
+		column 'Is Workday'
+			dataType: boolean
+			summarizeBy: none
+
+// -----------------------------------------------------------------------------
+// 8. DATE RELATIONSHIPS - two roles, one calendar        (trace spec p.7)
+//
+//    Manifest Date is the ACTIVE role - "when did we ship it".
+//    Scheduled Delivery is INACTIVE - reach it with USERELATIONSHIP when you want
+//    "when was it due", rather than building a second date table.
+//
+//    Dim Date is deliberately NOT related to QV_Output directly: QV_Output already
+//    reaches it through Resolutions Table.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship DimDate_to_QV_Manifest_Manifest
+			fromColumn: QV_Manifest.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_Resolutions_Manifest
+			fromColumn: 'Resolutions Table'.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_QV_Manifest_Delivery
+			isActive: false
+			fromColumn: QV_Manifest.'Scheduled Delivery'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_Resolutions_Delivery
+			isActive: false
+			fromColumn: 'Resolutions Table'.'Scheduled Delivery'
+			toColumn: 'Dim Date'.Date
+
+// Example of using the inactive role:
+//     Exceptions by Due Date =
+//         CALCULATE ( [Total Exceptions],
+//             USERELATIONSHIP ( 'Resolutions Table'[Scheduled Delivery], 'Dim Date'[Date] ) )
+
+// -----------------------------------------------------------------------------
+// 9. DATE RELATIONSHIPS TO THE TRACE SIDE
+//
+//    APPLY THIS SECTION ONLY AFTER the trace date columns are typed
+//    (model-fixes-v2.pq section 10).  Until then Current_Open_Trace[Manifest Date]
+//    is text and the relationship cannot be created - the Apply will fail here and
+//    everything above it will still have landed.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship DimDate_to_CurrentOpenTrace_Manifest
+			fromColumn: Current_Open_Trace.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_CurrentOpenTrace_Review
+			isActive: false
+			fromColumn: Current_Open_Trace.'Last Reviewed'
+			toColumn: 'Dim Date'.Date
