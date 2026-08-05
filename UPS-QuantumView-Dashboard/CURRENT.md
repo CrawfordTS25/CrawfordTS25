@@ -1,7 +1,9 @@
 # Start here
 
 **Deliverable:** `NEWQuantum_View_Exceptions_Dashboard_fixed.pbix`
-**Guide:** `NEW-BUILD-FIXES.md` — what was wrong, plus 12 ordered Desktop steps, ~55 min
+**Guide:** `UPS_QuantumView_Build_Instructions.pdf` — 21 pages, print it
+**Same thing in markdown:** `NEW-BUILD-FIXES.md` — 12 ordered Desktop steps, ~55 min
+**Script pack:** `quantum-view-scripts.zip` — copy code from these, never from the PDF
 
 Built from your `NEWQuantum_View_Exceptions_Dashboard.pbix` upload — the one with
 `Dim_Account` and `Dim_ExceptionReason` in it. **`DataModel` is byte-identical to that
@@ -57,8 +59,12 @@ title-bar cards and the date slicers · verify · re-apply the label.
 
 | File | Purpose |
 |---|---|
-| **`NEW-BUILD-FIXES.md`** | **the current guide — follow this** |
+| **`UPS_QuantumView_Build_Instructions.pdf`** | **the printable guide — follow this** |
+| `NEW-BUILD-FIXES.md` | the same content in markdown |
 | `WRITEBACK-AND-MAILMERGE.md` | List schema, Power Apps formulas, both flows, the blocked-tenant fallback |
+| `PBIT-GUIDE.md` | using a `.pbit` template with a `.pbix` |
+| `quantum-view-scripts.zip` | the scripts and checks, packaged for copy-paste |
+| `tools/build_instructions_pdf.py` | regenerates the PDF |
 | `tools/model-fixes-v2.pq` | Power Query: the missing function, the taxonomy, the dedupe fix, account keys, trace dates |
 | `tools/model-updates-v2.tmdl` | the one model script — measures, relationships, `Dim Date` |
 | `tools/contacts-and-freshness.pq` | roster discovery + rebuild, and the `Refresh Status` source scan |
