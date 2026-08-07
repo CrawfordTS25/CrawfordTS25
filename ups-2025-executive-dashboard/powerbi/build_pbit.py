@@ -43,12 +43,18 @@ import zipfile
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-# Power BI writes every package part except [Content_Types].xml as UTF-16 LE
-# with a BOM. Writing them as UTF-8 produces a file Desktop refuses to open.
+# Power BI writes Version, Settings, Metadata, DiagramLayout, DataModelSchema and
+# Report/Layout as UTF-16 LE with NO byte-order mark. Everything else in the
+# package (content types, rels, docProps, resource JSON) is plain UTF-8.
+#
+# These values were read out of a .pbix written by the target Desktop build
+# rather than guessed. The first release of this generator wrote a BOM on the
+# UTF-16 parts, used Version "1.28" and Metadata version 3, and Desktop reported
+# the file as corrupt.
 UTF16 = "utf-16-le"
-BOM = "\ufeff"
 
-PBI_VERSION = "1.28"
+PBI_VERSION = "1.33"        # Desktop 2026.06 writes this
+METADATA_VERSION = 5
 COMPAT_LEVEL = 1550
 
 
@@ -1078,17 +1084,22 @@ def build_layout():
 # Package assembly
 # ---------------------------------------------------------------------------
 
-CONTENT_TYPES = """<?xml version="1.0" encoding="utf-8"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="json" ContentType="" />
-  <Override PartName="/Version" ContentType="" />
-  <Override PartName="/DataModelSchema" ContentType="" />
-  <Override PartName="/DiagramLayout" ContentType="" />
-  <Override PartName="/Report/Layout" ContentType="" />
-  <Override PartName="/Settings" ContentType="" />
-  <Override PartName="/Metadata" ContentType="" />
-  <Override PartName="/Report/StaticResources/SharedResources/BaseThemes/CY24SU10.json" ContentType="" />
-</Types>"""
+# Declares Defaults for the extensions present and real content types on the
+# JSON parts, mirroring what Desktop emits. The earlier version declared every
+# ContentType as empty and had no Default for "xml".
+CONTENT_TYPES = (
+    '<?xml version="1.0" encoding="utf-8"?>'
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    '<Default Extension="json" ContentType=""/>'
+    '<Default Extension="xml" ContentType=""/>'
+    '<Override PartName="/Version" ContentType=""/>'
+    '<Override PartName="/DataModelSchema" ContentType=""/>'
+    '<Override PartName="/DiagramLayout" ContentType=""/>'
+    '<Override PartName="/Report/Layout" ContentType=""/>'
+    '<Override PartName="/Settings" ContentType="application/json"/>'
+    '<Override PartName="/Metadata" ContentType="application/json"/>'
+    '</Types>'
+)
 
 # The base theme part must exist because Report/Layout references it in its
 # resource package. Contents are a minimal valid theme; the full report theme in
@@ -1121,21 +1132,32 @@ DIAGRAM_LAYOUT = {
     "defaultDiagram": "All tables",
 }
 
-SETTINGS = {"Version": 4, "ReportSettings": {"Type": 0}, "QueriesSettings": {"Version": 3}}
+SETTINGS = {
+    "Version": 4,
+    "ReportSettings": {},
+    "QueriesSettings": {
+        "TypeDetectionEnabled": True,
+        "RelationshipImportEnabled": True,
+        "RunBackgroundAnalysis": True,
+    },
+}
 
 
 def metadata(description):
     return {
-        "Version": 3,
+        "Version": METADATA_VERSION,
         "AutoCreatedRelationships": [],
         "FileDescription": description,
-        "CreatedFrom": "Cloud",
+        "CreatedFrom": "Desktop",
     }
 
 
 def utf16(text: str) -> bytes:
-    """Every package part except [Content_Types].xml is UTF-16 LE with a BOM."""
-    return (BOM + text).encode(UTF16)
+    """UTF-16 LE with NO byte-order mark - matching what Desktop writes.
+
+    A BOM here is the difference between a file that opens and one reported as
+    corrupt, and nothing in the error message points at it."""
+    return text.encode(UTF16)
 
 
 def write_pbit(out_path: pathlib.Path, model, layout, description):
@@ -1150,6 +1172,7 @@ def write_pbit(out_path: pathlib.Path, model, layout, description):
         pkg.writestr("Report/Layout", utf16(json.dumps(layout, **compact)))
         pkg.writestr("Settings", utf16(json.dumps(SETTINGS, **compact)))
         pkg.writestr("Metadata", utf16(json.dumps(metadata(description), **compact)))
+        # Plain UTF-8: resource JSON is not a UTF-16 part.
         pkg.writestr("Report/StaticResources/SharedResources/BaseThemes/CY24SU10.json",
                      json.dumps(BASE_THEME, **compact).encode("utf-8"))
     return out_path

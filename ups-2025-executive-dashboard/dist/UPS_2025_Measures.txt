@@ -1,0 +1,1218 @@
+createOrReplace
+
+	table _Measures
+		lineageTag: 3393efa3-e3e5-51d4-ae7a-a1e6c00c497a
+
+		measure 'Total Shipments' = SUM ( Fact_VolumeSpend[Volume] )
+			formatString: #,0
+			displayFolder: 1 Volume, Spend and Cost\Shipment volume
+			lineageTag: 9ee6c617-c6d2-56db-b2fe-9c3a1c34c551
+
+		measure 'Rankable Shipments' =
+				
+				CALCULATE (
+				    [Total Shipments],
+				    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+				    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+				)
+			formatString: #,0
+			displayFolder: 1 Volume, Spend and Cost\Shipment volume
+			lineageTag: 4cca2c13-58a0-5434-8ee6-f3693de3598c
+
+		measure 'YTD Shipments' =
+				
+				VAR CurrentYear = MAX ( Dim_Date[Year] )
+				VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )
+				RETURN
+				    CALCULATE (
+				        [Total Shipments],
+				        REMOVEFILTERS ( Dim_Date ),
+				        Dim_Date[Year] = CurrentYear,
+				        Dim_Date[MonthNumber] <= CurrentMonth
+				    )
+			formatString: #,0
+			displayFolder: 1 Volume, Spend and Cost\Shipment volume
+			lineageTag: 382275f9-36ad-5be9-bf5a-6c58166b73c7
+
+		measure 'Shipments PY' =
+				
+				VAR PriorKeys =
+				    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), "@Key", Dim_Date[MonthKey] - 100 )
+				RETURN
+				    CALCULATE (
+				        [Total Shipments],
+				        REMOVEFILTERS ( Dim_Date ),
+				        TREATAS ( PriorKeys, Dim_Date[MonthKey] )
+				    )
+			formatString: #,0
+			displayFolder: 1 Volume, Spend and Cost\Shipment volume
+			lineageTag: 9ad8c10d-bc5d-5881-89ba-4d7a6e0ab3ad
+
+		measure 'Shipments YoY %' =
+				
+				VAR Current = [Total Shipments]
+				VAR Prior = [Shipments PY]
+				RETURN
+				    DIVIDE ( Current - Prior, Prior )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 1 Volume, Spend and Cost\Shipment volume
+			lineageTag: e78a95d3-4136-5c2e-b0c4-265e23ef0a44
+
+		measure 'Shipments LY (Source)' = SUM ( Fact_VolumeSpend[VolumeLY] )
+			formatString: #,0
+			displayFolder: 1 Volume, Spend and Cost\Spend
+			lineageTag: cee6a625-c4a0-565e-90bf-23e958da021a
+
+		measure 'Total Net Spend' = SUM ( Fact_VolumeSpend[NetSpend] )
+			formatString: \$#,0
+			displayFolder: 1 Volume, Spend and Cost\Spend
+			lineageTag: da101769-4477-5d5c-88a1-c39d270632f1
+
+		measure 'Total Gross Spend' = SUM ( Fact_VolumeSpend[GrossSpend] )
+			formatString: \$#,0
+			displayFolder: 1 Volume, Spend and Cost\Spend
+			lineageTag: 20f4e430-8958-5a3e-9e21-315316ee5394
+
+		measure 'Total Incentive' = SUM ( Fact_VolumeSpend[Incentive] )
+			formatString: \$#,0
+			displayFolder: 1 Volume, Spend and Cost\Spend
+			lineageTag: c531ae2b-2567-550c-a095-28d9e1c13c76
+
+		measure 'Incentive %' = DIVIDE ( [Total Incentive], [Total Gross Spend] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 1 Volume, Spend and Cost\Spend
+			lineageTag: 8f342079-fd75-59ab-8662-5bf0a1df49e5
+
+		measure 'YTD Net Spend' =
+				
+				VAR CurrentYear = MAX ( Dim_Date[Year] )
+				VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )
+				RETURN
+				    CALCULATE (
+				        [Total Net Spend],
+				        REMOVEFILTERS ( Dim_Date ),
+				        Dim_Date[Year] = CurrentYear,
+				        Dim_Date[MonthNumber] <= CurrentMonth
+				    )
+			formatString: \$#,0
+			displayFolder: 1 Volume, Spend and Cost\Spend
+			lineageTag: 29c8723b-2d40-56b4-ac85-f3b75964596f
+
+		measure 'Net Spend PY' =
+				
+				VAR PriorKeys =
+				    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), "@Key", Dim_Date[MonthKey] - 100 )
+				RETURN
+				    CALCULATE (
+				        [Total Net Spend],
+				        REMOVEFILTERS ( Dim_Date ),
+				        TREATAS ( PriorKeys, Dim_Date[MonthKey] )
+				    )
+			formatString: \$#,0
+			displayFolder: 1 Volume, Spend and Cost\Spend
+			lineageTag: d624de53-ad5f-5c4c-82b4-3a5de1c3c429
+
+		measure 'Net Spend YoY %' = DIVIDE ( [Total Net Spend] - [Net Spend PY], [Net Spend PY] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+			lineageTag: afe0f732-3bfe-570c-ae6c-e5f32c1ba894
+
+		measure 'Avg Net Spend per Shipment' =
+				
+				DIVIDE (
+				    CALCULATE (
+				        [Total Net Spend],
+				        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+				        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+				    ),
+				    [Rankable Shipments]
+				)
+			formatString: \$#,0.00
+			displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+			lineageTag: e7cbff9d-05f2-5d11-9295-4b82c7a9424f
+
+		measure 'Total Billed Weight' =
+				
+				CALCULATE (
+				    SUM ( Fact_VolumeSpend[BilledWeightLbs] ),
+				    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+				    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+				)
+			formatString: #,0
+			displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+			lineageTag: e9f24be2-a24a-5953-82af-8415e530d99c
+
+		measure 'Avg Billed Weight per Shipment' = DIVIDE ( [Total Billed Weight], [Rankable Shipments] )
+			formatString: #,0.0
+			displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+			lineageTag: 7ef06ffe-995d-5def-81e1-6ad54b4a7963
+
+		measure 'Avg Net Spend per Billed Lb' =
+				
+				DIVIDE (
+				    CALCULATE (
+				        [Total Net Spend],
+				        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+				        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+				    ),
+				    [Total Billed Weight]
+				)
+			formatString: \$#,0.000
+			displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+			lineageTag: 8a57d846-0bc2-526b-b381-007a164dc3f2
+
+		measure 'Weight-Adjusted Cost Premium' =
+				
+				VAR BlendedRatePerLb =
+				    CALCULATE (
+				        [Avg Net Spend per Billed Lb],
+				        REMOVEFILTERS ( Dim_Service ),
+				        VALUES ( Dim_Date[MonthKey] )
+				    )
+				VAR ExpectedSpend = [Total Billed Weight] * BlendedRatePerLb
+				RETURN
+				    DIVIDE ( [Total Net Spend] - ExpectedSpend, ExpectedSpend )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 1 Volume, Spend and Cost\Mix
+			lineageTag: b1c1c383-1efc-5957-bee7-980ff627d68d
+
+		measure 'Service Volume Mix %' =
+				
+				DIVIDE (
+				    [Rankable Shipments],
+				    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
+				)
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 1 Volume, Spend and Cost\Mix
+			lineageTag: 4dd2a23f-f75b-5b33-8e22-be25a215257c
+
+		measure 'Service Spend Mix %' =
+				
+				DIVIDE (
+				    [Total Net Spend],
+				    CALCULATE ( [Total Net Spend], REMOVEFILTERS ( Dim_Service ) )
+				)
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 1 Volume, Spend and Cost\Mix
+			lineageTag: 057f18cc-e65a-5cbc-bca4-4bcdcf838795
+
+		measure 'Account Volume Mix %' =
+				
+				DIVIDE (
+				    [Rankable Shipments],
+				    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Account ) )
+				)
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 1 Volume, Spend and Cost\Mix
+			lineageTag: 05c8e8c0-b42a-5960-bd1b-8a69bc4f2055
+
+		measure 'Packages Measured' = SUM ( Fact_TimeInTransit[PackagesMeasured] )
+			formatString: #,0
+			displayFolder: 2 Reliability
+			lineageTag: 9b28dcfa-f4ce-59fc-949e-984c0ad07b29
+
+		measure 'Total Late' = SUM ( Fact_TimeInTransit[TotalLate] )
+			formatString: #,0
+			displayFolder: 2 Reliability
+			lineageTag: d9eaf78a-8cc7-5afc-adce-3dbb339ab1b8
+
+		measure 'Late by Day' = SUM ( Fact_TimeInTransit[LateByDay] )
+			formatString: #,0
+			displayFolder: 2 Reliability
+			lineageTag: 4c7dc0f8-ca2c-56e8-b673-d0498529373c
+
+		measure 'Late by Time' = SUM ( Fact_TimeInTransit[LateByTime] )
+			formatString: #,0
+			displayFolder: 2 Reliability
+			lineageTag: 8f8fe049-4e07-53ef-a9eb-57cd5e5a2b23
+
+		measure 'On-Time Packages' = SUM ( Fact_TimeInTransit[OnTimePackages] )
+			formatString: #,0
+			displayFolder: 2 Reliability
+			lineageTag: 2ca9a08e-3a3a-5bdd-8c06-c8780cbd68c2
+
+		measure 'On-Time Delivery %' = DIVIDE ( [On-Time Packages], [Packages Measured] )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: 2 Reliability
+			lineageTag: acb2877a-1d86-5e87-a23c-a985deca8196
+
+		measure 'Late Delivery %' = DIVIDE ( [Total Late], [Packages Measured] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 2 Reliability
+			lineageTag: 9ef7a178-1412-56a1-87f8-18753a81bb6e
+
+		measure 'Late by Day %' = DIVIDE ( [Late by Day], [Packages Measured] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 2 Reliability
+			lineageTag: c3c584ac-705a-500e-9d48-d04c1bba8744
+
+		measure 'Late by Time %' = DIVIDE ( [Late by Time], [Packages Measured] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 2 Reliability
+			lineageTag: a4883a16-6eb6-5478-a0ca-0686b95c1691
+
+		measure 'Severity Mix (Day Share of Late)' = DIVIDE ( [Late by Day], [Total Late] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 2 Reliability\Trend and stability
+			lineageTag: f602ea40-ddc8-55a5-ad94-336a82b00eef
+
+		measure 'OTD % PM' =
+				
+				VAR CurrentKey = SELECTEDVALUE ( Dim_Date[MonthKey] )
+				VAR PriorKey =
+				    IF ( MOD ( CurrentKey, 100 ) = 1, CurrentKey - 89, CurrentKey - 1 )
+				RETURN
+				    IF (
+				        NOT ISBLANK ( CurrentKey ),
+				        CALCULATE (
+				            [On-Time Delivery %],
+				            REMOVEFILTERS ( Dim_Date ),
+				            Dim_Date[MonthKey] = PriorKey
+				        )
+				    )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: 2 Reliability\Trend and stability
+			lineageTag: c548de76-2123-5155-999d-437910daa3ee
+
+		measure 'OTD % Delta MoM' =
+				
+				VAR Current = [On-Time Delivery %]
+				VAR Prior = [OTD % PM]
+				RETURN
+				    IF ( NOT ISBLANK ( Current ) && NOT ISBLANK ( Prior ), Current - Prior )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: 2 Reliability\Trend and stability
+			lineageTag: 560c110a-30c1-5964-9caa-06af64da7d8e
+
+		measure 'OTD % Annual Benchmark' =
+				
+				CALCULATE (
+				    [On-Time Delivery %],
+				    REMOVEFILTERS ( Dim_Date[MonthNumber], Dim_Date[MonthName], Dim_Date[Quarter],
+				        Dim_Date[MonthYearLabel], Dim_Date[MonthKey] )
+				)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: 2 Reliability\Trend and stability
+			lineageTag: b8c686f3-70c5-5248-9f6c-6da175d05692
+
+		measure 'OTD Volatility (pp)' =
+				
+				VAR MonthlySeries =
+				    ADDCOLUMNS (
+				        CALCULATETABLE (
+				            VALUES ( Dim_Date[MonthKey] ),
+				            Dim_Date[IsReportable] = "Yes"
+				        ),
+				        "@OTD", [On-Time Delivery %]
+				    )
+				VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )
+				RETURN
+				    IF ( COUNTROWS ( Clean ) >= 2, STDEVX.P ( Clean, [@OTD] ) * 100 )
+			formatString: #,0.00
+			displayFolder: 2 Reliability\Trend and stability
+			lineageTag: c4247a76-f99f-5264-8397-49eb7c160ee2
+
+		measure 'Worst OTD Month' =
+				
+				VAR MonthlySeries =
+				    ADDCOLUMNS (
+				        CALCULATETABLE (
+				            VALUES ( Dim_Date[MonthYearLabel] ),
+				            Dim_Date[IsReportable] = "Yes"
+				        ),
+				        "@OTD", [On-Time Delivery %]
+				    )
+				VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )
+				RETURN
+				    IF (
+				        NOT ISEMPTY ( Clean ),
+				        CONCATENATEX (
+				            TOPN ( 1, Clean, [@OTD], ASC ),
+				            Dim_Date[MonthYearLabel] & " (" & FORMAT ( [@OTD], "0.0%" ) & ")"
+				        )
+				    )
+			displayFolder: 2 Reliability\Statistical confidence
+			lineageTag: ec9cab1c-4d2b-5d3e-b9d1-09c265a9bad2
+
+		measure 'OTD Wilson Lower Bound' =
+				
+				VAR N = [Packages Measured]
+				VAR Successes = [On-Time Packages]
+				VAR Z = 1.96                                  // 95% two-sided
+				VAR P = DIVIDE ( Successes, N )
+				VAR Denominator = 1 + DIVIDE ( Z * Z, N )
+				VAR Centre = P + DIVIDE ( Z * Z, 2 * N )
+				VAR Margin =
+				    Z * SQRT ( DIVIDE ( P * ( 1 - P ), N ) + DIVIDE ( Z * Z, 4 * N * N ) )
+				RETURN
+				    IF ( N > 0, DIVIDE ( Centre - Margin, Denominator ) )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: 2 Reliability\Statistical confidence
+			lineageTag: 6f5d05dc-cb1e-50b7-968d-8da00be6ce32
+
+		measure 'OTD Confidence Gap (pp)' =
+				
+				VAR Gap = [On-Time Delivery %] - [OTD Wilson Lower Bound]
+				RETURN
+				    IF ( NOT ISBLANK ( Gap ), Gap * 100 )
+			formatString: #,0.00
+			displayFolder: 2 Reliability\Statistical confidence
+			lineageTag: e41d2933-0c38-5749-8634-4432112b936e
+
+		measure 'OTD Confidence Label' =
+				
+				VAR Gap = [OTD Confidence Gap (pp)]
+				RETURN
+				    SWITCH (
+				        TRUE (),
+				        ISBLANK ( Gap ), "No transit data",
+				        Gap <= 0.5, "High confidence",
+				        Gap <= 2.0, "Moderate confidence",
+				        Gap <= 10.0, "Low confidence - small sample",
+				        "Not interpretable - sample too small"
+				    )
+			displayFolder: 2 Reliability\Coverage
+			lineageTag: 2b53a1bc-9396-5bbe-b6bf-887e7cdc11c4
+
+		measure 'Months with Transit Data' =
+				
+				CALCULATE (
+				    DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ),
+				    REMOVEFILTERS ( Dim_Service, Dim_Account )
+				)
+			formatString: #,0
+			displayFolder: 2 Reliability\Coverage
+			lineageTag: da7bccd1-168a-5157-a8a4-61757e39947f
+
+		measure 'Transit Coverage %' =
+				
+				DIVIDE (
+				    CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ) ),
+				    CALCULATE (
+				        DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ),
+				        REMOVEFILTERS ( Dim_Service )
+				    )
+				)
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 2 Reliability\Coverage
+			lineageTag: d3496311-4476-5b25-841d-caaae5b8ff77
+
+		measure 'Has Transit Data' = IF ( [Packages Measured] > 0, "Yes", "No" )
+			displayFolder: 2 Reliability\Coverage
+			lineageTag: cb5f43c1-3b81-504c-90f0-609e2d3854ab
+
+		measure 'Issued Claims Pkgs' = SUM ( Fact_Claims[IssuedClaimsPkgQty] )
+			formatString: #,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 914dc259-3865-571f-a6bc-b3b5e6a1b349
+
+		measure 'Paid Claims Pkgs' = SUM ( Fact_Claims[PaidClaimsPkgQty] )
+			formatString: #,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 64d12609-9e09-567b-a74f-03809b4e81b4
+
+		measure 'Registered Claims Pkgs' = SUM ( Fact_Claims[RegisteredClaimsPkgQty] )
+			formatString: #,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: be315720-d76f-5161-a0f8-f28d4ac18bdf
+
+		measure 'Paid Claims Amount' = SUM ( Fact_Claims[PaidClaimsAmount] )
+			formatString: \$#,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 0628f804-040d-5422-bd6b-66a36fbad452
+
+		measure 'Claims Declared Value' = SUM ( Fact_Claims[ClaimsDeclaredValue] )
+			formatString: \$#,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: fa3d51b1-1c69-5150-aece-1531c2370e24
+
+		measure 'Loss Claims' =
+				
+				CALCULATE (
+				    [Issued Claims Pkgs],
+				    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Loss" )
+				)
+			formatString: #,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: bc18739e-f3d4-5a48-b2f9-039a4ffc032d
+
+		measure 'Damage Claims' =
+				
+				CALCULATE (
+				    [Issued Claims Pkgs],
+				    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Damage" )
+				)
+			formatString: #,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 5f1f6347-5032-5ab5-a5d6-99977e0096af
+
+		measure 'Loss Claims Paid Amount' =
+				
+				CALCULATE (
+				    [Paid Claims Amount],
+				    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Loss" )
+				)
+			formatString: \$#,0
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: f274c388-6b00-5605-a2df-03b4dbd096aa
+
+		measure 'Claims Recovery Rate' = DIVIDE ( [Paid Claims Pkgs], [Issued Claims Pkgs] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 8bb0285e-849e-5303-a9e8-c8883544cad3
+
+		measure 'Avg Paid per Claim' = DIVIDE ( [Paid Claims Amount], [Paid Claims Pkgs] )
+			formatString: \$#,0.00
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 3f98e49c-10e2-549e-82f0-62f5a3362c3d
+
+		measure 'Loss Claim Rate per 10k' = DIVIDE ( [Loss Claims], [Rankable Shipments] ) * 10000
+			formatString: #,0.00
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 678c3fb7-53ca-5328-b8ac-f18ef3e2fea6
+
+		measure 'Claims Rate per 10k' = DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] ) * 10000
+			formatString: #,0.00
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: f4a67e08-09b3-5b3f-88c3-435c50c1cfc1
+
+		measure 'Loss Claim Rate' = DIVIDE ( [Loss Claims], [Rankable Shipments] )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: 072f100b-997b-5cb8-a34b-e4cdcdcdd9da
+
+		measure 'Exception / Claims Rate' = DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+			lineageTag: df9e847e-1edb-53b4-8b3f-a1398082ae72
+
+		measure 'Claims Cost per 1k Shipments' = DIVIDE ( [Paid Claims Amount], [Rankable Shipments] ) * 1000
+			formatString: \$#,0.00
+			displayFolder: 3 Claims and Loss Risk\Concentration
+			lineageTag: 13c9b1cb-5434-5771-85b1-c11ff746b225
+
+		measure 'Firm-wide Loss Rate per 10k' =
+				
+				CALCULATE (
+				    [Loss Claim Rate per 10k],
+				    REMOVEFILTERS ( Dim_Account, Dim_Service )
+				)
+			formatString: #,0.00
+			displayFolder: 3 Claims and Loss Risk\Concentration
+			lineageTag: 20bcf940-6d6f-5e74-869b-2785a96dd228
+
+		measure 'Loss Rate Index vs Firm' = DIVIDE ( [Loss Claim Rate per 10k], [Firm-wide Loss Rate per 10k] )
+			formatString: #,0.00
+			displayFolder: 3 Claims and Loss Risk\Concentration
+			lineageTag: d8b6c6cc-8b04-5f9f-9c7d-284562a02e63
+
+		measure 'Loss Risk Flag' =
+				
+				VAR Idx = [Loss Rate Index vs Firm]
+				VAR Vol = [Rankable Shipments]
+				RETURN
+				    SWITCH (
+				        TRUE (),
+				        ISBLANK ( [Loss Claims] ) || [Loss Claims] = 0, "No loss activity",
+				        Vol < 500, "Insufficient volume to rate",
+				        Idx >= 3, "Critical - investigate",
+				        Idx >= 2, "Elevated - monitor",
+				        Idx >= 1, "Above firm average",
+				        "At or below firm average"
+				    )
+			displayFolder: 3 Claims and Loss Risk\Concentration
+			lineageTag: 1264bb43-643c-5969-9092-b6578a8a8a51
+
+		measure 'Top Account Share of Loss Claims' =
+				
+				VAR ByAccount =
+				    ADDCOLUMNS (
+				        CALCULATETABLE ( VALUES ( Dim_Account[AccountKey] ), REMOVEFILTERS ( Dim_Account ) ),
+				        "@Loss", [Loss Claims]
+				    )
+				VAR TotalLoss = SUMX ( ByAccount, [@Loss] )
+				VAR TopLoss = MAXX ( ByAccount, [@Loss] )
+				RETURN
+				    DIVIDE ( TopLoss, TotalLoss )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 3 Claims and Loss Risk\Concentration
+			lineageTag: b874cac7-b86d-565e-bb60-a3ae481a29c5
+
+		measure 'Top Account by Loss Claims' =
+				
+				VAR ByAccount =
+				    ADDCOLUMNS (
+				        CALCULATETABLE ( VALUES ( Dim_Account[AccountName] ), REMOVEFILTERS ( Dim_Account ) ),
+				        "@Loss", [Loss Claims]
+				    )
+				RETURN
+				    CONCATENATEX ( TOPN ( 1, ByAccount, [@Loss], DESC ), Dim_Account[AccountName] )
+			displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+			lineageTag: 8ea4314d-5ffc-5d8a-9ac3-fd04635eadbd
+
+		measure 'Loss Claims (Allocated Proxy)' =
+				
+				SUMX (
+				    VALUES ( Dim_Account[AccountKey] ),
+				    VAR AccountLoss = CALCULATE ( [Loss Claims], REMOVEFILTERS ( Dim_Service ) )
+				    VAR AccountVolumeAllServices =
+				        CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
+				    VAR VolumeInScope = [Rankable Shipments]
+				    RETURN
+				        AccountLoss * DIVIDE ( VolumeInScope, AccountVolumeAllServices )
+				)
+			formatString: #,0.0
+			displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+			lineageTag: ffcd1448-72dc-57a8-b1b7-e6372778649d
+
+		measure 'Loss Claim Rate per 10k (Allocated Proxy)' =
+				
+				DIVIDE ( [Loss Claims (Allocated Proxy)], [Rankable Shipments] ) * 10000
+			formatString: #,0.00
+			displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+			lineageTag: 73f2b0b1-7fab-5419-92f6-4c81d5c7182d
+
+		measure 'Claims Attribution Warning' =
+				
+				"Allocated estimate. The claims extract carries no service or tracking key; "
+				    & "account-level claims are distributed across services by shipment volume. "
+				    & "Not a measured service-level loss rate. Do not use for service selection."
+			displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+			lineageTag: 017d3b78-6f60-5e74-9fc7-729fd3c6d0ce
+
+		measure 'Minimum Shipment Threshold' = SELECTEDVALUE ( 'Volume Threshold'[Volume Threshold], 1000 )
+			formatString: #,0
+			displayFolder: 4 Scoring and Recommendation\1. Qualification
+			lineageTag: 4f827bc4-10f8-54fb-b45b-0e2d70fb4c73
+
+		measure 'Minimum Volume Share' = SELECTEDVALUE ( 'Share Threshold'[Share Threshold], 0.01 )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 4 Scoring and Recommendation\1. Qualification
+			lineageTag: 332cca93-15be-598a-a214-6162c4881f38
+
+		measure 'Minimum Measured Packages' = 384
+			formatString: #,0
+			displayFolder: 4 Scoring and Recommendation\1. Qualification
+			lineageTag: 1c0ec210-b833-59e1-abcd-70d209c04136
+
+		measure 'Service Volume Share' =
+				
+				DIVIDE (
+				    [Rankable Shipments],
+				    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
+				)
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 4 Scoring and Recommendation\1. Qualification
+			lineageTag: b2e9bac8-c180-5fdb-9a8d-ce10b0fd1635
+
+		measure 'Annual Qualification Flag' =
+				
+				VAR MeetsAbsolute = [Rankable Shipments] >= [Minimum Shipment Threshold]
+				VAR MeetsShare = [Service Volume Share] >= [Minimum Volume Share]
+				VAR MeetsMeasurement = [Packages Measured] >= [Minimum Measured Packages]
+				
+				
+				
+				VAR IsRankableService = SELECTEDVALUE ( Dim_Service[IncludeInRanking] ) = "Yes"
+				RETURN
+				    IF ( MeetsAbsolute && MeetsShare && MeetsMeasurement && IsRankableService, 1, 0 )
+			formatString: #,0
+			displayFolder: 4 Scoring and Recommendation\1. Qualification
+			lineageTag: aed5f62a-3ebc-581a-8c72-98ea473f0b1a
+
+		measure 'Qualification Status' =
+				
+				VAR Vol = [Rankable Shipments]
+				VAR Measured = [Packages Measured]
+				RETURN
+				    SWITCH (
+				        TRUE (),
+				        [Annual Qualification Flag] = 1, "Qualified",
+				        ISBLANK ( Vol ) || Vol = 0, "No shipment volume",
+				        Measured < [Minimum Measured Packages],
+				            "Transit sample too small (" & FORMAT ( Measured, "#,0" ) & " measured, "
+				                & FORMAT ( [Minimum Measured Packages], "#,0" ) & " required)",
+				        Vol < [Minimum Shipment Threshold],
+				            "Below volume floor (" & FORMAT ( Vol, "#,0" ) & " of "
+				                & FORMAT ( [Minimum Shipment Threshold], "#,0" ) & ")",
+				        [Service Volume Share] < [Minimum Volume Share],
+				            "Below " & FORMAT ( [Minimum Volume Share], "0.0%" ) & " volume share",
+				        "Excluded from ranking by service mapping"
+				    )
+			displayFolder: 4 Scoring and Recommendation\1. Qualification
+			lineageTag: a01d7726-fe53-53c8-8575-8c336aeef00d
+
+		measure 'Qualified Service Count' =
+				
+				COUNTROWS (
+				    FILTER (
+				        CALCULATETABLE (
+				            VALUES ( Dim_Service[ServiceGroup] ),
+				            REMOVEFILTERS ( Dim_Service )
+				        ),
+				        [Annual Qualification Flag] = 1
+				    )
+				)
+			formatString: #,0
+			displayFolder: 4 Scoring and Recommendation\1. Qualification
+			lineageTag: e62a3c61-fc29-5ef7-b8f9-8c318a5b5202
+
+		measure 'Claims Service Key Available' = 0
+			formatString: #,0
+			displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+			lineageTag: a34c1687-c1a3-5d3d-af91-18d6b03d98e8
+
+		measure 'Score - Reliability' =
+				
+				VAR QualifiedSet =
+				    FILTER (
+				        CALCULATETABLE (
+				            VALUES ( Dim_Service[ServiceGroup] ),
+				            REMOVEFILTERS ( Dim_Service )
+				        ),
+				        [Annual Qualification Flag] = 1
+				    )
+				VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [OTD Wilson Lower Bound] )
+				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+				VAR MinV = MINX ( Populated, [@M] )
+				VAR MaxV = MAXX ( Populated, [@M] )
+				VAR Self = [OTD Wilson Lower Bound]
+				RETURN
+				    IF (
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
+				        IF ( MaxV = MinV, 1, DIVIDE ( Self - MinV, MaxV - MinV ) )
+				    )
+			formatString: #,0.00
+			displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+			lineageTag: cb02405a-df05-57fb-bf31-a17d2c2bab60
+
+		measure 'Score - Loss Risk' =
+				
+				VAR QualifiedSet =
+				    FILTER (
+				        CALCULATETABLE (
+				            VALUES ( Dim_Service[ServiceGroup] ),
+				            REMOVEFILTERS ( Dim_Service )
+				        ),
+				        [Annual Qualification Flag] = 1
+				    )
+				VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Loss Claim Rate per 10k] )
+				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+				VAR MinV = MINX ( Populated, [@M] )
+				VAR MaxV = MAXX ( Populated, [@M] )
+				VAR Self = [Loss Claim Rate per 10k]
+				RETURN
+				    IF (
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
+				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+				    )
+			formatString: #,0.00
+			displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+			lineageTag: 27d5388f-911b-51ef-831f-df2ff41eb193
+
+		measure 'Score - Exception Risk' =
+				
+				VAR QualifiedSet =
+				    FILTER (
+				        CALCULATETABLE (
+				            VALUES ( Dim_Service[ServiceGroup] ),
+				            REMOVEFILTERS ( Dim_Service )
+				        ),
+				        [Annual Qualification Flag] = 1
+				    )
+				VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Claims Rate per 10k] )
+				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+				VAR MinV = MINX ( Populated, [@M] )
+				VAR MaxV = MAXX ( Populated, [@M] )
+				VAR Self = [Claims Rate per 10k]
+				RETURN
+				    IF (
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
+				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+				    )
+			formatString: #,0.00
+			displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+			lineageTag: f5dd1b52-aaad-5047-b913-420cdb0e3fea
+
+		measure 'Score - Cost' =
+				
+				VAR QualifiedSet =
+				    FILTER (
+				        CALCULATETABLE (
+				            VALUES ( Dim_Service[ServiceGroup] ),
+				            REMOVEFILTERS ( Dim_Service )
+				        ),
+				        [Annual Qualification Flag] = 1
+				    )
+				VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Avg Net Spend per Billed Lb] )
+				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+				VAR MinV = MINX ( Populated, [@M] )
+				VAR MaxV = MAXX ( Populated, [@M] )
+				VAR Self = [Avg Net Spend per Billed Lb]
+				RETURN
+				    IF (
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
+				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+				    )
+			formatString: #,0.00
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: 469e4445-bd69-56b0-9835-fb913324bb0f
+
+		measure 'Weight - Reliability' = 0.40
+			formatString: 0%;-0%;0%
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: cf045b93-7c98-5ad8-90cd-6fbb38f022f7
+
+		measure 'Weight - Loss Risk' = 0.30
+			formatString: 0%;-0%;0%
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: aa2f0729-2870-582a-b56d-527e7b6e1514
+
+		measure 'Weight - Exception Risk' = 0.20
+			formatString: 0%;-0%;0%
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: ad97f364-a7bd-5909-99a9-0362ab8ea597
+
+		measure 'Weight - Cost' = 0.10
+			formatString: 0%;-0%;0%
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: 6589c4f8-5024-57d4-be9a-d5d9056df3bb
+
+		measure 'Effective Weight Total' =
+				
+				VAR W =
+				    IF ( NOT ISBLANK ( [Score - Reliability] ), [Weight - Reliability], 0 )
+				        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Weight - Loss Risk], 0 )
+				        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Weight - Exception Risk], 0 )
+				        + IF ( NOT ISBLANK ( [Score - Cost] ), [Weight - Cost], 0 )
+				RETURN
+				    IF ( W > 0, W )
+			formatString: #,0.00
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: 4cc03ab0-4670-546c-8bfb-b7b2ebe7029d
+
+		measure 'Service Consistency Score' =
+				
+				VAR Weighted =
+				    IF ( NOT ISBLANK ( [Score - Reliability] ), [Score - Reliability] * [Weight - Reliability], 0 )
+				        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Score - Loss Risk] * [Weight - Loss Risk], 0 )
+				        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Score - Exception Risk] * [Weight - Exception Risk], 0 )
+				        + IF ( NOT ISBLANK ( [Score - Cost] ), [Score - Cost] * [Weight - Cost], 0 )
+				RETURN
+				    IF (
+				        [Annual Qualification Flag] = 1,
+				        DIVIDE ( Weighted, [Effective Weight Total] ) * 100
+				    )
+			formatString: #,0.0
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: 6e7c86f2-7df2-5232-8268-e5e737aceac3
+
+		measure 'Score Basis' =
+				
+				VAR Covered =
+				    IF (
+				        NOT ISBLANK ( [Score - Reliability] ),
+				        "Reliability " & FORMAT ( [Weight - Reliability] / [Effective Weight Total], "0%" ) & "; ",
+				        ""
+				    )
+				        & IF ( NOT ISBLANK ( [Score - Loss Risk] ), "Loss risk " & FORMAT ( [Weight - Loss Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
+				        & IF ( NOT ISBLANK ( [Score - Exception Risk] ), "Exceptions " & FORMAT ( [Weight - Exception Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
+				        & IF ( NOT ISBLANK ( [Score - Cost] ), "Cost " & FORMAT ( [Weight - Cost] / [Effective Weight Total], "0%" ), "" )
+				VAR Missing =
+				    IF ( ISBLANK ( [Score - Loss Risk] ) || ISBLANK ( [Score - Exception Risk] ),
+				        " | Claims components unavailable at service grain - weights reallocated.", "" )
+				RETURN
+				    "Effective weights: " & Covered & Missing
+			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+			lineageTag: e9336c2e-5203-5bfb-9030-0e1c45b5468f
+
+		measure 'Service Rank' =
+				
+				IF (
+				    [Annual Qualification Flag] = 1,
+				    RANKX (
+				        FILTER (
+				            CALCULATETABLE (
+				                VALUES ( Dim_Service[ServiceGroup] ),
+				                REMOVEFILTERS ( Dim_Service )
+				            ),
+				            [Annual Qualification Flag] = 1
+				        ),
+				        [Service Consistency Score],
+				        ,
+				        DESC,
+				        DENSE
+				    )
+				)
+			formatString: #,0
+			displayFolder: 4 Scoring and Recommendation\4. Recommendation categories
+			lineageTag: 79da7f14-22f5-582a-8238-33a4501e7715
+
+		measure 'Recommendation Category' =
+				
+				VAR Qualified = [Annual Qualification Flag] = 1
+				VAR QualCount = [Qualified Service Count]
+				VAR Tier = SELECTEDVALUE ( Dim_Service[ServiceTier] )
+				VAR Rank = [Service Rank]
+				VAR BestPremiumRank =
+				    RANKX (
+				        FILTER (
+				            CALCULATETABLE (
+				                VALUES ( Dim_Service[ServiceGroup] ),
+				                REMOVEFILTERS ( Dim_Service )
+				            ),
+				            [Annual Qualification Flag] = 1
+				                && SELECTEDVALUE ( Dim_Service[ServiceTier] ) = "Premium"
+				        ),
+				        [OTD Wilson Lower Bound],
+				        ,
+				        DESC,
+				        DENSE
+				    )
+				VAR IsVolumeAnchor = [Service Volume Share] >= 0.50
+				VAR Volatile = [OTD Volatility (pp)] > 1.5
+				VAR BelowFirmOTD = [On-Time Delivery %] < CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )
+				RETURN
+				    SWITCH (
+				        TRUE (),
+				        NOT Qualified, "Not ranked - " & [Qualification Status],
+				        QualCount <= 1, "Single qualified service - no comparison possible",
+				        // The service the firm actually runs on. It is the default by
+				        // economics; the question the dashboard answers is whether its
+				        // reliability is acceptable, not whether to replace it.
+				        IsVolumeAnchor && BelowFirmOTD, "Volume anchor - reliability below firm average, monitor",
+				        IsVolumeAnchor, "Recommended default service",
+				        Rank = 1 && Tier <> "Premium", "Recommended default service",
+				        Rank = 1, "Best overall performer",
+				        BestPremiumRank = 1, "Recommended premium service",
+				        Volatile, "Service to monitor - inconsistent month to month",
+				        "Qualified alternative"
+				    )
+			displayFolder: 4 Scoring and Recommendation\4. Recommendation categories
+			lineageTag: 3881f2c7-7537-5fe4-802a-08f55a4c27af
+
+		measure 'Recommendation Callout' =
+				
+				VAR MonthsCovered = [Months with Transit Data]
+				VAR BestService =
+				    CONCATENATEX (
+				        TOPN (
+				            1,
+				            FILTER (
+				                CALCULATETABLE (
+				                    VALUES ( Dim_Service[ServiceGroup] ),
+				                    REMOVEFILTERS ( Dim_Service )
+				                ),
+				                [Annual Qualification Flag] = 1
+				            ),
+				            [Service Consistency Score],
+				            DESC
+				        ),
+				        Dim_Service[ServiceGroup]
+				    )
+				VAR FirmOTD = CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )
+				RETURN
+				    SWITCH (
+				        TRUE (),
+				        MonthsCovered = 0,
+				            "No Time-in-Transit data loaded. Reliability cannot be assessed and no service recommendation can be made.",
+				        MonthsCovered < 6,
+				            "PROVISIONAL - based on " & MonthsCovered & " month(s) of Time-in-Transit data. "
+				                & "Highest-scoring qualified service: " & BestService & ". "
+				                & "Firm-wide on-time delivery " & FORMAT ( FirmOTD, "0.0%" ) & ". "
+				                & "Do not issue as an annual service policy until at least six completed months are loaded.",
+				        "Highest-scoring qualified service: " & BestService & ". Firm-wide on-time delivery "
+				            & FORMAT ( FirmOTD, "0.0%" ) & " across " & MonthsCovered & " months."
+				    )
+			displayFolder: 4 Scoring and Recommendation\4. Recommendation categories
+			lineageTag: fec5dd20-7de7-5040-8762-2a3ee5e1d4af
+
+		measure 'Months Loaded' =
+				
+				CALCULATE (
+				    DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+				    Dim_Date[IsLoaded] = "Yes",
+				    REMOVEFILTERS ( Dim_Date )
+				)
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: 0c74ba25-ec69-5398-9f19-5966f236215b
+
+		measure 'Completed Months Loaded' =
+				
+				CALCULATE (
+				    DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+				    Dim_Date[IsReportable] = "Yes",
+				    REMOVEFILTERS ( Dim_Date )
+				)
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: de1f3e2e-e7b5-5961-b88e-9cbc6e4525a9
+
+		measure 'Missing Months' =
+				
+				VAR Expected =
+				    CALCULATE (
+				        DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+				        Dim_Date[IsCompletedMonth] = "Yes",
+				        REMOVEFILTERS ( Dim_Date )
+				    )
+				RETURN
+				    Expected - [Completed Months Loaded]
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: 8ffcc82b-d078-573e-8a06-b4809425fb15
+
+		measure 'Missing Months List' =
+				
+				CONCATENATEX (
+				    CALCULATETABLE (
+				        VALUES ( Dim_Date[MonthYearLabel] ),
+				        Dim_Date[IsCompletedMonth] = "Yes",
+				        Dim_Date[IsLoaded] = "No",
+				        REMOVEFILTERS ( Dim_Date )
+				    ),
+				    Dim_Date[MonthYearLabel],
+				    ", ",
+				    Dim_Date[SortOrder],
+				    ASC
+				)
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: cbb8d4dc-4ba8-5f2f-a04e-c3e7d0c86967
+
+		measure 'Annual Completeness %' = DIVIDE ( [Months Loaded], 12 )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: cd017c85-fd80-5f9e-ad1c-9e4017a4a44d
+
+		measure 'Volume Months Covered' =
+				
+				CALCULATE ( DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: d50bdfdb-f6fd-5a1e-8f8e-211fdf310d16
+
+		measure 'Transit Months Covered' =
+				
+				CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: 1bb375f0-35ab-5780-804c-63de5a969127
+
+		measure 'Claims Months Covered' =
+				
+				CALCULATE ( DISTINCTCOUNT ( Fact_Claims[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Coverage
+			lineageTag: 9674be06-1a49-5312-abf8-88a4a9171c8a
+
+		measure 'Coverage Summary' =
+				
+				"Volume & Spend: " & [Volume Months Covered] & " mo  |  "
+				    & "Time-in-Transit: " & [Transit Months Covered] & " mo  |  "
+				    & "Claims: " & [Claims Months Covered] & " mo"
+			displayFolder: 5 Data Quality and Narrative\Exclusions
+			lineageTag: 639ecb3a-1d3f-51d8-9233-4fc8ca7cedc3
+
+		measure 'Excluded Adjustment Spend' =
+				
+				CALCULATE (
+				    SUM ( Fact_VolumeSpend[NetSpend] ),
+				    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "No" )
+				)
+			formatString: \$#,0
+			displayFolder: 5 Data Quality and Narrative\Exclusions
+			lineageTag: 888bf002-1fdd-527a-addf-1ece5c3e96de
+
+		measure 'Excluded Adjustment Spend %' =
+				
+				DIVIDE (
+				    [Excluded Adjustment Spend],
+				    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
+				)
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 5 Data Quality and Narrative\Exclusions
+			lineageTag: fc935c76-77b5-5dea-896a-d3d5c045b17e
+
+		measure 'Spend-Only Adjustment Rows' =
+				
+				CALCULATE (
+				    COUNTROWS ( Fact_VolumeSpend ),
+				    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = "Yes" )
+				)
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Exclusions
+			lineageTag: 512199bd-0878-5547-a35e-d274e2a7a8c7
+
+		measure 'Spend-Only Adjustment Value' =
+				
+				CALCULATE (
+				    SUM ( Fact_VolumeSpend[NetSpend] ),
+				    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = "Yes" )
+				)
+			formatString: \$#,0
+			displayFolder: 5 Data Quality and Narrative\Exclusions
+			lineageTag: 944c3493-d14c-5cb5-a2df-b471866507ce
+
+		measure 'Unattributed Spend %' =
+				
+				DIVIDE (
+				    [Spend-Only Adjustment Value],
+				    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
+				)
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 5 Data Quality and Narrative\Exclusions
+			lineageTag: 85a37059-9c45-5eee-beab-2370991795ac
+
+		measure 'Unmapped Product Rows' =
+				
+				CALCULATE (
+				    COUNTROWS ( Fact_VolumeSpend ),
+				    KEEPFILTERS ( Fact_VolumeSpend[ServiceGroup] = "Unmapped - Review" )
+				)
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Exclusions
+			lineageTag: ff5374b0-34b0-54fe-a1eb-b9d59400d3e1
+
+		measure 'Masked Sub-Parent Volume' =
+				
+				CALCULATE (
+				    [Total Shipments],
+				    KEEPFILTERS ( Fact_VolumeSpend[IsMaskedSubParent] = "Yes" )
+				)
+			formatString: #,0
+			displayFolder: 5 Data Quality and Narrative\Reconciliation
+			lineageTag: 13812175-1061-5d01-9e08-21ef0a355a99
+
+		measure 'Accessorial Net Spend' = SUM ( Fact_Accessorial[NetSpend] )
+			formatString: \$#,0
+			displayFolder: 5 Data Quality and Narrative\Reconciliation
+			lineageTag: 28027189-8a3d-5559-ad98-2689c0268fcf
+
+		measure 'Spend Reconciliation Variance' =
+				
+				VAR VolumeSpendTotal =
+				    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
+				VAR AccessorialTotal =
+				    CALCULATE ( [Accessorial Net Spend], REMOVEFILTERS ( Dim_Service ) )
+				RETURN
+				    IF ( AccessorialTotal <> 0, VolumeSpendTotal - AccessorialTotal )
+			formatString: \$#,0.00
+			displayFolder: 5 Data Quality and Narrative\Reconciliation
+			lineageTag: a6f0d05c-ed24-52cc-87d9-ea301210d648
+
+		measure 'Reconciliation Status' =
+				
+				VAR Variance = [Spend Reconciliation Variance]
+				RETURN
+				    SWITCH (
+				        TRUE (),
+				        ISBLANK ( Variance ), "No accessorial detail for this period",
+				        ABS ( Variance ) < 1, "Reconciled",
+				        ABS ( Variance ) < 100, "Rounding variance - " & FORMAT ( Variance, "$#,0.00" ),
+				        "VARIANCE - " & FORMAT ( Variance, "$#,0.00" ) & " - investigate before publishing"
+				    )
+			displayFolder: 5 Data Quality and Narrative\Reconciliation
+			lineageTag: 32212800-1316-579d-844a-2bfabbf2aa97
+
+		measure 'Measured vs Billed Coverage %' = DIVIDE ( [Packages Measured], [Rankable Shipments] )
+			formatString: 0.0%;-0.0%;0.0%
+			displayFolder: 5 Data Quality and Narrative\Banner narrative
+			lineageTag: a0c5fbab-b86e-5872-8ede-daac1b8267bf
+
+		measure 'Data Basis Banner' =
+				
+				VAR VolMonths = [Volume Months Covered]
+				VAR TransitMonths = [Transit Months Covered]
+				VAR ClaimsMonths = [Claims Months Covered]
+				VAR Missing = [Missing Months List]
+				VAR Recon = [Reconciliation Status]
+				VAR Severity =
+				    SWITCH (
+				        TRUE (),
+				        TransitMonths = 0, "NO RELIABILITY DATA",
+				        TransitMonths < 6 || ClaimsMonths < 6, "PROVISIONAL",
+				        VolMonths < 12, "PARTIAL YEAR",
+				        "ANNUAL"
+				    )
+				RETURN
+				    Severity & " - " & [Coverage Summary]
+				        & IF ( LEN ( Missing ) > 0, "  |  Not yet loaded: " & Missing, "" )
+				        & IF ( Recon <> "Reconciled" && LEFT ( Recon, 2 ) = "VA", "  |  " & Recon, "" )
+			displayFolder: 5 Data Quality and Narrative\Banner narrative
+			lineageTag: d46e7952-f09f-5377-85e0-b17d9f010de0
+
+		measure 'Data Basis Banner Colour' =
+				
+				SWITCH (
+				    TRUE (),
+				    [Transit Months Covered] = 0, "#B3261E",
+				    [Transit Months Covered] < 6 || [Claims Months Covered] < 6, "#B26B00",
+				    [Volume Months Covered] < 12, "#5B4B8A",
+				    "#1F6F54"
+				)
+			displayFolder: 5 Data Quality and Narrative\Dynamic titles
+			lineageTag: d4896e9e-556c-521d-b694-7ab6d44b6ad2
+
+		measure 'Title - Executive Overview' =
+				
+				VAR Period =
+				    IF (
+				        ISFILTERED ( Dim_Date[MonthYearLabel] ) || ISFILTERED ( Dim_Date[Quarter] ),
+				        CONCATENATEX (
+				            VALUES ( Dim_Date[MonthYearLabel] ),
+				            Dim_Date[MonthYearLabel], ", ", Dim_Date[SortOrder], ASC
+				        ),
+				        SELECTEDVALUE ( Dim_Date[Year], "2025" ) & " full year"
+				    )
+				VAR Scope =
+				    IF (
+				        ISFILTERED ( Dim_Service[Scope] ),
+				        SELECTEDVALUE ( Dim_Service[Scope], "All scopes" ),
+				        "Domestic and international"
+				    )
+				RETURN
+				    "UPS Shipping Performance - " & Period & " - " & Scope
+			displayFolder: 5 Data Quality and Narrative\Dynamic titles
+			lineageTag: d15d733d-06b8-5bd3-8af4-3eb5f161fb55
+
+		measure 'Title - Service Scorecard' =
+				
+				"Service scorecard - " & [Qualified Service Count] & " of "
+				    & CALCULATE (
+				        DISTINCTCOUNT ( Dim_Service[ServiceGroup] ),
+				        REMOVEFILTERS ( Dim_Service ),
+				        Dim_Service[IncludeInRanking] = "Yes"
+				    )
+				    & " services qualify at "
+				    & FORMAT ( [Minimum Shipment Threshold], "#,0" ) & " shipments / "
+				    & FORMAT ( [Minimum Volume Share], "0.0%" ) & " share"
+			displayFolder: 5 Data Quality and Narrative\Dynamic titles
+			lineageTag: 5a00b173-86b2-59f9-b71f-aaedcd0de940
+
+		measure 'Title - Claims' =
+				
+				"Claims and loss risk - account level only ("
+				    & [Claims Months Covered] & " month(s) loaded). "
+				    & "Claims carry no service key."
+			displayFolder: 5 Data Quality and Narrative\Dynamic titles
+			lineageTag: c2abcf63-def0-50a8-ba6a-f6be55e6cb92
+
+		column _
+			dataType: int64
+			isHidden
+			lineageTag: 0fc0f418-2d98-55fe-b0a6-39af2a8c9e05
+			summarizeBy: none
+			sourceColumn: _
+
+			annotation SummarizationSetBy = Automatic
+
+		partition _Measures = m
+			mode: import
+			source =
+					let
+					    Source = #table(type table [_ = Int64.Type], {{0}})
+					in
+					    Source
+
+		annotation PBI_Id = b4e716f67b215913a3b8220e14dde68e
