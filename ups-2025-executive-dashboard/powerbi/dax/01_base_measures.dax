@@ -69,10 +69,10 @@ RETURN
     )
 
 Shipments YoY % =
-VAR Current = [Total Shipments]
+VAR CurrentValue = [Total Shipments]
 VAR Prior = [Shipments PY]
 RETURN
-    DIVIDE ( Current - Prior, Prior )
+    DIVIDE ( CurrentValue - Prior, Prior )
 
 // Prior-year volume as supplied on the extract itself. Only the Schema A
 // (Monthly/YTD VnR) files carry comparatives, so this is blank for months

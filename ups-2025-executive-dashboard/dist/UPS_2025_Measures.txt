@@ -50,10 +50,10 @@ createOrReplace
 
 		measure 'Shipments YoY %' =
 				
-				VAR Current = [Total Shipments]
+				VAR CurrentValue = [Total Shipments]
 				VAR Prior = [Shipments PY]
 				RETURN
-				    DIVIDE ( Current - Prior, Prior )
+				    DIVIDE ( CurrentValue - Prior, Prior )
 			formatString: 0.0%;-0.0%;0.0%
 			displayFolder: 1 Volume, Spend and Cost\Shipment volume
 			lineageTag: e78a95d3-4136-5c2e-b0c4-265e23ef0a44
@@ -276,10 +276,10 @@ createOrReplace
 
 		measure 'OTD % Delta MoM' =
 				
-				VAR Current = [On-Time Delivery %]
+				VAR CurrentValue = [On-Time Delivery %]
 				VAR Prior = [OTD % PM]
 				RETURN
-				    IF ( NOT ISBLANK ( Current ) && NOT ISBLANK ( Prior ), Current - Prior )
+				    IF ( NOT ISBLANK ( CurrentValue ) && NOT ISBLANK ( Prior ), CurrentValue - Prior )
 			formatString: 0.00%;-0.00%;0.00%
 			displayFolder: 2 Reliability\Trend and stability
 			lineageTag: 560c110a-30c1-5964-9caa-06af64da7d8e
@@ -676,11 +676,11 @@ createOrReplace
 				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 				VAR MinV = MINX ( Populated, [@M] )
 				VAR MaxV = MAXX ( Populated, [@M] )
-				VAR Self = [OTD Wilson Lower Bound]
+				VAR ThisValue = [OTD Wilson Lower Bound]
 				RETURN
 				    IF (
-				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
-				        IF ( MaxV = MinV, 1, DIVIDE ( Self - MinV, MaxV - MinV ) )
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ),
+				        IF ( MaxV = MinV, 1, DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
 				    )
 			formatString: #,0.00
 			displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
@@ -700,11 +700,11 @@ createOrReplace
 				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 				VAR MinV = MINX ( Populated, [@M] )
 				VAR MaxV = MAXX ( Populated, [@M] )
-				VAR Self = [Loss Claim Rate per 10k]
+				VAR ThisValue = [Loss Claim Rate per 10k]
 				RETURN
 				    IF (
-				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
-				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ) && [Claims Service Key Available] = 1,
+				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
 				    )
 			formatString: #,0.00
 			displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
@@ -724,11 +724,11 @@ createOrReplace
 				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 				VAR MinV = MINX ( Populated, [@M] )
 				VAR MaxV = MAXX ( Populated, [@M] )
-				VAR Self = [Claims Rate per 10k]
+				VAR ThisValue = [Claims Rate per 10k]
 				RETURN
 				    IF (
-				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
-				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ) && [Claims Service Key Available] = 1,
+				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
 				    )
 			formatString: #,0.00
 			displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
@@ -748,11 +748,11 @@ createOrReplace
 				VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 				VAR MinV = MINX ( Populated, [@M] )
 				VAR MaxV = MAXX ( Populated, [@M] )
-				VAR Self = [Avg Net Spend per Billed Lb]
+				VAR ThisValue = [Avg Net Spend per Billed Lb]
 				RETURN
 				    IF (
-				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
-				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+				        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ),
+				        IF ( MaxV = MinV, 1, 1 - DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
 				    )
 			formatString: #,0.00
 			displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
@@ -853,7 +853,7 @@ createOrReplace
 				VAR Qualified = [Annual Qualification Flag] = 1
 				VAR QualCount = [Qualified Service Count]
 				VAR Tier = SELECTEDVALUE ( Dim_Service[ServiceTier] )
-				VAR Rank = [Service Rank]
+				VAR RankPosition = [Service Rank]
 				VAR BestPremiumRank =
 				    RANKX (
 				        FILTER (
@@ -882,8 +882,8 @@ createOrReplace
 				        // reliability is acceptable, not whether to replace it.
 				        IsVolumeAnchor && BelowFirmOTD, "Volume anchor - reliability below firm average, monitor",
 				        IsVolumeAnchor, "Recommended default service",
-				        Rank = 1 && Tier <> "Premium", "Recommended default service",
-				        Rank = 1, "Best overall performer",
+				        RankPosition = 1 && Tier <> "Premium", "Recommended default service",
+				        RankPosition = 1, "Best overall performer",
 				        BestPremiumRank = 1, "Recommended premium service",
 				        Volatile, "Service to monitor - inconsistent month to month",
 				        "Qualified alternative"
@@ -1103,14 +1103,14 @@ createOrReplace
 
 		measure 'Reconciliation Status' =
 				
-				VAR Variance = [Spend Reconciliation Variance]
+				VAR VarianceAmount = [Spend Reconciliation Variance]
 				RETURN
 				    SWITCH (
 				        TRUE (),
-				        ISBLANK ( Variance ), "No accessorial detail for this period",
-				        ABS ( Variance ) < 1, "Reconciled",
-				        ABS ( Variance ) < 100, "Rounding variance - " & FORMAT ( Variance, "$#,0.00" ),
-				        "VARIANCE - " & FORMAT ( Variance, "$#,0.00" ) & " - investigate before publishing"
+				        ISBLANK ( VarianceAmount ), "No accessorial detail for this period",
+				        ABS ( VarianceAmount ) < 1, "Reconciled",
+				        ABS ( VarianceAmount ) < 100, "Rounding variance - " & FORMAT ( VarianceAmount, "$#,0.00" ),
+				        "VARIANCE - " & FORMAT ( VarianceAmount, "$#,0.00" ) & " - investigate before publishing"
 				    )
 			displayFolder: 5 Data Quality and Narrative\Reconciliation
 			lineageTag: 32212800-1316-579d-844a-2bfabbf2aa97
@@ -1165,14 +1165,14 @@ createOrReplace
 				        ),
 				        SELECTEDVALUE ( Dim_Date[Year], "2025" ) & " full year"
 				    )
-				VAR Scope =
+				VAR ScopeText =
 				    IF (
 				        ISFILTERED ( Dim_Service[Scope] ),
 				        SELECTEDVALUE ( Dim_Service[Scope], "All scopes" ),
 				        "Domestic and international"
 				    )
 				RETURN
-				    "UPS Shipping Performance - " & Period & " - " & Scope
+				    "UPS Shipping Performance - " & Period & " - " & ScopeText
 			displayFolder: 5 Data Quality and Narrative\Dynamic titles
 			lineageTag: d15d733d-06b8-5bd3-8af4-3eb5f161fb55
 

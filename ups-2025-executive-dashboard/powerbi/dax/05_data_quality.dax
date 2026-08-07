@@ -137,14 +137,14 @@ RETURN
     IF ( AccessorialTotal <> 0, VolumeSpendTotal - AccessorialTotal )
 
 Reconciliation Status =
-VAR Variance = [Spend Reconciliation Variance]
+VAR VarianceAmount = [Spend Reconciliation Variance]
 RETURN
     SWITCH (
         TRUE (),
-        ISBLANK ( Variance ), "No accessorial detail for this period",
-        ABS ( Variance ) < 1, "Reconciled",
-        ABS ( Variance ) < 100, "Rounding variance - " & FORMAT ( Variance, "$#,0.00" ),
-        "VARIANCE - " & FORMAT ( Variance, "$#,0.00" ) & " - investigate before publishing"
+        ISBLANK ( VarianceAmount ), "No accessorial detail for this period",
+        ABS ( VarianceAmount ) < 1, "Reconciled",
+        ABS ( VarianceAmount ) < 100, "Rounding variance - " & FORMAT ( VarianceAmount, "$#,0.00" ),
+        "VARIANCE - " & FORMAT ( VarianceAmount, "$#,0.00" ) & " - investigate before publishing"
     )
 
 // Shipper View (Time-in-Transit) against Payor View (Volume & Net Spend).
@@ -208,14 +208,14 @@ VAR Period =
         ),
         SELECTEDVALUE ( Dim_Date[Year], "2025" ) & " full year"
     )
-VAR Scope =
+VAR ScopeText =
     IF (
         ISFILTERED ( Dim_Service[Scope] ),
         SELECTEDVALUE ( Dim_Service[Scope], "All scopes" ),
         "Domestic and international"
     )
 RETURN
-    "UPS Shipping Performance - " & Period & " - " & Scope
+    "UPS Shipping Performance - " & Period & " - " & ScopeText
 
 Title - Service Scorecard =
 "Service scorecard - " & [Qualified Service Count] & " of "

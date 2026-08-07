@@ -1252,6 +1252,15 @@ def write_pbip(out_dir: pathlib.Path, model, layout, name):
 # references, malformed JSON, duplicate names, and orphaned relationships.
 # ---------------------------------------------------------------------------
 
+# Words the TMDL parser reserves. A DAX VAR named after one of these is
+# accepted by the measure editor but rejected on TMDL apply with
+# "'X' is a reserved word", which is how these were found.
+TMDL_RESERVED = {
+    "current", "self", "rank", "variance", "scope", "default", "table", "column",
+    "measure", "model", "partition", "relationship", "expression", "annotation",
+    "role", "perspective", "culture", "hierarchy", "level", "ref", "namespace",
+}
+
 DAX_REF = re.compile(r"(?:'([^']+)'|\b([A-Za-z_][A-Za-z0-9_]*))\[([^\]]+)\]")
 TIME_INTELLIGENCE = re.compile(r"\b(TOTALYTD|TOTALQTD|TOTALMTD|SAMEPERIODLASTYEAR"
                                r"|DATEADD|DATESYTD|DATESQTD|DATESMTD|PARALLELPERIOD"
@@ -1300,6 +1309,12 @@ def validate_dax_references(model):
                 elif column not in columns[ref_table]:
                     problems.append(f"[{label}] references unknown column "
                                     f"{ref_table}[{column}]")
+
+            for var in re.findall(r"\bVAR\s+([A-Za-z_][A-Za-z0-9_]*)", body):
+                if var.lower() in TMDL_RESERVED:
+                    problems.append(
+                        f"[{label}] declares VAR {var} - reserved word in "
+                        f"TMDL; rejected on apply")
 
             for match in re.finditer(r"REMOVEFILTERS\s*\(([^)]*)\)", body):
                 for arg in match.group(1).split(","):

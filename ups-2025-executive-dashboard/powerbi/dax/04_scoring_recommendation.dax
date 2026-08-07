@@ -121,11 +121,11 @@ VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [OTD Wilson Lower Bound] )
 VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 VAR MinV = MINX ( Populated, [@M] )
 VAR MaxV = MAXX ( Populated, [@M] )
-VAR Self = [OTD Wilson Lower Bound]
+VAR ThisValue = [OTD Wilson Lower Bound]
 RETURN
     IF (
-        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
-        IF ( MaxV = MinV, 1, DIVIDE ( Self - MinV, MaxV - MinV ) )
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ),
+        IF ( MaxV = MinV, 1, DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
     )
 
 // Loss-risk component. Lower rate is better, so the scale is inverted.
@@ -146,11 +146,11 @@ VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Loss Claim Rate per 10k] )
 VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 VAR MinV = MINX ( Populated, [@M] )
 VAR MaxV = MAXX ( Populated, [@M] )
-VAR Self = [Loss Claim Rate per 10k]
+VAR ThisValue = [Loss Claim Rate per 10k]
 RETURN
     IF (
-        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
-        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ) && [Claims Service Key Available] = 1,
+        IF ( MaxV = MinV, 1, 1 - DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
     )
 
 // Broader operational friction. Same attribution limitation as loss.
@@ -167,11 +167,11 @@ VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Claims Rate per 10k] )
 VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 VAR MinV = MINX ( Populated, [@M] )
 VAR MaxV = MAXX ( Populated, [@M] )
-VAR Self = [Claims Rate per 10k]
+VAR ThisValue = [Claims Rate per 10k]
 RETURN
     IF (
-        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
-        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ) && [Claims Service Key Available] = 1,
+        IF ( MaxV = MinV, 1, 1 - DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
     )
 
 // Cost component, on a WEIGHT-NORMALISED basis. Using cost per shipment here
@@ -193,11 +193,11 @@ VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Avg Net Spend per Billed Lb] 
 VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
 VAR MinV = MINX ( Populated, [@M] )
 VAR MaxV = MAXX ( Populated, [@M] )
-VAR Self = [Avg Net Spend per Billed Lb]
+VAR ThisValue = [Avg Net Spend per Billed Lb]
 RETURN
     IF (
-        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
-        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+        [Annual Qualification Flag] = 1 && NOT ISBLANK ( ThisValue ),
+        IF ( MaxV = MinV, 1, 1 - DIVIDE ( ThisValue - MinV, MaxV - MinV ) )
     )
 
 
@@ -275,7 +275,7 @@ Recommendation Category =
 VAR Qualified = [Annual Qualification Flag] = 1
 VAR QualCount = [Qualified Service Count]
 VAR Tier = SELECTEDVALUE ( Dim_Service[ServiceTier] )
-VAR Rank = [Service Rank]
+VAR RankPosition = [Service Rank]
 VAR BestPremiumRank =
     RANKX (
         FILTER (
@@ -304,8 +304,8 @@ RETURN
         // reliability is acceptable, not whether to replace it.
         IsVolumeAnchor && BelowFirmOTD, "Volume anchor - reliability below firm average, monitor",
         IsVolumeAnchor, "Recommended default service",
-        Rank = 1 && Tier <> "Premium", "Recommended default service",
-        Rank = 1, "Best overall performer",
+        RankPosition = 1 && Tier <> "Premium", "Recommended default service",
+        RankPosition = 1, "Best overall performer",
         BestPremiumRank = 1, "Recommended premium service",
         Volatile, "Service to monitor - inconsistent month to month",
         "Qualified alternative"

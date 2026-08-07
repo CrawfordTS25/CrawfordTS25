@@ -77,10 +77,10 @@ RETURN
     )
 
 OTD % Delta MoM =
-VAR Current = [On-Time Delivery %]
+VAR CurrentValue = [On-Time Delivery %]
 VAR Prior = [OTD % PM]
 RETURN
-    IF ( NOT ISBLANK ( Current ) && NOT ISBLANK ( Prior ), Current - Prior )
+    IF ( NOT ISBLANK ( CurrentValue ) && NOT ISBLANK ( Prior ), CurrentValue - Prior )
 
 // Annual OTD for the current service, ignoring any month filter. Used as the
 // reference line on monthly trend visuals.
