@@ -107,11 +107,22 @@ There are two scripts. Prefer the first.
 1. New, empty Power BI Desktop file.
 2. **Model view → TMDL view**.
 3. Paste the whole script, **Apply**.
-4. When prompted, point `p_Folder` at the folder holding the four renamed
-   .xlsx extracts, and allow the refresh.
+4. When prompted, confirm `p_Folder`. It already defaults to the 2025 Volume
+   Spend share, so in most cases you just click through and allow the refresh.
 
 Nothing else: the tables, measures, relationships and sort-by columns all come
 from the script.
+
+**File names are not hard-coded.** The queries ask the folder for the first
+`.xlsx` whose name starts with a month prefix — `1-JAN`, `2-FEB`, `3-MAR`,
+`4-APR` — matched case-insensitively, ignoring Excel's `~$` lock files. UPS can
+keep renaming the extracts and the refresh still works. If a prefix has no
+match, the query fails with a named `UPS.FileNotFound` error naming the prefix
+and the folder, instead of a confusing missing-column error further down.
+
+The share holds the whole year, but only these four months are wired in. The
+remaining files have not been profiled, and their column layouts cannot be
+assumed to match — see the note at the end of this document.
 
 **`UPS_2025_Measures.txt` — measures only.** Use this if the tables already
 exist because the nine queries were built by hand. `createOrReplace` is scoped
@@ -168,8 +179,34 @@ github.com/CrawfordTS25/CrawfordTS25
 
 | Want | File |
 |---|---|
-| All 112 measures in one paste | `dist/UPS_2025_Measures.txt` |
+| **The whole model in one paste** | `dist/UPS_2025_Full_Model.txt` |
+| All 112 measures only | `dist/UPS_2025_Measures.txt` |
 | The nine queries | `powerbi/powerquery_standalone/` |
 | The full written build | `dist/UPS_2025_Manual_Build_Guide.pdf` |
-| The template, now fixed | `dist/UPS_2025_Executive_Dashboard.pbit` |
 | The theme | `powerbi/theme/UPS_Executive_Theme.json` |
+
+The `.pbit` files are left in `dist/` for reference only. Desktop rejected
+them three times and that route is closed — use the TMDL script.
+
+---
+
+## What is loaded, and what is sitting in the folder unused
+
+The share holds the full year, not the four months this model reads. Two of
+those files matter more than the rest:
+
+* **December carries four tabs** — Volume & Spend, Time-in-Transit,
+  Accessorial and Claims. That is a second month of transit and claims data,
+  which is the single biggest gap in the current build: on-time delivery is
+  40% of the recommendation score and it currently rests on March alone, and
+  every claims figure on the page is one month of evidence.
+* **October and November share one file**, July is labelled as a one-time
+  custom pull, and August has two files.
+
+None of those layouts have been profiled. The four wired months already use
+**two different Volume & Spend schemas** — January and February one shape,
+March and April another — so the later files cannot be assumed to match
+either. Adding them means opening each one, confirming the header row and
+column positions, and extending the query, not copying a line and changing a
+prefix. Ask for that as a follow-up and it is a contained piece of work; do
+not point the existing queries at them and expect correct numbers.

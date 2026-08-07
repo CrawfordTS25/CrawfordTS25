@@ -5,9 +5,19 @@
 //   Home > Transform data > Manage Parameters > New Parameter
 //     Name:          p_Folder
 //     Type:          Text
-//     Current Value: the folder holding your four .xlsx files
-//                    e.g.  C:\UPS\2025
-// No trailing backslash.
+//     Current Value: X:\support_services\External_Provisioning\UPS\Reports Provided by UPS\2025\Volume Spend
+// No trailing backslash. Paste the path exactly - no quotes around it.
+//
+// The queries do NOT hard-code file names. Each one asks the folder for the
+// first .xlsx whose name begins with a month prefix - "1-JAN", "2-FEB",
+// "3-MAR", "4-APR" - and is case-insensitive about it. That means UPS can keep
+// renaming the files, and adding the rest of the year's files to the same
+// folder changes nothing, until you wire those months in deliberately.
+//
+// If a month is missing the query stops with a named error
+// (UPS.FileNotFound) that tells you which prefix it could not find and which
+// folder it looked in, rather than failing somewhere deeper with a confusing
+// column error.
 
 
 // ===========================================================================

@@ -299,9 +299,13 @@ def build(folder, dax_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--folder", default=r"C:\UPS\2025",
-                        help="Default value for p_Folder - the folder holding the "
-                             "four UPS .xlsx extracts.")
+    parser.add_argument(
+        "--folder",
+        default=r"X:\support_services\External_Provisioning\UPS"
+                r"\Reports Provided by UPS\2025\Volume Spend",
+        help="Default value for p_Folder - the folder holding the monthly UPS "
+             ".xlsx extracts. Queries locate files by month prefix (1-JAN, "
+             "2-FEB, ...), so the exact file names do not matter.")
     parser.add_argument("--out", type=pathlib.Path,
                         default=ROOT / "dist" / "UPS_2025_Full_Model.tmdl")
     parser.add_argument("--dax", type=pathlib.Path, default=HERE / "dax")

@@ -68,10 +68,43 @@ let
     MaskedOf = (numv, namev) as text =>
         if Clean(numv) = "@@" or Clean(namev) = "@@" then "Yes" else "No",
 
-    FirstSheet = (fileName as text) as table =>
+    // ------------------------------------------------------------------
+    // Locating the monthly files
+    //
+    // The delivered names are irregular: separators drift between "_" and " ",
+    // "1x" and "1X", "Volume & Net Spend" and "Volume  Net Spend", and every
+    // file carries a different UPS request number. Two files even share one
+    // request number. Matching an exact name would be fragile and would need
+    // the names transcribed correctly in the first place.
+    //
+    // So files are found by their MONTH PREFIX - "1-JAN", "3-MAR" - which is
+    // the one part of the convention that has held across every delivery.
+    // ------------------------------------------------------------------
+    Files = Folder.Files(p_Folder),
+
+    PickWorkbook = (prefix as text) as binary =>
+        let
+            Hits = Table.SelectRows(Files, each
+                Text.StartsWith(Text.Upper([Name]), Text.Upper(prefix))
+                and Text.EndsWith(Text.Lower([Name]), ".xlsx")
+                and not Text.StartsWith([Name], "~$"))
+        in
+            if Table.IsEmpty(Hits) then
+                error Error.Record(
+                    "UPS.FileNotFound",
+                    "No .xlsx file in the folder starts with '" & prefix & "'.",
+                    "Checked: " & p_Folder)
+            else
+                Hits{0}[Content],
+
+    FirstSheet = (prefix as text) as table =>
         Table.SelectRows(
-            Excel.Workbook(File.Contents(p_Folder & "\" & fileName), null, true),
+            Excel.Workbook(PickWorkbook(prefix), null, true),
             each [Kind] = "Sheet"){0}[Data],
+
+    NamedSheet = (prefix as text, sheet as text) as table =>
+        Excel.Workbook(PickWorkbook(prefix), null, true)
+            {[Item = sheet, Kind = "Sheet"]}[Data],
 
     // --- Schema A: January / February layout -------------------------------
     // Column offsets, verified against the real extracts:
@@ -82,9 +115,9 @@ let
     //   Column10 Volume (TY)       Column19 Gross Spend (TY)
     //   Column22 Net Spend (TY)    Column25 Incentive (TY)
     //   Column31 Billed Weight Lbs (TY)
-    ReadSchemaA = (fileName as text, monthNo as number) as table =>
+    ReadSchemaA = (prefix as text, monthNo as number) as table =>
         let
-            Rows = Table.Skip(FirstSheet(fileName), 7),
+            Rows = Table.Skip(FirstSheet(prefix), 7),
             Pick = Table.SelectColumns(Rows, {
                 "Column2", "Column3", "Column4", "Column5", "Column6", "Column7",
                 "Column8", "Column9", "Column10", "Column19", "Column22",
@@ -170,13 +203,11 @@ let
             Out,
 
     // --- the four months ---------------------------------------------------
-    Jan = ReadSchemaA("UPS_2025_01_VolumeSpend.xlsx", 1),
+    Jan = ReadSchemaA("1-JAN", 1),
     // Month 2 ONLY. This file also contains January - see the banner note.
-    Feb = ReadSchemaA("UPS_2025_02_VolumeSpend_YTD.xlsx", 2),
-    Mar = ReadSchemaB(
-        Excel.Workbook(File.Contents(p_Folder & "\UPS_2025_03_AllTabs.xlsx"), null, true)
-            {[Item = "VnS", Kind = "Sheet"]}[Data], 3),
-    Apr = ReadSchemaB(FirstSheet("UPS_2025_04_VolumeSpend.xlsx"), 4),
+    Feb = ReadSchemaA("2-FEB", 2),
+    Mar = ReadSchemaB(NamedSheet("3-MAR", "VnS"), 3),
+    Apr = ReadSchemaB(FirstSheet("4-APR"), 4),
 
     Combined = Table.Combine({Jan, Feb, Mar, Apr}),
 

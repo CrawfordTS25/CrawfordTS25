@@ -52,10 +52,33 @@ let
         then "Unassigned Sub-Parent"
         else Clean(namev),
 
-    ReadTnT = (fileName as text, monthNo as number) as table =>
+    // Files are located by MONTH PREFIX ("3-MAR"), not by exact name: the
+    // delivered names vary in separators, spacing and request number, and two
+    // files share one request number. The prefix is the stable part.
+    Files = Folder.Files(p_Folder),
+
+    PickWorkbook = (prefix as text) as binary =>
         let
-            Sheet = Excel.Workbook(File.Contents(p_Folder & "\" & fileName), null, true)
-                        {[Item = "TnT", Kind = "Sheet"]}[Data],
+            Hits = Table.SelectRows(Files, each
+                Text.StartsWith(Text.Upper([Name]), Text.Upper(prefix))
+                and Text.EndsWith(Text.Lower([Name]), ".xlsx")
+                and not Text.StartsWith([Name], "~$"))
+        in
+            if Table.IsEmpty(Hits) then
+                error Error.Record(
+                    "UPS.FileNotFound",
+                    "No .xlsx file in the folder starts with '" & prefix & "'.",
+                    "Checked: " & p_Folder)
+            else
+                Hits{0}[Content],
+
+    NamedSheet = (prefix as text, sheet as text) as table =>
+        Excel.Workbook(PickWorkbook(prefix), null, true)
+            {[Item = sheet, Kind = "Sheet"]}[Data],
+
+    ReadTnT = (prefix as text, monthNo as number) as table =>
+        let
+            Sheet = NamedSheet(prefix, "TnT"),
             Rows = Table.Skip(Sheet, 5),
             Pick = Table.SelectColumns(Rows, {
                 "Column2", "Column3", "Column4", "Column5", "Column7", "Column8",
@@ -101,7 +124,7 @@ let
         in
             Out,
 
-    Mar = ReadTnT("UPS_2025_03_AllTabs.xlsx", 3),
+    Mar = ReadTnT("3-MAR", 3),
 
     Combined = Table.Combine({Mar}),
 
