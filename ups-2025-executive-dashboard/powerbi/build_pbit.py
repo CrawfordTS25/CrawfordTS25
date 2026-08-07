@@ -1050,6 +1050,39 @@ def build_sections():
     return pages
 
 
+def build_minimal_layout():
+    """A one-page, no-visual report.
+
+    The report is the largest untested surface in the package: 70 visuals
+    expressed in the legacy Report/Layout schema, opened by a Desktop build that
+    now writes the newer PBIR format. Stripping it isolates the model - if the
+    model-only template opens and the full one does not, the report schema is
+    the problem and nothing else is.
+    """
+    return {
+        "id": 0,
+        "resourcePackages": [{
+            "resourcePackage": {
+                "disabled": False,
+                "items": [{"name": "CY24SU10", "path": "BaseThemes/CY24SU10.json",
+                           "type": 202}],
+                "name": "SharedResources",
+                "type": 2,
+            }
+        }],
+        "sections": [section(0, "Page 1", [])],
+        "config": json.dumps({
+            "version": "5.55",
+            "themeCollection": {"baseTheme": {"name": "CY24SU10", "version": "5.55",
+                                              "type": 2}},
+            "activeSectionIndex": 0,
+            "defaultDrillFilterOtherVisuals": True,
+        }, separators=(",", ":")),
+        "layoutOptimization": 0,
+        "publicCustomVisuals": [],
+    }
+
+
 def build_layout():
     return {
         "id": 0,
@@ -1385,11 +1418,15 @@ def main():
                         help="Default value for the p_DataFolder parameter.")
     parser.add_argument("--reporting-year", type=int, default=2025)
     parser.add_argument("--no-pbip", action="store_true")
+    parser.add_argument("--minimal-report", action="store_true",
+                        help="Emit a one-page, no-visual report. Isolates the "
+                             "model from the report schema when diagnosing a "
+                             "package Desktop refuses to open.")
     args = parser.parse_args()
 
     measures = load_measures()
     model = build_model(measures, args.data_folder, args.reporting_year)
-    layout = build_layout()
+    layout = build_minimal_layout() if args.minimal_report else build_layout()
 
     problems = validate(model, layout)
     if problems:

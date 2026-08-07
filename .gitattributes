@@ -1,0 +1,18 @@
+# Binary artefacts: never let git normalise line endings in these. A .pbit is a
+# ZIP container and a single CRLF/LF substitution inside it makes Power BI report
+# the file as corrupt.
+*.pbit   binary
+*.pbix   binary
+*.xlsx   binary
+*.pdf    binary
+*.docx   binary
+*.png    binary
+*.jpg    binary
+
+# TMDL is UTF-16 with CRLF line endings, as Power BI Desktop writes it.
+*.tmdl   binary
+
+# Keep source text as-is so pasted code matches what was authored.
+*.m      text eol=lf
+*.dax    text eol=lf
+*.py     text eol=lf
