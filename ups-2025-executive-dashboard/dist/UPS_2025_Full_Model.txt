@@ -1,0 +1,3339 @@
+createOrReplace
+
+	model Model
+		culture: en-US
+		defaultPowerBIDataSourceVersion: powerBI_V3
+		sourceQueryCulture: en-US
+		dataAccessOptions
+			legacyRedirects
+			returnErrorValuesAsNull
+
+		expression p_Folder = "C:\UPS\2025" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+			lineageTag: bcd5ebde-c9db-515f-96d3-ac5be25fa277
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Text
+
+		table Dim_ServiceMapping
+			isHidden
+			lineageTag: f3724da6-2dc9-5797-931b-86d00cbdf2bd
+
+			column SourceSystem
+				dataType: string
+				lineageTag: 0d2b63a4-18dd-5ff0-8ee6-a76666389d09
+				summarizeBy: none
+				sourceColumn: SourceSystem
+
+				annotation SummarizationSetBy = Automatic
+
+			column RawProduct
+				dataType: string
+				lineageTag: e4864b89-b514-528f-abe0-5ba61d2b5b1e
+				summarizeBy: none
+				sourceColumn: RawProduct
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroup
+				dataType: string
+				lineageTag: 191ef26d-ddf1-519a-a152-292751ec66b5
+				summarizeBy: none
+				sourceColumn: ServiceGroup
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroupShort
+				dataType: string
+				lineageTag: d20ebd88-9fb3-5e07-bd45-495735755158
+				summarizeBy: none
+				sourceColumn: ServiceGroupShort
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceTier
+				dataType: string
+				lineageTag: 9f6c8334-6412-502d-b0bc-8b93f5e16484
+				summarizeBy: none
+				sourceColumn: ServiceTier
+
+				annotation SummarizationSetBy = Automatic
+
+			column Scope
+				dataType: string
+				lineageTag: ecaa484f-734c-5d56-9695-259e5504170a
+				summarizeBy: none
+				sourceColumn: Scope
+
+				annotation SummarizationSetBy = Automatic
+
+			column IncludeInRanking
+				dataType: string
+				lineageTag: 2e06c954-0f08-5d9e-9563-7298a130e1e2
+				summarizeBy: none
+				sourceColumn: IncludeInRanking
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServicePriority
+				dataType: int64
+				lineageTag: b0854c66-14b8-57e8-9fbb-2c1aa106b16e
+				summarizeBy: none
+				sourceColumn: ServicePriority
+
+				annotation SummarizationSetBy = Automatic
+
+			column Notes
+				dataType: string
+				lineageTag: d349b7e3-cfd2-56af-87c0-2589d66033ce
+				summarizeBy: none
+				sourceColumn: Notes
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Dim_ServiceMapping = m
+				mode: import
+				source =
+						let
+						    Source = #table(
+						        type table [
+						            SourceSystem = text, RawProduct = text, ServiceGroup = text,
+						            ServiceGroupShort = text, ServiceTier = text, Scope = text,
+						            IncludeInRanking = text, ServicePriority = Int64.Type
+						        ],
+						    {
+						        {"VnS", "GROUND PKG",
+						         "Ground", "Ground", "Deferred", "Domestic", "Yes", 1},
+						        {"VnS", "GROUND CWT",
+						         "Ground", "Ground", "Deferred", "Domestic", "Yes", 1},
+						        {"VnS", "STANDARD GROUND",
+						         "Ground", "Ground", "Deferred", "Domestic", "Yes", 1},
+						        {"VnS", "3DS PKG",
+						         "3 Day Select", "3DS", "Deferred", "Domestic", "Yes", 2},
+						        {"VnS", "2DA REG / EXPEDITED PKG",
+						         "2nd Day Air / Expedited", "2DA", "Expedited", "Domestic", "Yes", 3},
+						        {"VnS", "2DA REG / EXPEDITED LTR",
+						         "2nd Day Air / Expedited", "2DA", "Expedited", "Domestic", "Yes", 3},
+						        {"VnS", "2DA REG / XPD LTR BILLED AS PKG",
+						         "2nd Day Air / Expedited", "2DA", "Expedited", "Domestic", "Yes", 3},
+						        {"VnS", "2DA AM PKG",
+						         "2nd Day Air Early A.M.", "2DA AM", "Expedited", "Domestic", "Yes", 4},
+						        {"VnS", "2DA AM LTR",
+						         "2nd Day Air Early A.M.", "2DA AM", "Expedited", "Domestic", "Yes", 4},
+						        {"VnS", "2DA AM LTR BILLED AS PKG",
+						         "2nd Day Air Early A.M.", "2DA AM", "Expedited", "Domestic", "Yes", 4},
+						        {"VnS", "NDA PM / EXPRESS SAVER PKG",
+						         "Next Day Air Saver", "NDA Saver", "Premium", "Domestic", "Yes", 5},
+						        {"VnS", "NDA PM / EXPRESS SAVER LTR",
+						         "Next Day Air Saver", "NDA Saver", "Premium", "Domestic", "Yes", 5},
+						        {"VnS", "NDA PM / XPR SVR LTR BLD AS PKG",
+						         "Next Day Air Saver", "NDA Saver", "Premium", "Domestic", "Yes", 5},
+						        {"VnS", "NDA REG / EXPRESS PKG",
+						         "Next Day Air / Express", "NDA", "Premium", "Domestic", "Yes", 6},
+						        {"VnS", "NDA REG / EXPRESS LTR",
+						         "Next Day Air / Express", "NDA", "Premium", "Domestic", "Yes", 6},
+						        {"VnS", "NDA REG / EXPRESS CWT",
+						         "Next Day Air / Express", "NDA", "Premium", "Domestic", "Yes", 6},
+						        {"VnS", "NDA REG / XPR LTR BILLED AS PKG",
+						         "Next Day Air / Express", "NDA", "Premium", "Domestic", "Yes", 6},
+						        {"VnS", "NDA AM / EXPRESS PLUS PKG",
+						         "Next Day Air Early", "NDA Early", "Premium", "Domestic", "Yes", 7},
+						        {"VnS", "NDA AM / EXPRESS PLUS LTR",
+						         "Next Day Air Early", "NDA Early", "Premium", "Domestic", "Yes", 7},
+						        {"VnS", "WW EXPRESS REG PKG",
+						         "International Express", "Intl Express", "Premium", "International", "Yes", 8},
+						        {"VnS", "WW EXPRESS REG LTR",
+						         "International Express", "Intl Express", "Premium", "International", "Yes", 8},
+						        {"VnS", "WW EXPRESS REG DOC",
+						         "International Express", "Intl Express", "Premium", "International", "Yes", 8},
+						        {"VnS", "WW EXPRESS REG PAK",
+						         "International Express", "Intl Express", "Premium", "International", "Yes", 8},
+						        {"VnS", "WW EXPRESS PM / SAVER PKG",
+						         "International Express Saver", "Intl Saver", "Premium", "International", "Yes", 9},
+						        {"VnS", "WW EXPRESS PM / SAVER LTR",
+						         "International Express Saver", "Intl Saver", "Premium", "International", "Yes", 9},
+						        {"VnS", "WW EXPRESS PM / SAVER DOC",
+						         "International Express Saver", "Intl Saver", "Premium", "International", "Yes", 9},
+						        {"VnS", "WW EXPRESS PM / SVR LTR BLD AS DOC",
+						         "International Express Saver", "Intl Saver", "Premium", "International", "Yes", 9},
+						        {"VnS", "WW EXPEDITED / 2DA PKG",
+						         "International Expedited", "Intl Expedited", "Expedited", "International", "Yes", 10},
+						        {"VnS", "WW EXPEDITED / 2DA LTR",
+						         "International Expedited", "Intl Expedited", "Expedited", "International", "Yes", 10},
+						        {"VnS", "WW 3DS PKG",
+						         "International Standard", "Intl Standard", "Deferred", "International", "Yes", 11},
+						        {"VnS", "MISC / UNC",
+						         "Excluded - Adjustments", "Excluded", "Non-Service", "Not Applicable", "No", 99},
+						        {"TnT", "GROUND",
+						         "Ground", "Ground", "Deferred", "Domestic", "Yes", 1},
+						        {"TnT", "THREE DAY SELECT",
+						         "3 Day Select", "3DS", "Deferred", "Domestic", "Yes", 2},
+						        {"TnT", "SECOND DAY AIR",
+						         "2nd Day Air / Expedited", "2DA", "Expedited", "Domestic", "Yes", 3},
+						        {"TnT", "SECOND DAY EARLY AM",
+						         "2nd Day Air Early A.M.", "2DA AM", "Expedited", "Domestic", "Yes", 4},
+						        {"TnT", "NEXT DAY AIR SAVER",
+						         "Next Day Air Saver", "NDA Saver", "Premium", "Domestic", "Yes", 5},
+						        {"TnT", "NEXT DAY AIR",
+						         "Next Day Air / Express", "NDA", "Premium", "Domestic", "Yes", 6},
+						        {"TnT", "UPS EXPRESS EARLY",
+						         "Next Day Air Early", "NDA Early", "Premium", "Domestic", "Yes", 7},
+						        {"TnT", "INTERNATIONAL EXPRESS",
+						         "International Express", "Intl Express", "Premium", "International", "Yes", 8},
+						        {"TnT", "INTERNATIONAL EXPRESS SAVER",
+						         "International Express Saver", "Intl Saver", "Premium", "International", "Yes", 9},
+						        {"TnT", "INTERNATIONAL EXPEDITED",
+						         "International Expedited", "Intl Expedited", "Expedited", "International", "Yes", 10},
+						        {"TnT", "INTERNATIONAL STANDARD",
+						         "International Standard", "Intl Standard", "Deferred", "International", "Yes", 11}
+						    })
+						in
+						    Source
+
+			annotation PBI_ResultType = Table
+
+		table Fact_VolumeSpend
+			lineageTag: 3ed6e7af-e077-580f-bae2-7fddab1d92ef
+
+			column Year
+				dataType: int64
+				lineageTag: e40a4575-181c-5f9b-a35c-79c485fc5873
+				summarizeBy: none
+				sourceColumn: Year
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthNumber
+				dataType: int64
+				isHidden
+				lineageTag: 89a7b921-d4c0-5257-9755-3e0f0ddf8d27
+				summarizeBy: none
+				sourceColumn: MonthNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthName
+				dataType: string
+				lineageTag: bd07b127-c7bb-518a-a204-2ba35e5cf510
+				summarizeBy: none
+				sourceColumn: MonthName
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthKey
+				dataType: int64
+				isHidden
+				lineageTag: b6640dbd-55d9-5fe9-9ca6-52cb6df6b803
+				summarizeBy: none
+				sourceColumn: MonthKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column Quarter
+				dataType: string
+				lineageTag: 4876573a-7008-5bef-9cb2-f9ccd53b9cf4
+				summarizeBy: none
+				sourceColumn: Quarter
+
+				annotation SummarizationSetBy = Automatic
+
+			column DateKey
+				dataType: dateTime
+				isHidden
+				formatString: yyyy-mm-dd
+				lineageTag: a73d9cac-6c64-5a60-bdbf-e62c91b543ba
+				summarizeBy: none
+				sourceColumn: DateKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountKey
+				dataType: string
+				isHidden
+				lineageTag: 46b4bbc9-ce97-56f8-8f19-59158ccdc5f4
+				summarizeBy: none
+				sourceColumn: AccountKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubNumber
+				dataType: string
+				isHidden
+				lineageTag: 305280c8-0b25-533e-8e08-79c968d0b6d8
+				summarizeBy: none
+				sourceColumn: SubNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubName
+				dataType: string
+				lineageTag: fdf34ff7-7bd7-5070-b880-f58a2dc290e0
+				summarizeBy: none
+				sourceColumn: SubName
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsMaskedSubParent
+				dataType: string
+				lineageTag: 5b89901e-c0e0-5113-a024-bd5213378ef1
+				summarizeBy: none
+				sourceColumn: IsMaskedSubParent
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountNumber
+				dataType: string
+				lineageTag: dd8a9c97-f030-5892-8793-832df98ef3a7
+				summarizeBy: none
+				sourceColumn: AccountNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountName
+				dataType: string
+				lineageTag: b3c64ed1-619b-53fa-a979-2703832653a7
+				summarizeBy: none
+				sourceColumn: AccountName
+
+				annotation SummarizationSetBy = Automatic
+
+			column City
+				dataType: string
+				lineageTag: aeb7171c-b563-5283-ae03-a5c533375c14
+				summarizeBy: none
+				sourceColumn: City
+
+				annotation SummarizationSetBy = Automatic
+
+			column State
+				dataType: string
+				lineageTag: 8447ad56-0c31-55cf-8b84-4e12e1b3acb5
+				summarizeBy: none
+				sourceColumn: State
+
+				annotation SummarizationSetBy = Automatic
+
+			column ZIP
+				dataType: string
+				lineageTag: b86e2810-f987-53c1-9906-3ad4d95c469e
+				summarizeBy: none
+				sourceColumn: ZIP
+
+				annotation SummarizationSetBy = Automatic
+
+			column RawProduct
+				dataType: string
+				lineageTag: 26fd8f98-344a-5c81-b1f5-9d2c442d131c
+				summarizeBy: none
+				sourceColumn: RawProduct
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroup
+				dataType: string
+				lineageTag: 13b0e302-0407-58da-a7db-923fca8824c1
+				summarizeBy: none
+				sourceColumn: ServiceGroup
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroupShort
+				dataType: string
+				lineageTag: 87b4b0db-8b99-5709-8e1b-b99a4587f12d
+				summarizeBy: none
+				sourceColumn: ServiceGroupShort
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceTier
+				dataType: string
+				lineageTag: 9180ae9d-aed9-5776-b998-59541b1c644f
+				summarizeBy: none
+				sourceColumn: ServiceTier
+
+				annotation SummarizationSetBy = Automatic
+
+			column Scope
+				dataType: string
+				lineageTag: 3359cb34-fce1-5a41-8fc9-1357b271caae
+				summarizeBy: none
+				sourceColumn: Scope
+
+				annotation SummarizationSetBy = Automatic
+
+			column IncludeInRanking
+				dataType: string
+				lineageTag: 471e1629-d0ac-55b5-9c8f-154bb506eb21
+				summarizeBy: none
+				sourceColumn: IncludeInRanking
+
+				annotation SummarizationSetBy = Automatic
+
+			column Volume
+				dataType: double
+				lineageTag: aa42ac22-b418-5546-a395-f33badb1f3a6
+				summarizeBy: sum
+				sourceColumn: Volume
+
+				annotation SummarizationSetBy = Automatic
+
+			column GrossSpend
+				dataType: double
+				lineageTag: 5062c4f3-5a1a-5b43-a34d-b0839ed333bc
+				summarizeBy: sum
+				sourceColumn: GrossSpend
+
+				annotation SummarizationSetBy = Automatic
+
+			column NetSpend
+				dataType: double
+				lineageTag: 61669072-4bdb-5b2e-8abf-55e1d5d778d1
+				summarizeBy: sum
+				sourceColumn: NetSpend
+
+				annotation SummarizationSetBy = Automatic
+
+			column Incentive
+				dataType: double
+				lineageTag: 971d8125-ba6e-51d8-badb-7cd47935e5a3
+				summarizeBy: sum
+				sourceColumn: Incentive
+
+				annotation SummarizationSetBy = Automatic
+
+			column BilledWeightLbs
+				dataType: double
+				lineageTag: 6ea3d9e3-de03-540e-ac8b-077b6351eb11
+				summarizeBy: sum
+				sourceColumn: BilledWeightLbs
+
+				annotation SummarizationSetBy = Automatic
+
+			column VolumeLY
+				dataType: double
+				isHidden
+				lineageTag: 5884b340-671a-5eaf-b8c8-b80afef977fe
+				summarizeBy: none
+				sourceColumn: VolumeLY
+
+				annotation SummarizationSetBy = Automatic
+
+			column NetSpendLY
+				dataType: double
+				isHidden
+				lineageTag: 15d0b13f-23f1-545d-b316-7cb0c633c595
+				summarizeBy: none
+				sourceColumn: NetSpendLY
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsNonServiceRow
+				dataType: string
+				isHidden
+				lineageTag: 3023319d-83f6-5838-8a5b-cf0639426163
+				summarizeBy: none
+				sourceColumn: IsNonServiceRow
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasVolume
+				dataType: string
+				lineageTag: e91f3f84-1881-5b70-9ec7-32b935f595ff
+				summarizeBy: none
+				sourceColumn: HasVolume
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsSpendOnlyAdjustment
+				dataType: string
+				lineageTag: b397b18a-f2dd-5e85-bac1-5be6104641a8
+				summarizeBy: none
+				sourceColumn: IsSpendOnlyAdjustment
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsNegativeSpend
+				dataType: string
+				lineageTag: dea6d822-db28-5a13-91a3-1de49a92d86d
+				summarizeBy: none
+				sourceColumn: IsNegativeSpend
+
+				annotation SummarizationSetBy = Automatic
+
+			column SourceFile
+				dataType: string
+				isHidden
+				lineageTag: 8f305fa5-48c2-553f-98df-bf46d34b45f3
+				summarizeBy: none
+				sourceColumn: SourceFile
+
+				annotation SummarizationSetBy = Automatic
+
+			column SourceLayout
+				dataType: string
+				isHidden
+				lineageTag: 8f0486e3-648e-5ce6-bb65-d33d72ff4d97
+				summarizeBy: none
+				sourceColumn: SourceLayout
+
+				annotation SummarizationSetBy = Automatic
+
+			column ViewType
+				dataType: string
+				lineageTag: 097e4a45-1879-56ca-a18f-f86a9565cf49
+				summarizeBy: none
+				sourceColumn: ViewType
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Fact_VolumeSpend = m
+				mode: import
+				source =
+						let
+						    // --- local helpers -----------------------------------------------------
+						
+						    // UPS prefixes ID-like columns with an apostrophe to stop Excel reformatting
+						    // them. Left in place, "'ABC123" and "ABC123" are different keys and the
+						    // account relationship silently half-fails.
+						    Clean = (v) as text =>
+						        let
+						            t = if v = null then "" else Text.Trim(Text.From(v))
+						        in
+						            Text.Trim(if Text.StartsWith(t, "'") then Text.RemoveRange(t, 0, 1) else t),
+						
+						    Num = (v) as number => if v = null then 0 else (try Number.From(v) otherwise 0),
+						
+						    // Drop report artefacts only - Grand Total lines and rows with no account.
+						    // Deliberately NOT keyed on the sub-parent: UPS masks it with "@@" on some
+						    // accounts, and those rows carry a real account number and real shipment
+						    // volume. Filtering on "@@" - the obvious move - silently deletes genuine
+						    // international activity.
+						    KeepRow = (sub, acct) as logical =>
+						        let
+						            s = Text.Lower(Clean(sub)),
+						            a = Text.Lower(Clean(acct))
+						        in
+						            not (s = "grand total" or s = "total" or a = "grand total" or a = "total")
+						            and not (a = "" and s = ""),
+						
+						    SubNameOf = (numv, namev) as text =>
+						        if Clean(numv) = "@@" or Clean(namev) = "@@"
+						        then "Unassigned Sub-Parent"
+						        else Clean(namev),
+						
+						    MaskedOf = (numv, namev) as text =>
+						        if Clean(numv) = "@@" or Clean(namev) = "@@" then "Yes" else "No",
+						
+						    FirstSheet = (fileName as text) as table =>
+						        Table.SelectRows(
+						            Excel.Workbook(File.Contents(p_Folder & "\" & fileName), null, true),
+						            each [Kind] = "Sheet"){0}[Data],
+						
+						    // --- Schema A: January / February layout -------------------------------
+						    // Column offsets, verified against the real extracts:
+						    //   Column2  Sub Number        Column3  Sub Name
+						    //   Column4  Account Number    Column5  Account Name
+						    //   Column6  City              Column7  State
+						    //   Column8  Product           Column9  WE/Mo/Qtr (period)
+						    //   Column10 Volume (TY)       Column19 Gross Spend (TY)
+						    //   Column22 Net Spend (TY)    Column25 Incentive (TY)
+						    //   Column31 Billed Weight Lbs (TY)
+						    ReadSchemaA = (fileName as text, monthNo as number) as table =>
+						        let
+						            Rows = Table.Skip(FirstSheet(fileName), 7),
+						            Pick = Table.SelectColumns(Rows, {
+						                "Column2", "Column3", "Column4", "Column5", "Column6", "Column7",
+						                "Column8", "Column9", "Column10", "Column19", "Column22",
+						                "Column25", "Column31"}),
+						            Named = Table.RenameColumns(Pick, {
+						                {"Column2", "SubNumberRaw"}, {"Column3", "SubNameRaw"},
+						                {"Column4", "AccountNumberRaw"}, {"Column5", "AccountNameRaw"},
+						                {"Column6", "CityRaw"}, {"Column7", "StateRaw"},
+						                {"Column8", "ProductRaw"}, {"Column9", "PeriodRaw"},
+						                {"Column10", "VolumeRaw"}, {"Column19", "GrossRaw"},
+						                {"Column22", "NetRaw"}, {"Column25", "IncentiveRaw"},
+						                {"Column31", "WeightRaw"}}),
+						            // The period column is authoritative here. A YTD file holds several
+						            // months, so this filter is what keeps January out of the February load.
+						            Kept = Table.SelectRows(Named, each
+						                KeepRow([SubNumberRaw], [AccountNumberRaw])
+						                and Clean([ProductRaw]) <> ""
+						                and Num([PeriodRaw]) = monthNo),
+						            Shaped = Table.AddColumn(Kept, "Rec", each [
+						                MonthNumber       = monthNo,
+						                SubNumber         = Clean([SubNumberRaw]),
+						                SubName           = SubNameOf([SubNumberRaw], [SubNameRaw]),
+						                IsMaskedSubParent = MaskedOf([SubNumberRaw], [SubNameRaw]),
+						                AccountNumber     = Clean([AccountNumberRaw]),
+						                AccountName       = Clean([AccountNameRaw]),
+						                City              = Clean([CityRaw]),
+						                State             = Clean([StateRaw]),
+						                ZIP               = "",
+						                RawProduct        = Clean([ProductRaw]),
+						                Volume            = Num([VolumeRaw]),
+						                GrossSpend        = Num([GrossRaw]),
+						                NetSpend          = Num([NetRaw]),
+						                Incentive         = Num([IncentiveRaw]),
+						                BilledWeightLbs   = Num([WeightRaw])
+						            ]),
+						            Out = Table.FromRecords(Table.Column(Shaped, "Rec"))
+						        in
+						            Out,
+						
+						    // --- Schema B: March / April "VnS" layout ------------------------------
+						    //   Column2  Sub-Parent Number  Column3  Sub-Parent Name
+						    //   Column4  Account Number     Column5  Account Name
+						    //   Column7  City               Column8  State           Column9  ZIP
+						    //   Column10 Product            Column11 Volume
+						    //   Column12 Package Billed Weight Lbs
+						    //   Column14 Gross Spend        Column15 Net Spend
+						    ReadSchemaB = (sheet as table, monthNo as number) as table =>
+						        let
+						            Rows = Table.Skip(sheet, 5),
+						            Pick = Table.SelectColumns(Rows, {
+						                "Column2", "Column3", "Column4", "Column5", "Column7", "Column8",
+						                "Column9", "Column10", "Column11", "Column12", "Column14", "Column15"}),
+						            Named = Table.RenameColumns(Pick, {
+						                {"Column2", "SubNumberRaw"}, {"Column3", "SubNameRaw"},
+						                {"Column4", "AccountNumberRaw"}, {"Column5", "AccountNameRaw"},
+						                {"Column7", "CityRaw"}, {"Column8", "StateRaw"},
+						                {"Column9", "ZipRaw"}, {"Column10", "ProductRaw"},
+						                {"Column11", "VolumeRaw"}, {"Column12", "WeightRaw"},
+						                {"Column14", "GrossRaw"}, {"Column15", "NetRaw"}}),
+						            Kept = Table.SelectRows(Named, each
+						                KeepRow([SubNumberRaw], [AccountNumberRaw])
+						                and Clean([ProductRaw]) <> ""),
+						            Shaped = Table.AddColumn(Kept, "Rec", each [
+						                MonthNumber       = monthNo,
+						                SubNumber         = Clean([SubNumberRaw]),
+						                SubName           = SubNameOf([SubNumberRaw], [SubNameRaw]),
+						                IsMaskedSubParent = MaskedOf([SubNumberRaw], [SubNameRaw]),
+						                AccountNumber     = Clean([AccountNumberRaw]),
+						                AccountName       = Clean([AccountNameRaw]),
+						                City              = Clean([CityRaw]),
+						                State             = Clean([StateRaw]),
+						                ZIP               = Clean([ZipRaw]),
+						                RawProduct        = Clean([ProductRaw]),
+						                Volume            = Num([VolumeRaw]),
+						                GrossSpend        = Num([GrossRaw]),
+						                NetSpend          = Num([NetRaw]),
+						                // Schema B has no incentive column; derive it.
+						                Incentive         = Num([GrossRaw]) - Num([NetRaw]),
+						                BilledWeightLbs   = Num([WeightRaw])
+						            ]),
+						            Out = Table.FromRecords(Table.Column(Shaped, "Rec"))
+						        in
+						            Out,
+						
+						    // --- the four months ---------------------------------------------------
+						    Jan = ReadSchemaA("UPS_2025_01_VolumeSpend.xlsx", 1),
+						    // Month 2 ONLY. This file also contains January - see the banner note.
+						    Feb = ReadSchemaA("UPS_2025_02_VolumeSpend_YTD.xlsx", 2),
+						    Mar = ReadSchemaB(
+						        Excel.Workbook(File.Contents(p_Folder & "\UPS_2025_03_AllTabs.xlsx"), null, true)
+						            {[Item = "VnS", Kind = "Sheet"]}[Data], 3),
+						    Apr = ReadSchemaB(FirstSheet("UPS_2025_04_VolumeSpend.xlsx"), 4),
+						
+						    Combined = Table.Combine({Jan, Feb, Mar, Apr}),
+						
+						    // --- keys and derived columns ------------------------------------------
+						    WithKeys = Table.AddColumn(
+						        Table.AddColumn(
+						            Table.AddColumn(
+						                Table.AddColumn(Combined, "Year", each 2025, Int64.Type),
+						                "MonthKey", each 2025 * 100 + [MonthNumber], Int64.Type),
+						            "AccountKey", each [SubNumber] & "|" & [AccountNumber], type text),
+						        "Quarter", each "Q" & Text.From(Number.RoundUp([MonthNumber] / 3)), type text),
+						
+						    WithDate = Table.AddColumn(WithKeys, "DateKey",
+						        each #date(2025, [MonthNumber], 1), type date),
+						
+						    WithMonthName = Table.AddColumn(WithDate, "MonthName",
+						        each Date.ToText(#date(2025, [MonthNumber], 1), "MMM"), type text),
+						
+						    // --- service mapping ----------------------------------------------------
+						    // Join to the VnS half of the bridge. An unmapped product routes to a review
+						    // bucket rather than silently inheriting a neighbouring service group.
+						    Joined = Table.NestedJoin(WithMonthName, {"RawProduct"},
+						        Table.SelectRows(Dim_ServiceMapping, each [SourceSystem] = "VnS"), {"RawProduct"},
+						        "Map", JoinKind.LeftOuter),
+						    Expanded = Table.ExpandTableColumn(Joined, "Map",
+						        {"ServiceGroup", "ServiceGroupShort", "ServiceTier", "Scope",
+						         "IncludeInRanking"}),
+						    Defaults = Table.TransformColumns(Expanded, {
+						        {"ServiceGroup", each if _ = null then "Unmapped - Review" else _, type text},
+						        {"ServiceGroupShort", each if _ = null then "Unmapped" else _, type text},
+						        {"ServiceTier", each if _ = null then "Unmapped" else _, type text},
+						        {"Scope", each if _ = null then "Unknown" else _, type text},
+						        {"IncludeInRanking", each if _ = null then "No" else _, type text}}),
+						
+						    // --- row-level quality flags -------------------------------------------
+						    // Kept on the fact so the Data Quality page can quantify what the executive
+						    // visuals exclude, rather than the exclusion being invisible in a filter pane.
+						    Flags = Table.AddColumn(
+						        Table.AddColumn(
+						            Table.AddColumn(Defaults, "HasVolume",
+						                each if [Volume] > 0 then "Yes" else "No", type text),
+						            "IsSpendOnlyAdjustment",
+						            each if [Volume] <= 0 and Number.Abs([NetSpend]) > 0 then "Yes" else "No", type text),
+						        "IsNegativeSpend", each if [NetSpend] < 0 then "Yes" else "No", type text),
+						
+						    Typed = Table.TransformColumnTypes(Flags, {
+						        {"MonthNumber", Int64.Type}, {"SubNumber", type text}, {"SubName", type text},
+						        {"AccountNumber", type text}, {"AccountName", type text},
+						        {"City", type text}, {"State", type text}, {"ZIP", type text},
+						        {"RawProduct", type text}, {"Volume", type number},
+						        {"GrossSpend", Currency.Type}, {"NetSpend", Currency.Type},
+						        {"Incentive", Currency.Type}, {"BilledWeightLbs", type number}})
+						in
+						    Typed
+
+			annotation PBI_ResultType = Table
+
+		table Fact_TimeInTransit
+			lineageTag: fa784fbf-5e52-5e65-9d36-577c60aedcbd
+
+			column Year
+				dataType: int64
+				lineageTag: ee0b75d6-2227-59ec-8904-8e809eeaa37c
+				summarizeBy: none
+				sourceColumn: Year
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthNumber
+				dataType: int64
+				isHidden
+				lineageTag: 5e5c3f24-a3ea-5b01-a7dd-aa3b7871cdff
+				summarizeBy: none
+				sourceColumn: MonthNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthName
+				dataType: string
+				lineageTag: b7941ce8-5d96-564c-9b02-8724e348e814
+				summarizeBy: none
+				sourceColumn: MonthName
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthKey
+				dataType: int64
+				isHidden
+				lineageTag: ed1ffdfc-a49e-5397-ae82-4503c7803a00
+				summarizeBy: none
+				sourceColumn: MonthKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column Quarter
+				dataType: string
+				lineageTag: 5eca944d-a6be-56df-ac45-c81e6c63d8e8
+				summarizeBy: none
+				sourceColumn: Quarter
+
+				annotation SummarizationSetBy = Automatic
+
+			column DateKey
+				dataType: dateTime
+				isHidden
+				formatString: yyyy-mm-dd
+				lineageTag: 232c0cea-f6bd-5711-946c-e5464f95117f
+				summarizeBy: none
+				sourceColumn: DateKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountKey
+				dataType: string
+				isHidden
+				lineageTag: 59a0fce0-1f1b-5ef1-a6f7-bb340144a4de
+				summarizeBy: none
+				sourceColumn: AccountKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubNumber
+				dataType: string
+				isHidden
+				lineageTag: fc0d17af-7d33-57b5-a73a-c9140902aa0d
+				summarizeBy: none
+				sourceColumn: SubNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubName
+				dataType: string
+				lineageTag: 3241b502-d98d-57f0-b731-6a0a7b43d6d7
+				summarizeBy: none
+				sourceColumn: SubName
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsMaskedSubParent
+				dataType: string
+				lineageTag: c408b592-7c9a-5a0c-9c59-3eb996ec9abe
+				summarizeBy: none
+				sourceColumn: IsMaskedSubParent
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountNumber
+				dataType: string
+				lineageTag: a82b96cb-95e8-5410-8963-0f54d104b6aa
+				summarizeBy: none
+				sourceColumn: AccountNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountName
+				dataType: string
+				lineageTag: f680e059-0ec1-5fe5-bafc-9b93181060b2
+				summarizeBy: none
+				sourceColumn: AccountName
+
+				annotation SummarizationSetBy = Automatic
+
+			column City
+				dataType: string
+				lineageTag: aa8d9424-3932-5dd3-8cf0-66d85453611c
+				summarizeBy: none
+				sourceColumn: City
+
+				annotation SummarizationSetBy = Automatic
+
+			column State
+				dataType: string
+				lineageTag: 95213dfb-824c-552f-bc2f-a0484636a208
+				summarizeBy: none
+				sourceColumn: State
+
+				annotation SummarizationSetBy = Automatic
+
+			column ZIP
+				dataType: string
+				lineageTag: 71393170-7c05-59fb-a710-eb19aa6b589b
+				summarizeBy: none
+				sourceColumn: ZIP
+
+				annotation SummarizationSetBy = Automatic
+
+			column RawProduct
+				dataType: string
+				lineageTag: a65ba227-9dec-5b60-92e8-77b8528e1834
+				summarizeBy: none
+				sourceColumn: RawProduct
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroup
+				dataType: string
+				lineageTag: 87dcdd5f-5fae-5251-b87f-5465cd4c814f
+				summarizeBy: none
+				sourceColumn: ServiceGroup
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroupShort
+				dataType: string
+				lineageTag: b3461855-d4a8-53a9-9304-5687fbcd217a
+				summarizeBy: none
+				sourceColumn: ServiceGroupShort
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceTier
+				dataType: string
+				lineageTag: 802a2b45-e9a3-51a6-b37c-6080389aabde
+				summarizeBy: none
+				sourceColumn: ServiceTier
+
+				annotation SummarizationSetBy = Automatic
+
+			column Scope
+				dataType: string
+				lineageTag: 5836455b-c4a7-5026-8845-c3ea46e49f04
+				summarizeBy: none
+				sourceColumn: Scope
+
+				annotation SummarizationSetBy = Automatic
+
+			column IncludeInRanking
+				dataType: string
+				lineageTag: 30126f93-612c-5abb-a12a-ee262b9c54c3
+				summarizeBy: none
+				sourceColumn: IncludeInRanking
+
+				annotation SummarizationSetBy = Automatic
+
+			column PackagesMeasured
+				dataType: double
+				lineageTag: 15febddd-174b-506a-a4ac-958902472ce6
+				summarizeBy: sum
+				sourceColumn: PackagesMeasured
+
+				annotation SummarizationSetBy = Automatic
+
+			column LateByTime
+				dataType: double
+				lineageTag: 86c63cde-9237-5dc1-ac6c-643d502dd417
+				summarizeBy: sum
+				sourceColumn: LateByTime
+
+				annotation SummarizationSetBy = Automatic
+
+			column LateByDay
+				dataType: double
+				lineageTag: 383262b8-c8cf-5ecf-b5e5-65c571f55a86
+				summarizeBy: sum
+				sourceColumn: LateByDay
+
+				annotation SummarizationSetBy = Automatic
+
+			column TotalLate
+				dataType: double
+				lineageTag: ee9bd0c9-74f3-5d4f-97f2-167ce49953c3
+				summarizeBy: sum
+				sourceColumn: TotalLate
+
+				annotation SummarizationSetBy = Automatic
+
+			column OnTimePackages
+				dataType: double
+				lineageTag: bf3cd800-046f-5cfb-b904-1e784e5a5236
+				summarizeBy: sum
+				sourceColumn: OnTimePackages
+
+				annotation SummarizationSetBy = Automatic
+
+			column SourceFile
+				dataType: string
+				isHidden
+				lineageTag: d5f1c2a9-552c-54a7-8e2e-141ce980d7cd
+				summarizeBy: none
+				sourceColumn: SourceFile
+
+				annotation SummarizationSetBy = Automatic
+
+			column ViewType
+				dataType: string
+				lineageTag: 8ae02c5a-9d07-5340-b0c9-85a3b2b55c1a
+				summarizeBy: none
+				sourceColumn: ViewType
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Fact_TimeInTransit = m
+				mode: import
+				source =
+						let
+						    Clean = (v) as text =>
+						        let
+						            t = if v = null then "" else Text.Trim(Text.From(v))
+						        in
+						            Text.Trim(if Text.StartsWith(t, "'") then Text.RemoveRange(t, 0, 1) else t),
+						
+						    Num = (v) as number => if v = null then 0 else (try Number.From(v) otherwise 0),
+						
+						    KeepRow = (sub, acct) as logical =>
+						        let
+						            s = Text.Lower(Clean(sub)),
+						            a = Text.Lower(Clean(acct))
+						        in
+						            not (s = "grand total" or s = "total" or a = "grand total" or a = "total")
+						            and not (a = "" and s = ""),
+						
+						    SubNameOf = (numv, namev) as text =>
+						        if Clean(numv) = "@@" or Clean(namev) = "@@"
+						        then "Unassigned Sub-Parent"
+						        else Clean(namev),
+						
+						    ReadTnT = (fileName as text, monthNo as number) as table =>
+						        let
+						            Sheet = Excel.Workbook(File.Contents(p_Folder & "\" & fileName), null, true)
+						                        {[Item = "TnT", Kind = "Sheet"]}[Data],
+						            Rows = Table.Skip(Sheet, 5),
+						            Pick = Table.SelectColumns(Rows, {
+						                "Column2", "Column3", "Column4", "Column5", "Column7", "Column8",
+						                "Column9", "Column10", "Column11", "Column12", "Column13", "Column14"}),
+						            Named = Table.RenameColumns(Pick, {
+						                {"Column2", "SubNumberRaw"}, {"Column3", "SubNameRaw"},
+						                {"Column4", "AccountNumberRaw"}, {"Column5", "AccountNameRaw"},
+						                {"Column7", "CityRaw"}, {"Column8", "StateRaw"}, {"Column9", "ZipRaw"},
+						                {"Column10", "ProductRaw"}, {"Column11", "MeasuredRaw"},
+						                {"Column12", "LateTimeRaw"}, {"Column13", "LateDayRaw"},
+						                {"Column14", "TotalLateRaw"}}),
+						            Kept = Table.SelectRows(Named, each
+						                KeepRow([SubNumberRaw], [AccountNumberRaw])
+						                and Clean([ProductRaw]) <> ""),
+						            Shaped = Table.AddColumn(Kept, "Rec", each
+						                let
+						                    LateTime = Num([LateTimeRaw]),
+						                    LateDay = Num([LateDayRaw]),
+						                    // Trust the components over the supplied total. Where the
+						                    // total is absent but the parts are present, rebuild it.
+						                    Total = if Num([TotalLateRaw]) = 0 and (LateTime + LateDay) > 0
+						                            then LateTime + LateDay
+						                            else Num([TotalLateRaw]),
+						                    Measured = Num([MeasuredRaw])
+						                in [
+						                    MonthNumber       = monthNo,
+						                    SubNumber         = Clean([SubNumberRaw]),
+						                    SubName           = SubNameOf([SubNumberRaw], [SubNameRaw]),
+						                    AccountNumber     = Clean([AccountNumberRaw]),
+						                    AccountName       = Clean([AccountNameRaw]),
+						                    City              = Clean([CityRaw]),
+						                    State             = Clean([StateRaw]),
+						                    ZIP               = Clean([ZipRaw]),
+						                    RawProduct        = Clean([ProductRaw]),
+						                    PackagesMeasured  = Measured,
+						                    LateByTime        = LateTime,
+						                    LateByDay         = LateDay,
+						                    TotalLate         = Total,
+						                    OnTimePackages    = Measured - Total,
+						                    ViewType          = "Shipper View"
+						                ]),
+						            Out = Table.FromRecords(Table.Column(Shaped, "Rec"))
+						        in
+						            Out,
+						
+						    Mar = ReadTnT("UPS_2025_03_AllTabs.xlsx", 3),
+						
+						    Combined = Table.Combine({Mar}),
+						
+						    WithKeys = Table.AddColumn(
+						        Table.AddColumn(
+						            Table.AddColumn(
+						                Table.AddColumn(Combined, "Year", each 2025, Int64.Type),
+						                "MonthKey", each 2025 * 100 + [MonthNumber], Int64.Type),
+						            "AccountKey", each [SubNumber] & "|" & [AccountNumber], type text),
+						        "Quarter", each "Q" & Text.From(Number.RoundUp([MonthNumber] / 3)), type text),
+						
+						    WithDate = Table.AddColumn(WithKeys, "DateKey",
+						        each #date(2025, [MonthNumber], 1), type date),
+						    WithMonthName = Table.AddColumn(WithDate, "MonthName",
+						        each Date.ToText(#date(2025, [MonthNumber], 1), "MMM"), type text),
+						
+						    // Join on the TnT half of the bridge. This extract names services completely
+						    // differently from Volume & Net Spend ("NEXT DAY AIR" vs
+						    // "NDA REG / EXPRESS PKG"), which is exactly why the mapping table is keyed
+						    // on (SourceSystem, RawProduct) rather than being a simple lookup.
+						    Joined = Table.NestedJoin(WithMonthName, {"RawProduct"},
+						        Table.SelectRows(Dim_ServiceMapping, each [SourceSystem] = "TnT"), {"RawProduct"},
+						        "Map", JoinKind.LeftOuter),
+						    Expanded = Table.ExpandTableColumn(Joined, "Map",
+						        {"ServiceGroup", "ServiceGroupShort", "ServiceTier", "Scope",
+						         "IncludeInRanking"}),
+						    Defaults = Table.TransformColumns(Expanded, {
+						        {"ServiceGroup", each if _ = null then "Unmapped - Review" else _, type text},
+						        {"ServiceGroupShort", each if _ = null then "Unmapped" else _, type text},
+						        {"ServiceTier", each if _ = null then "Unmapped" else _, type text},
+						        {"Scope", each if _ = null then "Unknown" else _, type text},
+						        {"IncludeInRanking", each if _ = null then "No" else _, type text}}),
+						
+						    Typed = Table.TransformColumnTypes(Defaults, {
+						        {"MonthNumber", Int64.Type}, {"SubNumber", type text}, {"SubName", type text},
+						        {"AccountNumber", type text}, {"AccountName", type text},
+						        {"City", type text}, {"State", type text}, {"ZIP", type text},
+						        {"RawProduct", type text}, {"PackagesMeasured", type number},
+						        {"LateByTime", type number}, {"LateByDay", type number},
+						        {"TotalLate", type number}, {"OnTimePackages", type number}})
+						in
+						    Typed
+
+			annotation PBI_ResultType = Table
+
+		table Fact_Claims
+			lineageTag: 22ed2f66-3f54-55fd-8222-e476cb11437f
+
+			column Year
+				dataType: int64
+				lineageTag: d77b6b20-cbd8-5ef3-985d-2755f3cb334f
+				summarizeBy: none
+				sourceColumn: Year
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthNumber
+				dataType: int64
+				isHidden
+				lineageTag: bb2e4de5-386c-50a0-82ce-a8b41b17a4c7
+				summarizeBy: none
+				sourceColumn: MonthNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthName
+				dataType: string
+				lineageTag: 4c5aebc4-db8c-54f7-8586-c9e9c53d0304
+				summarizeBy: none
+				sourceColumn: MonthName
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthKey
+				dataType: int64
+				isHidden
+				lineageTag: 5dbb4e37-539f-5425-85fc-72732ed67abf
+				summarizeBy: none
+				sourceColumn: MonthKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column Quarter
+				dataType: string
+				lineageTag: 764c6848-3429-59af-98e4-69695480b2d1
+				summarizeBy: none
+				sourceColumn: Quarter
+
+				annotation SummarizationSetBy = Automatic
+
+			column DateKey
+				dataType: dateTime
+				isHidden
+				formatString: yyyy-mm-dd
+				lineageTag: e8b53010-4c67-577e-aa6a-aa140c7f5642
+				summarizeBy: none
+				sourceColumn: DateKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountKey
+				dataType: string
+				isHidden
+				lineageTag: 4f007307-f210-52db-99d6-64a7281b7d0f
+				summarizeBy: none
+				sourceColumn: AccountKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubNumber
+				dataType: string
+				isHidden
+				lineageTag: 91fe6f7d-c95d-5d85-acb9-87de64887e68
+				summarizeBy: none
+				sourceColumn: SubNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubName
+				dataType: string
+				lineageTag: f11726ed-c92f-5495-b9ea-c3df8de3a5cd
+				summarizeBy: none
+				sourceColumn: SubName
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsMaskedSubParent
+				dataType: string
+				lineageTag: 59463a65-881e-5add-8e02-ce9bc98aec39
+				summarizeBy: none
+				sourceColumn: IsMaskedSubParent
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountNumber
+				dataType: string
+				lineageTag: 5e05c7aa-76f3-53e3-980d-1f3967bd2a0b
+				summarizeBy: none
+				sourceColumn: AccountNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountName
+				dataType: string
+				lineageTag: ac90c040-c5bf-5146-87c6-e3b6cd0e1c78
+				summarizeBy: none
+				sourceColumn: AccountName
+
+				annotation SummarizationSetBy = Automatic
+
+			column ClaimsCategory
+				dataType: string
+				lineageTag: 85aee4eb-ac89-5bbe-b55b-22504c8b9e57
+				summarizeBy: none
+				sourceColumn: ClaimsCategory
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsLoss
+				dataType: string
+				lineageTag: 69305486-be33-570a-b9f2-9f7a0531f096
+				summarizeBy: none
+				sourceColumn: IsLoss
+
+				annotation SummarizationSetBy = Automatic
+
+			column IssuedClaimsQty
+				dataType: double
+				lineageTag: f376c978-dbbe-5a57-a120-7f048a907f2c
+				summarizeBy: sum
+				sourceColumn: IssuedClaimsQty
+
+				annotation SummarizationSetBy = Automatic
+
+			column IssuedClaimsPkgQty
+				dataType: double
+				lineageTag: a37bed86-c0fd-5018-ac7e-6bb6840523cf
+				summarizeBy: sum
+				sourceColumn: IssuedClaimsPkgQty
+
+				annotation SummarizationSetBy = Automatic
+
+			column PaidClaimsQty
+				dataType: double
+				lineageTag: 6d476d16-433b-559f-9379-42c85b17ddd9
+				summarizeBy: sum
+				sourceColumn: PaidClaimsQty
+
+				annotation SummarizationSetBy = Automatic
+
+			column PaidClaimsPkgQty
+				dataType: double
+				lineageTag: 1e5777d2-c1cd-5c4e-bbd3-117a261fe14b
+				summarizeBy: sum
+				sourceColumn: PaidClaimsPkgQty
+
+				annotation SummarizationSetBy = Automatic
+
+			column RegisteredClaimsQty
+				dataType: double
+				lineageTag: aa28ced7-7966-5466-ba51-4b0f16fe5b0a
+				summarizeBy: sum
+				sourceColumn: RegisteredClaimsQty
+
+				annotation SummarizationSetBy = Automatic
+
+			column RegisteredClaimsPkgQty
+				dataType: double
+				lineageTag: 434821cc-4804-5de7-9c10-411ad9e5ad57
+				summarizeBy: sum
+				sourceColumn: RegisteredClaimsPkgQty
+
+				annotation SummarizationSetBy = Automatic
+
+			column PaidClaimsAmount
+				dataType: double
+				lineageTag: fe0f74df-24e0-5701-908f-c1bd3029ade1
+				summarizeBy: sum
+				sourceColumn: PaidClaimsAmount
+
+				annotation SummarizationSetBy = Automatic
+
+			column ClaimsDeclaredValue
+				dataType: double
+				lineageTag: abe65bd9-3428-5f2d-b2c2-c3d2205d42fc
+				summarizeBy: sum
+				sourceColumn: ClaimsDeclaredValue
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceAttribution
+				dataType: string
+				lineageTag: 6e35ac1b-93fb-59b4-b8be-b7049429c265
+				summarizeBy: none
+				sourceColumn: ServiceAttribution
+
+				annotation SummarizationSetBy = Automatic
+
+			column SourceFile
+				dataType: string
+				isHidden
+				lineageTag: 0877bf0f-17d0-5cdf-acd8-9a21686985ca
+				summarizeBy: none
+				sourceColumn: SourceFile
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Fact_Claims = m
+				mode: import
+				source =
+						let
+						    Clean = (v) as text =>
+						        let
+						            t = if v = null then "" else Text.Trim(Text.From(v))
+						        in
+						            Text.Trim(if Text.StartsWith(t, "'") then Text.RemoveRange(t, 0, 1) else t),
+						
+						    Num = (v) as number => if v = null then 0 else (try Number.From(v) otherwise 0),
+						
+						    KeepRow = (sub, acct) as logical =>
+						        let
+						            s = Text.Lower(Clean(sub)),
+						            a = Text.Lower(Clean(acct))
+						        in
+						            not (s = "grand total" or s = "total" or a = "grand total" or a = "total")
+						            and not (a = "" and s = ""),
+						
+						    SubNameOf = (numv, namev) as text =>
+						        if Clean(numv) = "@@" or Clean(namev) = "@@"
+						        then "Unassigned Sub-Parent"
+						        else Clean(namev),
+						
+						    ReadClaims = (fileName as text, monthNo as number) as table =>
+						        let
+						            Sheet = Excel.Workbook(File.Contents(p_Folder & "\" & fileName), null, true)
+						                        {[Item = "Claims", Kind = "Sheet"]}[Data],
+						            Rows = Table.Skip(Sheet, 5),
+						            Pick = Table.SelectColumns(Rows, {
+						                "Column2", "Column3", "Column4", "Column5", "Column6", "Column7",
+						                "Column8", "Column10", "Column11", "Column13", "Column14",
+						                "Column16", "Column17"}),
+						            Named = Table.RenameColumns(Pick, {
+						                {"Column2", "SubNumberRaw"}, {"Column3", "SubNameRaw"},
+						                {"Column4", "AccountNumberRaw"}, {"Column5", "AccountNameRaw"},
+						                {"Column6", "CategoryRaw"}, {"Column7", "IssuedQtyRaw"},
+						                {"Column8", "IssuedPkgRaw"}, {"Column10", "PaidQtyRaw"},
+						                {"Column11", "PaidPkgRaw"}, {"Column13", "RegQtyRaw"},
+						                {"Column14", "RegPkgRaw"}, {"Column16", "PaidAmtRaw"},
+						                {"Column17", "DeclaredRaw"}}),
+						            // Blank category rows are report padding, not claim activity.
+						            Kept = Table.SelectRows(Named, each
+						                KeepRow([SubNumberRaw], [AccountNumberRaw])
+						                and Clean([CategoryRaw]) <> ""),
+						            Shaped = Table.AddColumn(Kept, "Rec", each [
+						                MonthNumber            = monthNo,
+						                SubNumber              = Clean([SubNumberRaw]),
+						                SubName                = SubNameOf([SubNumberRaw], [SubNameRaw]),
+						                AccountNumber          = Clean([AccountNumberRaw]),
+						                AccountName            = Clean([AccountNameRaw]),
+						                ClaimsCategory         = Clean([CategoryRaw]),
+						                IsLoss                 = if Text.Lower(Clean([CategoryRaw])) = "loss"
+						                                         then "Yes" else "No",
+						                IssuedClaimsQty        = Num([IssuedQtyRaw]),
+						                IssuedClaimsPkgQty     = Num([IssuedPkgRaw]),
+						                PaidClaimsQty          = Num([PaidQtyRaw]),
+						                PaidClaimsPkgQty       = Num([PaidPkgRaw]),
+						                RegisteredClaimsQty    = Num([RegQtyRaw]),
+						                RegisteredClaimsPkgQty = Num([RegPkgRaw]),
+						                PaidClaimsAmount       = Num([PaidAmtRaw]),
+						                ClaimsDeclaredValue    = Num([DeclaredRaw]),
+						                // Stamped on every row so the limitation travels with the data
+						                // into any export, drillthrough or copied visual.
+						                ServiceAttribution     = "Not Available"
+						            ]),
+						            Out = Table.FromRecords(Table.Column(Shaped, "Rec"))
+						        in
+						            Out,
+						
+						    Mar = ReadClaims("UPS_2025_03_AllTabs.xlsx", 3),
+						    Combined = Table.Combine({Mar}),
+						
+						    WithKeys = Table.AddColumn(
+						        Table.AddColumn(
+						            Table.AddColumn(
+						                Table.AddColumn(Combined, "Year", each 2025, Int64.Type),
+						                "MonthKey", each 2025 * 100 + [MonthNumber], Int64.Type),
+						            "AccountKey", each [SubNumber] & "|" & [AccountNumber], type text),
+						        "Quarter", each "Q" & Text.From(Number.RoundUp([MonthNumber] / 3)), type text),
+						    WithDate = Table.AddColumn(WithKeys, "DateKey",
+						        each #date(2025, [MonthNumber], 1), type date),
+						    WithMonthName = Table.AddColumn(WithDate, "MonthName",
+						        each Date.ToText(#date(2025, [MonthNumber], 1), "MMM"), type text),
+						
+						    Typed = Table.TransformColumnTypes(WithMonthName, {
+						        {"MonthNumber", Int64.Type}, {"SubNumber", type text}, {"SubName", type text},
+						        {"AccountNumber", type text}, {"AccountName", type text},
+						        {"ClaimsCategory", type text}, {"IsLoss", type text},
+						        {"IssuedClaimsQty", type number}, {"IssuedClaimsPkgQty", type number},
+						        {"PaidClaimsQty", type number}, {"PaidClaimsPkgQty", type number},
+						        {"RegisteredClaimsQty", type number}, {"RegisteredClaimsPkgQty", type number},
+						        {"PaidClaimsAmount", Currency.Type}, {"ClaimsDeclaredValue", Currency.Type}})
+						in
+						    Typed
+
+			annotation PBI_ResultType = Table
+
+		table Fact_Accessorial
+			lineageTag: a7a02c5c-2114-5464-a7bb-ed9ec8e38e74
+
+			column Year
+				dataType: int64
+				lineageTag: 90137056-7d4d-5146-8016-8f81e17d555b
+				summarizeBy: none
+				sourceColumn: Year
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthNumber
+				dataType: int64
+				isHidden
+				lineageTag: 403e51cd-d19a-50c0-a617-09d2f6b05dbe
+				summarizeBy: none
+				sourceColumn: MonthNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthName
+				dataType: string
+				lineageTag: bae90d8c-c076-5fde-8046-3bd0e55dbc2e
+				summarizeBy: none
+				sourceColumn: MonthName
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthKey
+				dataType: int64
+				isHidden
+				lineageTag: 2e95f5a6-f847-5306-a60f-0fbcab058623
+				summarizeBy: none
+				sourceColumn: MonthKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column Quarter
+				dataType: string
+				lineageTag: bcd2b4a9-c759-5b8f-88e3-8de064a9afa9
+				summarizeBy: none
+				sourceColumn: Quarter
+
+				annotation SummarizationSetBy = Automatic
+
+			column DateKey
+				dataType: dateTime
+				isHidden
+				formatString: yyyy-mm-dd
+				lineageTag: 75d267d2-e9da-5fdc-b342-dab58aae76e6
+				summarizeBy: none
+				sourceColumn: DateKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountKey
+				dataType: string
+				isHidden
+				lineageTag: a1614518-63b6-514a-9c13-0ecec377f77a
+				summarizeBy: none
+				sourceColumn: AccountKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubName
+				dataType: string
+				lineageTag: caed8308-bf9c-517e-938b-bdc5dbc4d679
+				summarizeBy: none
+				sourceColumn: SubName
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountNumber
+				dataType: string
+				lineageTag: 04e20d7e-6f0f-54c6-b8eb-a3258bac57cf
+				summarizeBy: none
+				sourceColumn: AccountNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountName
+				dataType: string
+				lineageTag: 75f8f06e-c7a8-527d-906c-f42ba43ab851
+				summarizeBy: none
+				sourceColumn: AccountName
+
+				annotation SummarizationSetBy = Automatic
+
+			column State
+				dataType: string
+				lineageTag: 0e97e0a3-f085-5874-b7e0-8cefc77b7480
+				summarizeBy: none
+				sourceColumn: State
+
+				annotation SummarizationSetBy = Automatic
+
+			column RawProduct
+				dataType: string
+				lineageTag: c024427b-702e-5516-80bb-fd36c4f16581
+				summarizeBy: none
+				sourceColumn: RawProduct
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroup
+				dataType: string
+				lineageTag: afd28c11-ba6f-5fd9-97e5-2d63e0bc24ec
+				summarizeBy: none
+				sourceColumn: ServiceGroup
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroupShort
+				dataType: string
+				lineageTag: aa1a6775-c5b2-57d8-b306-e80997a4fcee
+				summarizeBy: none
+				sourceColumn: ServiceGroupShort
+
+				annotation SummarizationSetBy = Automatic
+
+			column FreightTypeDescription
+				dataType: string
+				lineageTag: 89f4df38-6739-5bb0-98f6-e1eff28578e1
+				summarizeBy: none
+				sourceColumn: FreightTypeDescription
+
+				annotation SummarizationSetBy = Automatic
+
+			column ChargeCategory
+				dataType: string
+				lineageTag: 12921612-9d51-5941-928f-a148b98107c5
+				summarizeBy: none
+				sourceColumn: ChargeCategory
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsAccessorial
+				dataType: string
+				lineageTag: 791c6a2e-d93f-59a6-80e6-60d4747034f6
+				summarizeBy: none
+				sourceColumn: IsAccessorial
+
+				annotation SummarizationSetBy = Automatic
+
+			column NumberOfUnits
+				dataType: double
+				lineageTag: 4f4c5037-e7f7-58dc-824b-c6f7128acd7c
+				summarizeBy: sum
+				sourceColumn: NumberOfUnits
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccessorialSpend
+				dataType: double
+				lineageTag: 503dfc45-e09f-5d07-b941-af1bea59ad5d
+				summarizeBy: sum
+				sourceColumn: AccessorialSpend
+
+				annotation SummarizationSetBy = Automatic
+
+			column GrossSpend
+				dataType: double
+				lineageTag: dcbde798-6352-564c-8619-07853f878298
+				summarizeBy: sum
+				sourceColumn: GrossSpend
+
+				annotation SummarizationSetBy = Automatic
+
+			column NetSpend
+				dataType: double
+				lineageTag: f71bd856-49eb-50d2-8044-2588369b0f77
+				summarizeBy: sum
+				sourceColumn: NetSpend
+
+				annotation SummarizationSetBy = Automatic
+
+			column SourceFile
+				dataType: string
+				isHidden
+				lineageTag: 2dc46f94-07e4-5e52-ba4a-35f797f876c9
+				summarizeBy: none
+				sourceColumn: SourceFile
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Fact_Accessorial = m
+				mode: import
+				source =
+						let
+						    Clean = (v) as text =>
+						        let
+						            t = if v = null then "" else Text.Trim(Text.From(v))
+						        in
+						            Text.Trim(if Text.StartsWith(t, "'") then Text.RemoveRange(t, 0, 1) else t),
+						
+						    Num = (v) as number => if v = null then 0 else (try Number.From(v) otherwise 0),
+						
+						    KeepRow = (sub, acct) as logical =>
+						        let
+						            s = Text.Lower(Clean(sub)),
+						            a = Text.Lower(Clean(acct))
+						        in
+						            not (s = "grand total" or s = "total" or a = "grand total" or a = "total")
+						            and not (a = "" and s = ""),
+						
+						    SubNameOf = (numv, namev) as text =>
+						        if Clean(numv) = "@@" or Clean(namev) = "@@"
+						        then "Unassigned Sub-Parent"
+						        else Clean(namev),
+						
+						    ReadAcc = (fileName as text, monthNo as number) as table =>
+						        let
+						            Sheet = Excel.Workbook(File.Contents(p_Folder & "\" & fileName), null, true)
+						                        {[Item = "Accessorial", Kind = "Sheet"]}[Data],
+						            Rows = Table.Skip(Sheet, 5),
+						            Pick = Table.SelectColumns(Rows, {
+						                "Column2", "Column3", "Column4", "Column5", "Column8", "Column10",
+						                "Column11", "Column12", "Column13", "Column14", "Column15", "Column16"}),
+						            Named = Table.RenameColumns(Pick, {
+						                {"Column2", "SubNumberRaw"}, {"Column3", "SubNameRaw"},
+						                {"Column4", "AccountNumberRaw"}, {"Column5", "AccountNameRaw"},
+						                {"Column8", "StateRaw"}, {"Column10", "ProductRaw"},
+						                {"Column11", "FreightTypeRaw"}, {"Column12", "ChargeRaw"},
+						                {"Column13", "UnitsRaw"}, {"Column14", "AccSpendRaw"},
+						                {"Column15", "GrossRaw"}, {"Column16", "NetRaw"}}),
+						            Kept = Table.SelectRows(Named, each
+						                KeepRow([SubNumberRaw], [AccountNumberRaw])
+						                and Clean([ChargeRaw]) <> ""),
+						            Shaped = Table.AddColumn(Kept, "Rec", each [
+						                MonthNumber            = monthNo,
+						                SubNumber              = Clean([SubNumberRaw]),
+						                SubName                = SubNameOf([SubNumberRaw], [SubNameRaw]),
+						                AccountNumber          = Clean([AccountNumberRaw]),
+						                AccountName            = Clean([AccountNameRaw]),
+						                State                  = Clean([StateRaw]),
+						                RawProduct             = Clean([ProductRaw]),
+						                FreightTypeDescription = Clean([FreightTypeRaw]),
+						                ChargeCategory         = Clean([ChargeRaw]),
+						                IsAccessorial          = if Text.Upper(Clean([FreightTypeRaw])) = "ACCESSORIAL"
+						                                         then "Yes" else "No",
+						                NumberOfUnits          = Num([UnitsRaw]),
+						                AccessorialSpend       = Num([AccSpendRaw]),
+						                GrossSpend             = Num([GrossRaw]),
+						                NetSpend               = Num([NetRaw])
+						            ]),
+						            Out = Table.FromRecords(Table.Column(Shaped, "Rec"))
+						        in
+						            Out,
+						
+						    Mar = ReadAcc("UPS_2025_03_AllTabs.xlsx", 3),
+						    Combined = Table.Combine({Mar}),
+						
+						    WithKeys = Table.AddColumn(
+						        Table.AddColumn(
+						            Table.AddColumn(
+						                Table.AddColumn(Combined, "Year", each 2025, Int64.Type),
+						                "MonthKey", each 2025 * 100 + [MonthNumber], Int64.Type),
+						            "AccountKey", each [SubNumber] & "|" & [AccountNumber], type text),
+						        "Quarter", each "Q" & Text.From(Number.RoundUp([MonthNumber] / 3)), type text),
+						    WithDate = Table.AddColumn(WithKeys, "DateKey",
+						        each #date(2025, [MonthNumber], 1), type date),
+						    WithMonthName = Table.AddColumn(WithDate, "MonthName",
+						        each Date.ToText(#date(2025, [MonthNumber], 1), "MMM"), type text),
+						
+						    Joined = Table.NestedJoin(WithMonthName, {"RawProduct"},
+						        Table.SelectRows(Dim_ServiceMapping, each [SourceSystem] = "VnS"), {"RawProduct"},
+						        "Map", JoinKind.LeftOuter),
+						    Expanded = Table.ExpandTableColumn(Joined, "Map",
+						        {"ServiceGroup", "ServiceGroupShort"}),
+						    Defaults = Table.TransformColumns(Expanded, {
+						        {"ServiceGroup", each if _ = null then "Unmapped - Review" else _, type text},
+						        {"ServiceGroupShort", each if _ = null then "Unmapped" else _, type text}}),
+						
+						    Typed = Table.TransformColumnTypes(Defaults, {
+						        {"MonthNumber", Int64.Type}, {"NumberOfUnits", type number},
+						        {"AccessorialSpend", Currency.Type}, {"GrossSpend", Currency.Type},
+						        {"NetSpend", Currency.Type}})
+						in
+						    Typed
+
+			annotation PBI_ResultType = Table
+
+		table Dim_Date
+			lineageTag: ef080e24-d9a5-5715-b914-120ea6978ee7
+
+			column DateKey
+				dataType: dateTime
+				isHidden
+				formatString: yyyy-mm-dd
+				lineageTag: c49a7b4f-8e92-5cce-9fda-24cf4a6a0a3c
+				summarizeBy: none
+				sourceColumn: DateKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column Year
+				dataType: int64
+				lineageTag: a0c2792f-9ece-5ec7-91ed-70be4f337158
+				summarizeBy: none
+				sourceColumn: Year
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthNumber
+				dataType: int64
+				isHidden
+				lineageTag: f53a184e-51e4-5227-b3f0-cd5e73f40418
+				summarizeBy: none
+				sourceColumn: MonthNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthName
+				dataType: string
+				lineageTag: 9a90a278-18fc-52a4-aa90-b8d0bc97622b
+				summarizeBy: none
+				sourceColumn: MonthName
+				sortByColumn: SortOrder
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthNameLong
+				dataType: string
+				lineageTag: f38c1265-fbeb-5e38-a5bb-c342d6aa4c06
+				summarizeBy: none
+				sourceColumn: MonthNameLong
+				sortByColumn: SortOrder
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthKey
+				dataType: int64
+				isHidden
+				lineageTag: 4c495725-9187-5309-a6a4-e88e900ff0f3
+				summarizeBy: none
+				sourceColumn: MonthKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthYearLabel
+				dataType: string
+				lineageTag: 108c47d8-5fb2-570e-93c6-7238a7ce377a
+				summarizeBy: none
+				sourceColumn: MonthYearLabel
+				sortByColumn: SortOrder
+
+				annotation SummarizationSetBy = Automatic
+
+			column Quarter
+				dataType: string
+				lineageTag: 8e3d5e0d-415a-59fc-9138-04ed2d779e2f
+				summarizeBy: none
+				sourceColumn: Quarter
+
+				annotation SummarizationSetBy = Automatic
+
+			column QuarterKey
+				dataType: int64
+				isHidden
+				lineageTag: e52c4470-a175-52fc-abae-81c2fdd5cd70
+				summarizeBy: none
+				sourceColumn: QuarterKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column MonthEndDate
+				dataType: dateTime
+				isHidden
+				formatString: yyyy-mm-dd
+				lineageTag: 8d97e2c8-1540-5abc-834b-de51cd80193d
+				summarizeBy: none
+				sourceColumn: MonthEndDate
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsCompletedMonth
+				dataType: string
+				lineageTag: 9bd91905-9892-52e4-8346-2f72460fb35a
+				summarizeBy: none
+				sourceColumn: IsCompletedMonth
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsLoaded
+				dataType: string
+				lineageTag: d835e449-d590-53c3-a2b6-51a0f02b9af9
+				summarizeBy: none
+				sourceColumn: IsLoaded
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsReportable
+				dataType: string
+				lineageTag: 8d4ed47e-f273-5c6a-aaeb-0094d9bb2d84
+				summarizeBy: none
+				sourceColumn: IsReportable
+
+				annotation SummarizationSetBy = Automatic
+
+			column SortOrder
+				dataType: int64
+				isHidden
+				lineageTag: 62750676-025e-5dfe-b681-cc97d8f03013
+				summarizeBy: none
+				sourceColumn: SortOrder
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Dim_Date = m
+				mode: import
+				source =
+						let
+						    ReportYear = 2025,
+						    // Months present in the data. Update as later months are added, or set to
+						    // {1..12} once the full year is loaded.
+						    LoadedMonths = {1, 2, 3, 4},
+						    // Anchors the completed-month flag. Change to a fixed date to reproduce a
+						    // previously published figure.
+						    AsOf = DateTime.Date(DateTime.LocalNow()),
+						
+						    Rows = List.Transform({1 .. 12}, (m) =>
+						        let
+						            First = #date(ReportYear, m, 1),
+						            Last = Date.EndOfMonth(First),
+						            Completed = Last < AsOf,
+						            Loaded = List.Contains(LoadedMonths, m)
+						        in [
+						            DateKey          = First,
+						            Year             = ReportYear,
+						            MonthNumber      = m,
+						            MonthName        = Date.ToText(First, "MMM"),
+						            MonthNameLong    = Date.ToText(First, "MMMM"),
+						            MonthKey         = ReportYear * 100 + m,
+						            MonthYearLabel   = Date.ToText(First, "MMM yyyy"),
+						            Quarter          = "Q" & Text.From(Number.RoundUp(m / 3)),
+						            QuarterKey       = ReportYear * 10 + Number.RoundUp(m / 3),
+						            MonthEndDate     = Last,
+						            IsCompletedMonth = if Completed then "Yes" else "No",
+						            IsLoaded         = if Loaded then "Yes" else "No",
+						            // The only flag that should gate a trend or annual comparison: the
+						            // month has both ended and actually been loaded.
+						            IsReportable     = if Completed and Loaded then "Yes" else "No",
+						            SortOrder        = ReportYear * 100 + m
+						        ]),
+						
+						    Result = Table.FromRecords(Rows, type table [
+						        DateKey = date, Year = Int64.Type, MonthNumber = Int64.Type,
+						        MonthName = text, MonthNameLong = text, MonthKey = Int64.Type,
+						        MonthYearLabel = text, Quarter = text, QuarterKey = Int64.Type,
+						        MonthEndDate = date, IsCompletedMonth = text, IsLoaded = text,
+						        IsReportable = text, SortOrder = Int64.Type])
+						in
+						    Result
+
+			annotation PBI_ResultType = Table
+
+		table Dim_Account
+			lineageTag: 4ebddeed-e270-591b-b5d0-b07f43204e84
+
+			column AccountKey
+				dataType: string
+				isHidden
+				lineageTag: cbdc572e-99f2-575d-9622-dc18747e2c03
+				summarizeBy: none
+				sourceColumn: AccountKey
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubNumber
+				dataType: string
+				isHidden
+				lineageTag: c14142d2-1475-5ed1-bac0-828d9ba86252
+				summarizeBy: none
+				sourceColumn: SubNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column SubName
+				dataType: string
+				lineageTag: 2cde1039-d979-5c13-8173-1ca94b88553d
+				summarizeBy: none
+				sourceColumn: SubName
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountNumber
+				dataType: string
+				lineageTag: 0dc6ae58-64e2-58c4-8ec6-3ffabb8cc136
+				summarizeBy: none
+				sourceColumn: AccountNumber
+
+				annotation SummarizationSetBy = Automatic
+
+			column AccountName
+				dataType: string
+				lineageTag: b532e81e-196e-5aeb-94fe-e48c1d2ec281
+				summarizeBy: none
+				sourceColumn: AccountName
+
+				annotation SummarizationSetBy = Automatic
+
+			column City
+				dataType: string
+				lineageTag: 2a7dbd9f-64b0-5347-8220-cea4b18005ad
+				summarizeBy: none
+				sourceColumn: City
+
+				annotation SummarizationSetBy = Automatic
+
+			column State
+				dataType: string
+				lineageTag: 2d24e06d-2654-5b06-9aa7-126c6c45761d
+				summarizeBy: none
+				sourceColumn: State
+
+				annotation SummarizationSetBy = Automatic
+
+			column ZIP
+				dataType: string
+				lineageTag: 9fc56ad1-6d67-54c0-9d69-e3838493cb6a
+				summarizeBy: none
+				sourceColumn: ZIP
+
+				annotation SummarizationSetBy = Automatic
+
+			column PresentIn
+				dataType: string
+				isHidden
+				lineageTag: a05a04c3-ddc2-5951-ab0f-ff1ea0613e81
+				summarizeBy: none
+				sourceColumn: PresentIn
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasTransitData
+				dataType: string
+				lineageTag: 205a86d5-dcf9-539a-8ed6-aecea85ae9f0
+				summarizeBy: none
+				sourceColumn: HasTransitData
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasClaimsData
+				dataType: string
+				lineageTag: 6304fc43-bb7b-52de-af14-13482ff69933
+				summarizeBy: none
+				sourceColumn: HasClaimsData
+
+				annotation SummarizationSetBy = Automatic
+
+			column Region
+				dataType: string
+				lineageTag: 66bd3f40-b1a1-597e-ac7d-3fbb3414171a
+				summarizeBy: none
+				sourceColumn: Region
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Dim_Account = m
+				mode: import
+				source =
+						let
+						    FromVolume = Table.SelectColumns(Fact_VolumeSpend,
+						        {"AccountKey", "SubNumber", "SubName", "AccountNumber", "AccountName",
+						         "City", "State", "ZIP"}),
+						    FromTransit = Table.SelectColumns(Fact_TimeInTransit,
+						        {"AccountKey", "SubNumber", "SubName", "AccountNumber", "AccountName",
+						         "City", "State", "ZIP"}),
+						    // The claims extract carries no geography; pad so the columns align.
+						    FromClaims = Table.AddColumn(
+						        Table.AddColumn(
+						            Table.AddColumn(
+						                Table.SelectColumns(Fact_Claims,
+						                    {"AccountKey", "SubNumber", "SubName", "AccountNumber", "AccountName"}),
+						                "City", each "", type text),
+						            "State", each "", type text),
+						        "ZIP", each "", type text),
+						
+						    Combined = Table.Combine({FromVolume, FromTransit, FromClaims}),
+						
+						    // Blank attributes must not win the deduplication. Sorting non-blank State
+						    // and City first means the surviving row carries the populated geography,
+						    // which the claims rows do not supply.
+						    Ranked = Table.Sort(Combined, {
+						        {"AccountKey", Order.Ascending},
+						        {each if [State] = null or [State] = "" then 1 else 0, Order.Ascending},
+						        {each if [City] = null or [City] = "" then 1 else 0, Order.Ascending}}),
+						
+						    // Table.Buffer is required: without it the sort is not guaranteed to be
+						    // honoured by Table.Distinct and the wrong row can win.
+						    Distinct = Table.Distinct(Table.Buffer(Ranked), {"AccountKey"}),
+						
+						    WithRegion = Table.AddColumn(Distinct, "Region", each
+						        let S = Text.Upper(if [State] = null then "" else [State]) in
+						        if List.Contains({"CT","ME","MA","NH","RI","VT","NJ","NY","PA"}, S) then "Northeast"
+						        else if List.Contains({"IL","IN","MI","OH","WI","IA","KS","MN","MO",
+						                               "NE","ND","SD"}, S) then "Midwest"
+						        else if List.Contains({"DE","FL","GA","MD","NC","SC","VA","DC","WV","AL","KY","MS",
+						                               "TN","AR","LA","OK","TX"}, S) then "South"
+						        else if List.Contains({"AZ","CO","ID","MT","NV","NM","UT","WY","AK",
+						                               "CA","HI","OR","WA"}, S) then "West"
+						        else "Unknown / International", type text),
+						
+						    // Coverage flags. Built from buffered key lists rather than a nested
+						    // Table.SelectRows per row: the nested form re-scans the whole fact table
+						    // for every account, and inside the inner lambda [AccountKey] is ambiguous
+						    // between the outer and inner row.
+						    TransitKeys = List.Buffer(List.Distinct(Table.Column(Fact_TimeInTransit, "AccountKey"))),
+						    ClaimsKeys  = List.Buffer(List.Distinct(Table.Column(Fact_Claims, "AccountKey"))),
+						
+						    WithFlags = Table.AddColumn(
+						        Table.AddColumn(WithRegion, "HasTransitData",
+						            each if List.Contains(TransitKeys, [AccountKey]) then "Yes" else "No", type text),
+						        "HasClaimsData",
+						            each if List.Contains(ClaimsKeys, [AccountKey]) then "Yes" else "No", type text),
+						
+						    WithDisplay = Table.AddColumn(WithFlags, "AccountDisplay",
+						        each [AccountName] & " (" & [AccountNumber] & ")", type text),
+						
+						    Sorted = Table.Sort(WithDisplay,
+						        {{"SubName", Order.Ascending}, {"AccountName", Order.Ascending}})
+						in
+						    Sorted
+
+			annotation PBI_ResultType = Table
+
+		table Dim_Service
+			lineageTag: 9aca35c2-87b3-5109-98f1-3c0113456c3a
+
+			column ServiceGroup
+				dataType: string
+				lineageTag: 380085a2-3e75-516d-9cbc-04588306780d
+				summarizeBy: none
+				sourceColumn: ServiceGroup
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceGroupShort
+				dataType: string
+				lineageTag: db1fd89b-b03c-5a80-8f0f-b7c5abf6aea7
+				summarizeBy: none
+				sourceColumn: ServiceGroupShort
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServiceTier
+				dataType: string
+				lineageTag: 0dd54d28-0bed-54b1-946c-a9ee0b28f402
+				summarizeBy: none
+				sourceColumn: ServiceTier
+
+				annotation SummarizationSetBy = Automatic
+
+			column Scope
+				dataType: string
+				lineageTag: 49420869-48df-541d-8456-e1d84ca0e030
+				summarizeBy: none
+				sourceColumn: Scope
+
+				annotation SummarizationSetBy = Automatic
+
+			column IncludeInRanking
+				dataType: string
+				lineageTag: bdaae91a-4cb3-5ec1-9d21-bb0a1cf2fc5b
+				summarizeBy: none
+				sourceColumn: IncludeInRanking
+
+				annotation SummarizationSetBy = Automatic
+
+			column ServicePriority
+				dataType: int64
+				lineageTag: 2f32ba9d-1ce2-5794-8666-e29acf8dbfd0
+				summarizeBy: none
+				sourceColumn: ServicePriority
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Dim_Service = m
+				mode: import
+				source =
+						let
+						    Source = Dim_ServiceMapping,
+						    Trimmed = Table.SelectColumns(Source, {
+						        "ServiceGroup", "ServiceGroupShort", "ServiceTier", "Scope",
+						        "IncludeInRanking", "ServicePriority"}),
+						    Distinct = Table.Distinct(Trimmed, {"ServiceGroup"}),
+						    // A review bucket so an unmapped fact row finds a parent instead of becoming
+						    // a blank-key orphan on every visual.
+						    WithReview = Table.Combine({Distinct, #table(
+						        type table [ServiceGroup = text, ServiceGroupShort = text,
+						                    ServiceTier = text,
+						                    Scope = text, IncludeInRanking = text, ServicePriority = Int64.Type],
+						        {{"Unmapped - Review", "Unmapped", "Unmapped", "Unknown", "No", 98}})}),
+						    Deduped = Table.Distinct(WithReview, {"ServiceGroup"}),
+						    Sorted = Table.Sort(Deduped, {{"ServicePriority", Order.Ascending}})
+						in
+						    Sorted
+
+			annotation PBI_ResultType = Table
+
+		table _Measures
+			lineageTag: 3393efa3-e3e5-51d4-ae7a-a1e6c00c497a
+
+			measure 'Total Shipments' = SUM ( Fact_VolumeSpend[Volume] )
+				formatString: #,0
+				displayFolder: 1 Volume, Spend and Cost\Shipment volume
+				lineageTag: 9ee6c617-c6d2-56db-b2fe-9c3a1c34c551
+
+			measure 'Rankable Shipments' =
+					
+					CALCULATE (
+					    [Total Shipments],
+					    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+					    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+					)
+				formatString: #,0
+				displayFolder: 1 Volume, Spend and Cost\Shipment volume
+				lineageTag: 4cca2c13-58a0-5434-8ee6-f3693de3598c
+
+			measure 'YTD Shipments' =
+					
+					VAR CurrentYear = MAX ( Dim_Date[Year] )
+					VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )
+					RETURN
+					    CALCULATE (
+					        [Total Shipments],
+					        REMOVEFILTERS ( Dim_Date ),
+					        Dim_Date[Year] = CurrentYear,
+					        Dim_Date[MonthNumber] <= CurrentMonth
+					    )
+				formatString: #,0
+				displayFolder: 1 Volume, Spend and Cost\Shipment volume
+				lineageTag: 382275f9-36ad-5be9-bf5a-6c58166b73c7
+
+			measure 'Shipments PY' =
+					
+					VAR PriorKeys =
+					    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), "@Key", Dim_Date[MonthKey] - 100 )
+					RETURN
+					    CALCULATE (
+					        [Total Shipments],
+					        REMOVEFILTERS ( Dim_Date ),
+					        TREATAS ( PriorKeys, Dim_Date[MonthKey] )
+					    )
+				formatString: #,0
+				displayFolder: 1 Volume, Spend and Cost\Shipment volume
+				lineageTag: 9ad8c10d-bc5d-5881-89ba-4d7a6e0ab3ad
+
+			measure 'Shipments YoY %' =
+					
+					VAR Current = [Total Shipments]
+					VAR Prior = [Shipments PY]
+					RETURN
+					    DIVIDE ( Current - Prior, Prior )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 1 Volume, Spend and Cost\Shipment volume
+				lineageTag: e78a95d3-4136-5c2e-b0c4-265e23ef0a44
+
+			measure 'Shipments LY (Source)' = SUM ( Fact_VolumeSpend[VolumeLY] )
+				formatString: #,0
+				displayFolder: 1 Volume, Spend and Cost\Spend
+				lineageTag: cee6a625-c4a0-565e-90bf-23e958da021a
+
+			measure 'Total Net Spend' = SUM ( Fact_VolumeSpend[NetSpend] )
+				formatString: \$#,0
+				displayFolder: 1 Volume, Spend and Cost\Spend
+				lineageTag: da101769-4477-5d5c-88a1-c39d270632f1
+
+			measure 'Total Gross Spend' = SUM ( Fact_VolumeSpend[GrossSpend] )
+				formatString: \$#,0
+				displayFolder: 1 Volume, Spend and Cost\Spend
+				lineageTag: 20f4e430-8958-5a3e-9e21-315316ee5394
+
+			measure 'Total Incentive' = SUM ( Fact_VolumeSpend[Incentive] )
+				formatString: \$#,0
+				displayFolder: 1 Volume, Spend and Cost\Spend
+				lineageTag: c531ae2b-2567-550c-a095-28d9e1c13c76
+
+			measure 'Incentive %' = DIVIDE ( [Total Incentive], [Total Gross Spend] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 1 Volume, Spend and Cost\Spend
+				lineageTag: 8f342079-fd75-59ab-8662-5bf0a1df49e5
+
+			measure 'YTD Net Spend' =
+					
+					VAR CurrentYear = MAX ( Dim_Date[Year] )
+					VAR CurrentMonth = MAX ( Dim_Date[MonthNumber] )
+					RETURN
+					    CALCULATE (
+					        [Total Net Spend],
+					        REMOVEFILTERS ( Dim_Date ),
+					        Dim_Date[Year] = CurrentYear,
+					        Dim_Date[MonthNumber] <= CurrentMonth
+					    )
+				formatString: \$#,0
+				displayFolder: 1 Volume, Spend and Cost\Spend
+				lineageTag: 29c8723b-2d40-56b4-ac85-f3b75964596f
+
+			measure 'Net Spend PY' =
+					
+					VAR PriorKeys =
+					    SELECTCOLUMNS ( VALUES ( Dim_Date[MonthKey] ), "@Key", Dim_Date[MonthKey] - 100 )
+					RETURN
+					    CALCULATE (
+					        [Total Net Spend],
+					        REMOVEFILTERS ( Dim_Date ),
+					        TREATAS ( PriorKeys, Dim_Date[MonthKey] )
+					    )
+				formatString: \$#,0
+				displayFolder: 1 Volume, Spend and Cost\Spend
+				lineageTag: d624de53-ad5f-5c4c-82b4-3a5de1c3c429
+
+			measure 'Net Spend YoY %' = DIVIDE ( [Total Net Spend] - [Net Spend PY], [Net Spend PY] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+				lineageTag: afe0f732-3bfe-570c-ae6c-e5f32c1ba894
+
+			measure 'Avg Net Spend per Shipment' =
+					
+					DIVIDE (
+					    CALCULATE (
+					        [Total Net Spend],
+					        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+					        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+					    ),
+					    [Rankable Shipments]
+					)
+				formatString: \$#,0.00
+				displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+				lineageTag: e7cbff9d-05f2-5d11-9295-4b82c7a9424f
+
+			measure 'Total Billed Weight' =
+					
+					CALCULATE (
+					    SUM ( Fact_VolumeSpend[BilledWeightLbs] ),
+					    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+					    KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+					)
+				formatString: #,0
+				displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+				lineageTag: e9f24be2-a24a-5953-82af-8415e530d99c
+
+			measure 'Avg Billed Weight per Shipment' = DIVIDE ( [Total Billed Weight], [Rankable Shipments] )
+				formatString: #,0.0
+				displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+				lineageTag: 7ef06ffe-995d-5def-81e1-6ad54b4a7963
+
+			measure 'Avg Net Spend per Billed Lb' =
+					
+					DIVIDE (
+					    CALCULATE (
+					        [Total Net Spend],
+					        KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "Yes" ),
+					        KEEPFILTERS ( Fact_VolumeSpend[HasVolume] = "Yes" )
+					    ),
+					    [Total Billed Weight]
+					)
+				formatString: \$#,0.000
+				displayFolder: 1 Volume, Spend and Cost\Cost efficiency
+				lineageTag: 8a57d846-0bc2-526b-b381-007a164dc3f2
+
+			measure 'Weight-Adjusted Cost Premium' =
+					
+					VAR BlendedRatePerLb =
+					    CALCULATE (
+					        [Avg Net Spend per Billed Lb],
+					        REMOVEFILTERS ( Dim_Service ),
+					        VALUES ( Dim_Date[MonthKey] )
+					    )
+					VAR ExpectedSpend = [Total Billed Weight] * BlendedRatePerLb
+					RETURN
+					    DIVIDE ( [Total Net Spend] - ExpectedSpend, ExpectedSpend )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 1 Volume, Spend and Cost\Mix
+				lineageTag: b1c1c383-1efc-5957-bee7-980ff627d68d
+
+			measure 'Service Volume Mix %' =
+					
+					DIVIDE (
+					    [Rankable Shipments],
+					    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
+					)
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 1 Volume, Spend and Cost\Mix
+				lineageTag: 4dd2a23f-f75b-5b33-8e22-be25a215257c
+
+			measure 'Service Spend Mix %' =
+					
+					DIVIDE (
+					    [Total Net Spend],
+					    CALCULATE ( [Total Net Spend], REMOVEFILTERS ( Dim_Service ) )
+					)
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 1 Volume, Spend and Cost\Mix
+				lineageTag: 057f18cc-e65a-5cbc-bca4-4bcdcf838795
+
+			measure 'Account Volume Mix %' =
+					
+					DIVIDE (
+					    [Rankable Shipments],
+					    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Account ) )
+					)
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 1 Volume, Spend and Cost\Mix
+				lineageTag: 05c8e8c0-b42a-5960-bd1b-8a69bc4f2055
+
+			measure 'Packages Measured' = SUM ( Fact_TimeInTransit[PackagesMeasured] )
+				formatString: #,0
+				displayFolder: 2 Reliability
+				lineageTag: 9b28dcfa-f4ce-59fc-949e-984c0ad07b29
+
+			measure 'Total Late' = SUM ( Fact_TimeInTransit[TotalLate] )
+				formatString: #,0
+				displayFolder: 2 Reliability
+				lineageTag: d9eaf78a-8cc7-5afc-adce-3dbb339ab1b8
+
+			measure 'Late by Day' = SUM ( Fact_TimeInTransit[LateByDay] )
+				formatString: #,0
+				displayFolder: 2 Reliability
+				lineageTag: 4c7dc0f8-ca2c-56e8-b673-d0498529373c
+
+			measure 'Late by Time' = SUM ( Fact_TimeInTransit[LateByTime] )
+				formatString: #,0
+				displayFolder: 2 Reliability
+				lineageTag: 8f8fe049-4e07-53ef-a9eb-57cd5e5a2b23
+
+			measure 'On-Time Packages' = SUM ( Fact_TimeInTransit[OnTimePackages] )
+				formatString: #,0
+				displayFolder: 2 Reliability
+				lineageTag: 2ca9a08e-3a3a-5bdd-8c06-c8780cbd68c2
+
+			measure 'On-Time Delivery %' = DIVIDE ( [On-Time Packages], [Packages Measured] )
+				formatString: 0.00%;-0.00%;0.00%
+				displayFolder: 2 Reliability
+				lineageTag: acb2877a-1d86-5e87-a23c-a985deca8196
+
+			measure 'Late Delivery %' = DIVIDE ( [Total Late], [Packages Measured] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 2 Reliability
+				lineageTag: 9ef7a178-1412-56a1-87f8-18753a81bb6e
+
+			measure 'Late by Day %' = DIVIDE ( [Late by Day], [Packages Measured] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 2 Reliability
+				lineageTag: c3c584ac-705a-500e-9d48-d04c1bba8744
+
+			measure 'Late by Time %' = DIVIDE ( [Late by Time], [Packages Measured] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 2 Reliability
+				lineageTag: a4883a16-6eb6-5478-a0ca-0686b95c1691
+
+			measure 'Severity Mix (Day Share of Late)' = DIVIDE ( [Late by Day], [Total Late] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 2 Reliability\Trend and stability
+				lineageTag: f602ea40-ddc8-55a5-ad94-336a82b00eef
+
+			measure 'OTD % PM' =
+					
+					VAR CurrentKey = SELECTEDVALUE ( Dim_Date[MonthKey] )
+					VAR PriorKey =
+					    IF ( MOD ( CurrentKey, 100 ) = 1, CurrentKey - 89, CurrentKey - 1 )
+					RETURN
+					    IF (
+					        NOT ISBLANK ( CurrentKey ),
+					        CALCULATE (
+					            [On-Time Delivery %],
+					            REMOVEFILTERS ( Dim_Date ),
+					            Dim_Date[MonthKey] = PriorKey
+					        )
+					    )
+				formatString: 0.00%;-0.00%;0.00%
+				displayFolder: 2 Reliability\Trend and stability
+				lineageTag: c548de76-2123-5155-999d-437910daa3ee
+
+			measure 'OTD % Delta MoM' =
+					
+					VAR Current = [On-Time Delivery %]
+					VAR Prior = [OTD % PM]
+					RETURN
+					    IF ( NOT ISBLANK ( Current ) && NOT ISBLANK ( Prior ), Current - Prior )
+				formatString: 0.00%;-0.00%;0.00%
+				displayFolder: 2 Reliability\Trend and stability
+				lineageTag: 560c110a-30c1-5964-9caa-06af64da7d8e
+
+			measure 'OTD % Annual Benchmark' =
+					
+					CALCULATE (
+					    [On-Time Delivery %],
+					    REMOVEFILTERS ( Dim_Date[MonthNumber], Dim_Date[MonthName], Dim_Date[Quarter],
+					        Dim_Date[MonthYearLabel], Dim_Date[MonthKey] )
+					)
+				formatString: 0.00%;-0.00%;0.00%
+				displayFolder: 2 Reliability\Trend and stability
+				lineageTag: b8c686f3-70c5-5248-9f6c-6da175d05692
+
+			measure 'OTD Volatility (pp)' =
+					
+					VAR MonthlySeries =
+					    ADDCOLUMNS (
+					        CALCULATETABLE (
+					            VALUES ( Dim_Date[MonthKey] ),
+					            Dim_Date[IsReportable] = "Yes"
+					        ),
+					        "@OTD", [On-Time Delivery %]
+					    )
+					VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )
+					RETURN
+					    IF ( COUNTROWS ( Clean ) >= 2, STDEVX.P ( Clean, [@OTD] ) * 100 )
+				formatString: #,0.00
+				displayFolder: 2 Reliability\Trend and stability
+				lineageTag: c4247a76-f99f-5264-8397-49eb7c160ee2
+
+			measure 'Worst OTD Month' =
+					
+					VAR MonthlySeries =
+					    ADDCOLUMNS (
+					        CALCULATETABLE (
+					            VALUES ( Dim_Date[MonthYearLabel] ),
+					            Dim_Date[IsReportable] = "Yes"
+					        ),
+					        "@OTD", [On-Time Delivery %]
+					    )
+					VAR Clean = FILTER ( MonthlySeries, NOT ISBLANK ( [@OTD] ) )
+					RETURN
+					    IF (
+					        NOT ISEMPTY ( Clean ),
+					        CONCATENATEX (
+					            TOPN ( 1, Clean, [@OTD], ASC ),
+					            Dim_Date[MonthYearLabel] & " (" & FORMAT ( [@OTD], "0.0%" ) & ")"
+					        )
+					    )
+				displayFolder: 2 Reliability\Statistical confidence
+				lineageTag: ec9cab1c-4d2b-5d3e-b9d1-09c265a9bad2
+
+			measure 'OTD Wilson Lower Bound' =
+					
+					VAR N = [Packages Measured]
+					VAR Successes = [On-Time Packages]
+					VAR Z = 1.96                                  // 95% two-sided
+					VAR P = DIVIDE ( Successes, N )
+					VAR Denominator = 1 + DIVIDE ( Z * Z, N )
+					VAR Centre = P + DIVIDE ( Z * Z, 2 * N )
+					VAR Margin =
+					    Z * SQRT ( DIVIDE ( P * ( 1 - P ), N ) + DIVIDE ( Z * Z, 4 * N * N ) )
+					RETURN
+					    IF ( N > 0, DIVIDE ( Centre - Margin, Denominator ) )
+				formatString: 0.00%;-0.00%;0.00%
+				displayFolder: 2 Reliability\Statistical confidence
+				lineageTag: 6f5d05dc-cb1e-50b7-968d-8da00be6ce32
+
+			measure 'OTD Confidence Gap (pp)' =
+					
+					VAR Gap = [On-Time Delivery %] - [OTD Wilson Lower Bound]
+					RETURN
+					    IF ( NOT ISBLANK ( Gap ), Gap * 100 )
+				formatString: #,0.00
+				displayFolder: 2 Reliability\Statistical confidence
+				lineageTag: e41d2933-0c38-5749-8634-4432112b936e
+
+			measure 'OTD Confidence Label' =
+					
+					VAR Gap = [OTD Confidence Gap (pp)]
+					RETURN
+					    SWITCH (
+					        TRUE (),
+					        ISBLANK ( Gap ), "No transit data",
+					        Gap <= 0.5, "High confidence",
+					        Gap <= 2.0, "Moderate confidence",
+					        Gap <= 10.0, "Low confidence - small sample",
+					        "Not interpretable - sample too small"
+					    )
+				displayFolder: 2 Reliability\Coverage
+				lineageTag: 2b53a1bc-9396-5bbe-b6bf-887e7cdc11c4
+
+			measure 'Months with Transit Data' =
+					
+					CALCULATE (
+					    DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ),
+					    REMOVEFILTERS ( Dim_Service, Dim_Account )
+					)
+				formatString: #,0
+				displayFolder: 2 Reliability\Coverage
+				lineageTag: da7bccd1-168a-5157-a8a4-61757e39947f
+
+			measure 'Transit Coverage %' =
+					
+					DIVIDE (
+					    CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ) ),
+					    CALCULATE (
+					        DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ),
+					        REMOVEFILTERS ( Dim_Service )
+					    )
+					)
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 2 Reliability\Coverage
+				lineageTag: d3496311-4476-5b25-841d-caaae5b8ff77
+
+			measure 'Has Transit Data' = IF ( [Packages Measured] > 0, "Yes", "No" )
+				displayFolder: 2 Reliability\Coverage
+				lineageTag: cb5f43c1-3b81-504c-90f0-609e2d3854ab
+
+			measure 'Issued Claims Pkgs' = SUM ( Fact_Claims[IssuedClaimsPkgQty] )
+				formatString: #,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 914dc259-3865-571f-a6bc-b3b5e6a1b349
+
+			measure 'Paid Claims Pkgs' = SUM ( Fact_Claims[PaidClaimsPkgQty] )
+				formatString: #,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 64d12609-9e09-567b-a74f-03809b4e81b4
+
+			measure 'Registered Claims Pkgs' = SUM ( Fact_Claims[RegisteredClaimsPkgQty] )
+				formatString: #,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: be315720-d76f-5161-a0f8-f28d4ac18bdf
+
+			measure 'Paid Claims Amount' = SUM ( Fact_Claims[PaidClaimsAmount] )
+				formatString: \$#,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 0628f804-040d-5422-bd6b-66a36fbad452
+
+			measure 'Claims Declared Value' = SUM ( Fact_Claims[ClaimsDeclaredValue] )
+				formatString: \$#,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: fa3d51b1-1c69-5150-aece-1531c2370e24
+
+			measure 'Loss Claims' =
+					
+					CALCULATE (
+					    [Issued Claims Pkgs],
+					    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Loss" )
+					)
+				formatString: #,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: bc18739e-f3d4-5a48-b2f9-039a4ffc032d
+
+			measure 'Damage Claims' =
+					
+					CALCULATE (
+					    [Issued Claims Pkgs],
+					    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Damage" )
+					)
+				formatString: #,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 5f1f6347-5032-5ab5-a5d6-99977e0096af
+
+			measure 'Loss Claims Paid Amount' =
+					
+					CALCULATE (
+					    [Paid Claims Amount],
+					    KEEPFILTERS ( Fact_Claims[ClaimsCategory] = "Loss" )
+					)
+				formatString: \$#,0
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: f274c388-6b00-5605-a2df-03b4dbd096aa
+
+			measure 'Claims Recovery Rate' = DIVIDE ( [Paid Claims Pkgs], [Issued Claims Pkgs] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 8bb0285e-849e-5303-a9e8-c8883544cad3
+
+			measure 'Avg Paid per Claim' = DIVIDE ( [Paid Claims Amount], [Paid Claims Pkgs] )
+				formatString: \$#,0.00
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 3f98e49c-10e2-549e-82f0-62f5a3362c3d
+
+			measure 'Loss Claim Rate per 10k' = DIVIDE ( [Loss Claims], [Rankable Shipments] ) * 10000
+				formatString: #,0.00
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 678c3fb7-53ca-5328-b8ac-f18ef3e2fea6
+
+			measure 'Claims Rate per 10k' = DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] ) * 10000
+				formatString: #,0.00
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: f4a67e08-09b3-5b3f-88c3-435c50c1cfc1
+
+			measure 'Loss Claim Rate' = DIVIDE ( [Loss Claims], [Rankable Shipments] )
+				formatString: 0.00%;-0.00%;0.00%
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: 072f100b-997b-5cb8-a34b-e4cdcdcdd9da
+
+			measure 'Exception / Claims Rate' = DIVIDE ( [Issued Claims Pkgs], [Rankable Shipments] )
+				formatString: 0.00%;-0.00%;0.00%
+				displayFolder: 3 Claims and Loss Risk\Tier B: supported claim measures (account grain)
+				lineageTag: df9e847e-1edb-53b4-8b3f-a1398082ae72
+
+			measure 'Claims Cost per 1k Shipments' = DIVIDE ( [Paid Claims Amount], [Rankable Shipments] ) * 1000
+				formatString: \$#,0.00
+				displayFolder: 3 Claims and Loss Risk\Concentration
+				lineageTag: 13c9b1cb-5434-5771-85b1-c11ff746b225
+
+			measure 'Firm-wide Loss Rate per 10k' =
+					
+					CALCULATE (
+					    [Loss Claim Rate per 10k],
+					    REMOVEFILTERS ( Dim_Account, Dim_Service )
+					)
+				formatString: #,0.00
+				displayFolder: 3 Claims and Loss Risk\Concentration
+				lineageTag: 20bcf940-6d6f-5e74-869b-2785a96dd228
+
+			measure 'Loss Rate Index vs Firm' = DIVIDE ( [Loss Claim Rate per 10k], [Firm-wide Loss Rate per 10k] )
+				formatString: #,0.00
+				displayFolder: 3 Claims and Loss Risk\Concentration
+				lineageTag: d8b6c6cc-8b04-5f9f-9c7d-284562a02e63
+
+			measure 'Loss Risk Flag' =
+					
+					VAR Idx = [Loss Rate Index vs Firm]
+					VAR Vol = [Rankable Shipments]
+					RETURN
+					    SWITCH (
+					        TRUE (),
+					        ISBLANK ( [Loss Claims] ) || [Loss Claims] = 0, "No loss activity",
+					        Vol < 500, "Insufficient volume to rate",
+					        Idx >= 3, "Critical - investigate",
+					        Idx >= 2, "Elevated - monitor",
+					        Idx >= 1, "Above firm average",
+					        "At or below firm average"
+					    )
+				displayFolder: 3 Claims and Loss Risk\Concentration
+				lineageTag: 1264bb43-643c-5969-9092-b6578a8a8a51
+
+			measure 'Top Account Share of Loss Claims' =
+					
+					VAR ByAccount =
+					    ADDCOLUMNS (
+					        CALCULATETABLE ( VALUES ( Dim_Account[AccountKey] ), REMOVEFILTERS ( Dim_Account ) ),
+					        "@Loss", [Loss Claims]
+					    )
+					VAR TotalLoss = SUMX ( ByAccount, [@Loss] )
+					VAR TopLoss = MAXX ( ByAccount, [@Loss] )
+					RETURN
+					    DIVIDE ( TopLoss, TotalLoss )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 3 Claims and Loss Risk\Concentration
+				lineageTag: b874cac7-b86d-565e-bb60-a3ae481a29c5
+
+			measure 'Top Account by Loss Claims' =
+					
+					VAR ByAccount =
+					    ADDCOLUMNS (
+					        CALCULATETABLE ( VALUES ( Dim_Account[AccountName] ), REMOVEFILTERS ( Dim_Account ) ),
+					        "@Loss", [Loss Claims]
+					    )
+					RETURN
+					    CONCATENATEX ( TOPN ( 1, ByAccount, [@Loss], DESC ), Dim_Account[AccountName] )
+				displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+				lineageTag: 8ea4314d-5ffc-5d8a-9ac3-fd04635eadbd
+
+			measure 'Loss Claims (Allocated Proxy)' =
+					
+					SUMX (
+					    VALUES ( Dim_Account[AccountKey] ),
+					    VAR AccountLoss = CALCULATE ( [Loss Claims], REMOVEFILTERS ( Dim_Service ) )
+					    VAR AccountVolumeAllServices =
+					        CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
+					    VAR VolumeInScope = [Rankable Shipments]
+					    RETURN
+					        AccountLoss * DIVIDE ( VolumeInScope, AccountVolumeAllServices )
+					)
+				formatString: #,0.0
+				displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+				lineageTag: ffcd1448-72dc-57a8-b1b7-e6372778649d
+
+			measure 'Loss Claim Rate per 10k (Allocated Proxy)' =
+					
+					DIVIDE ( [Loss Claims (Allocated Proxy)], [Rankable Shipments] ) * 10000
+				formatString: #,0.00
+				displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+				lineageTag: 73f2b0b1-7fab-5419-92f6-4c81d5c7182d
+
+			measure 'Claims Attribution Warning' =
+					
+					"Allocated estimate. The claims extract carries no service or tracking key; "
+					    & "account-level claims are distributed across services by shipment volume. "
+					    & "Not a measured service-level loss rate. Do not use for service selection."
+				displayFolder: 3 Claims and Loss Risk\Tier C: allocated service proxy - handle with care
+				lineageTag: 017d3b78-6f60-5e74-9fc7-729fd3c6d0ce
+
+			measure 'Minimum Shipment Threshold' = SELECTEDVALUE ( 'Volume Threshold'[Volume Threshold], 1000 )
+				formatString: #,0
+				displayFolder: 4 Scoring and Recommendation\1. Qualification
+				lineageTag: 4f827bc4-10f8-54fb-b45b-0e2d70fb4c73
+
+			measure 'Minimum Volume Share' = SELECTEDVALUE ( 'Share Threshold'[Share Threshold], 0.01 )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 4 Scoring and Recommendation\1. Qualification
+				lineageTag: 332cca93-15be-598a-a214-6162c4881f38
+
+			measure 'Minimum Measured Packages' = 384
+				formatString: #,0
+				displayFolder: 4 Scoring and Recommendation\1. Qualification
+				lineageTag: 1c0ec210-b833-59e1-abcd-70d209c04136
+
+			measure 'Service Volume Share' =
+					
+					DIVIDE (
+					    [Rankable Shipments],
+					    CALCULATE ( [Rankable Shipments], REMOVEFILTERS ( Dim_Service ) )
+					)
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 4 Scoring and Recommendation\1. Qualification
+				lineageTag: b2e9bac8-c180-5fdb-9a8d-ce10b0fd1635
+
+			measure 'Annual Qualification Flag' =
+					
+					VAR MeetsAbsolute = [Rankable Shipments] >= [Minimum Shipment Threshold]
+					VAR MeetsShare = [Service Volume Share] >= [Minimum Volume Share]
+					VAR MeetsMeasurement = [Packages Measured] >= [Minimum Measured Packages]
+					
+					
+					
+					VAR IsRankableService = SELECTEDVALUE ( Dim_Service[IncludeInRanking] ) = "Yes"
+					RETURN
+					    IF ( MeetsAbsolute && MeetsShare && MeetsMeasurement && IsRankableService, 1, 0 )
+				formatString: #,0
+				displayFolder: 4 Scoring and Recommendation\1. Qualification
+				lineageTag: aed5f62a-3ebc-581a-8c72-98ea473f0b1a
+
+			measure 'Qualification Status' =
+					
+					VAR Vol = [Rankable Shipments]
+					VAR Measured = [Packages Measured]
+					RETURN
+					    SWITCH (
+					        TRUE (),
+					        [Annual Qualification Flag] = 1, "Qualified",
+					        ISBLANK ( Vol ) || Vol = 0, "No shipment volume",
+					        Measured < [Minimum Measured Packages],
+					            "Transit sample too small (" & FORMAT ( Measured, "#,0" ) & " measured, "
+					                & FORMAT ( [Minimum Measured Packages], "#,0" ) & " required)",
+					        Vol < [Minimum Shipment Threshold],
+					            "Below volume floor (" & FORMAT ( Vol, "#,0" ) & " of "
+					                & FORMAT ( [Minimum Shipment Threshold], "#,0" ) & ")",
+					        [Service Volume Share] < [Minimum Volume Share],
+					            "Below " & FORMAT ( [Minimum Volume Share], "0.0%" ) & " volume share",
+					        "Excluded from ranking by service mapping"
+					    )
+				displayFolder: 4 Scoring and Recommendation\1. Qualification
+				lineageTag: a01d7726-fe53-53c8-8575-8c336aeef00d
+
+			measure 'Qualified Service Count' =
+					
+					COUNTROWS (
+					    FILTER (
+					        CALCULATETABLE (
+					            VALUES ( Dim_Service[ServiceGroup] ),
+					            REMOVEFILTERS ( Dim_Service )
+					        ),
+					        [Annual Qualification Flag] = 1
+					    )
+					)
+				formatString: #,0
+				displayFolder: 4 Scoring and Recommendation\1. Qualification
+				lineageTag: e62a3c61-fc29-5ef7-b8f9-8c318a5b5202
+
+			measure 'Claims Service Key Available' = 0
+				formatString: #,0
+				displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+				lineageTag: a34c1687-c1a3-5d3d-af91-18d6b03d98e8
+
+			measure 'Score - Reliability' =
+					
+					VAR QualifiedSet =
+					    FILTER (
+					        CALCULATETABLE (
+					            VALUES ( Dim_Service[ServiceGroup] ),
+					            REMOVEFILTERS ( Dim_Service )
+					        ),
+					        [Annual Qualification Flag] = 1
+					    )
+					VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [OTD Wilson Lower Bound] )
+					VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+					VAR MinV = MINX ( Populated, [@M] )
+					VAR MaxV = MAXX ( Populated, [@M] )
+					VAR Self = [OTD Wilson Lower Bound]
+					RETURN
+					    IF (
+					        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
+					        IF ( MaxV = MinV, 1, DIVIDE ( Self - MinV, MaxV - MinV ) )
+					    )
+				formatString: #,0.00
+				displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+				lineageTag: cb02405a-df05-57fb-bf31-a17d2c2bab60
+
+			measure 'Score - Loss Risk' =
+					
+					VAR QualifiedSet =
+					    FILTER (
+					        CALCULATETABLE (
+					            VALUES ( Dim_Service[ServiceGroup] ),
+					            REMOVEFILTERS ( Dim_Service )
+					        ),
+					        [Annual Qualification Flag] = 1
+					    )
+					VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Loss Claim Rate per 10k] )
+					VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+					VAR MinV = MINX ( Populated, [@M] )
+					VAR MaxV = MAXX ( Populated, [@M] )
+					VAR Self = [Loss Claim Rate per 10k]
+					RETURN
+					    IF (
+					        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
+					        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+					    )
+				formatString: #,0.00
+				displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+				lineageTag: 27d5388f-911b-51ef-831f-df2ff41eb193
+
+			measure 'Score - Exception Risk' =
+					
+					VAR QualifiedSet =
+					    FILTER (
+					        CALCULATETABLE (
+					            VALUES ( Dim_Service[ServiceGroup] ),
+					            REMOVEFILTERS ( Dim_Service )
+					        ),
+					        [Annual Qualification Flag] = 1
+					    )
+					VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Claims Rate per 10k] )
+					VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+					VAR MinV = MINX ( Populated, [@M] )
+					VAR MaxV = MAXX ( Populated, [@M] )
+					VAR Self = [Claims Rate per 10k]
+					RETURN
+					    IF (
+					        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ) && [Claims Service Key Available] = 1,
+					        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+					    )
+				formatString: #,0.00
+				displayFolder: 4 Scoring and Recommendation\2. Normalised component scores
+				lineageTag: f5dd1b52-aaad-5047-b913-420cdb0e3fea
+
+			measure 'Score - Cost' =
+					
+					VAR QualifiedSet =
+					    FILTER (
+					        CALCULATETABLE (
+					            VALUES ( Dim_Service[ServiceGroup] ),
+					            REMOVEFILTERS ( Dim_Service )
+					        ),
+					        [Annual Qualification Flag] = 1
+					    )
+					VAR WithMetric = ADDCOLUMNS ( QualifiedSet, "@M", [Avg Net Spend per Billed Lb] )
+					VAR Populated = FILTER ( WithMetric, NOT ISBLANK ( [@M] ) )
+					VAR MinV = MINX ( Populated, [@M] )
+					VAR MaxV = MAXX ( Populated, [@M] )
+					VAR Self = [Avg Net Spend per Billed Lb]
+					RETURN
+					    IF (
+					        [Annual Qualification Flag] = 1 && NOT ISBLANK ( Self ),
+					        IF ( MaxV = MinV, 1, 1 - DIVIDE ( Self - MinV, MaxV - MinV ) )
+					    )
+				formatString: #,0.00
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: 469e4445-bd69-56b0-9835-fb913324bb0f
+
+			measure 'Weight - Reliability' = 0.40
+				formatString: 0%;-0%;0%
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: cf045b93-7c98-5ad8-90cd-6fbb38f022f7
+
+			measure 'Weight - Loss Risk' = 0.30
+				formatString: 0%;-0%;0%
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: aa2f0729-2870-582a-b56d-527e7b6e1514
+
+			measure 'Weight - Exception Risk' = 0.20
+				formatString: 0%;-0%;0%
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: ad97f364-a7bd-5909-99a9-0362ab8ea597
+
+			measure 'Weight - Cost' = 0.10
+				formatString: 0%;-0%;0%
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: 6589c4f8-5024-57d4-be9a-d5d9056df3bb
+
+			measure 'Effective Weight Total' =
+					
+					VAR W =
+					    IF ( NOT ISBLANK ( [Score - Reliability] ), [Weight - Reliability], 0 )
+					        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Weight - Loss Risk], 0 )
+					        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Weight - Exception Risk], 0 )
+					        + IF ( NOT ISBLANK ( [Score - Cost] ), [Weight - Cost], 0 )
+					RETURN
+					    IF ( W > 0, W )
+				formatString: #,0.00
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: 4cc03ab0-4670-546c-8bfb-b7b2ebe7029d
+
+			measure 'Service Consistency Score' =
+					
+					VAR Weighted =
+					    IF ( NOT ISBLANK ( [Score - Reliability] ), [Score - Reliability] * [Weight - Reliability], 0 )
+					        + IF ( NOT ISBLANK ( [Score - Loss Risk] ), [Score - Loss Risk] * [Weight - Loss Risk], 0 )
+					        + IF ( NOT ISBLANK ( [Score - Exception Risk] ), [Score - Exception Risk] * [Weight - Exception Risk], 0 )
+					        + IF ( NOT ISBLANK ( [Score - Cost] ), [Score - Cost] * [Weight - Cost], 0 )
+					RETURN
+					    IF (
+					        [Annual Qualification Flag] = 1,
+					        DIVIDE ( Weighted, [Effective Weight Total] ) * 100
+					    )
+				formatString: #,0.0
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: 6e7c86f2-7df2-5232-8268-e5e737aceac3
+
+			measure 'Score Basis' =
+					
+					VAR Covered =
+					    IF (
+					        NOT ISBLANK ( [Score - Reliability] ),
+					        "Reliability " & FORMAT ( [Weight - Reliability] / [Effective Weight Total], "0%" ) & "; ",
+					        ""
+					    )
+					        & IF ( NOT ISBLANK ( [Score - Loss Risk] ), "Loss risk " & FORMAT ( [Weight - Loss Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
+					        & IF ( NOT ISBLANK ( [Score - Exception Risk] ), "Exceptions " & FORMAT ( [Weight - Exception Risk] / [Effective Weight Total], "0%" ) & "; ", "" )
+					        & IF ( NOT ISBLANK ( [Score - Cost] ), "Cost " & FORMAT ( [Weight - Cost] / [Effective Weight Total], "0%" ), "" )
+					VAR Missing =
+					    IF ( ISBLANK ( [Score - Loss Risk] ) || ISBLANK ( [Score - Exception Risk] ),
+					        " | Claims components unavailable at service grain - weights reallocated.", "" )
+					RETURN
+					    "Effective weights: " & Covered & Missing
+				displayFolder: 4 Scoring and Recommendation\3. Weighted blend with reallocation
+				lineageTag: e9336c2e-5203-5bfb-9030-0e1c45b5468f
+
+			measure 'Service Rank' =
+					
+					IF (
+					    [Annual Qualification Flag] = 1,
+					    RANKX (
+					        FILTER (
+					            CALCULATETABLE (
+					                VALUES ( Dim_Service[ServiceGroup] ),
+					                REMOVEFILTERS ( Dim_Service )
+					            ),
+					            [Annual Qualification Flag] = 1
+					        ),
+					        [Service Consistency Score],
+					        ,
+					        DESC,
+					        DENSE
+					    )
+					)
+				formatString: #,0
+				displayFolder: 4 Scoring and Recommendation\4. Recommendation categories
+				lineageTag: 79da7f14-22f5-582a-8238-33a4501e7715
+
+			measure 'Recommendation Category' =
+					
+					VAR Qualified = [Annual Qualification Flag] = 1
+					VAR QualCount = [Qualified Service Count]
+					VAR Tier = SELECTEDVALUE ( Dim_Service[ServiceTier] )
+					VAR Rank = [Service Rank]
+					VAR BestPremiumRank =
+					    RANKX (
+					        FILTER (
+					            CALCULATETABLE (
+					                VALUES ( Dim_Service[ServiceGroup] ),
+					                REMOVEFILTERS ( Dim_Service )
+					            ),
+					            [Annual Qualification Flag] = 1
+					                && SELECTEDVALUE ( Dim_Service[ServiceTier] ) = "Premium"
+					        ),
+					        [OTD Wilson Lower Bound],
+					        ,
+					        DESC,
+					        DENSE
+					    )
+					VAR IsVolumeAnchor = [Service Volume Share] >= 0.50
+					VAR Volatile = [OTD Volatility (pp)] > 1.5
+					VAR BelowFirmOTD = [On-Time Delivery %] < CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )
+					RETURN
+					    SWITCH (
+					        TRUE (),
+					        NOT Qualified, "Not ranked - " & [Qualification Status],
+					        QualCount <= 1, "Single qualified service - no comparison possible",
+					        // The service the firm actually runs on. It is the default by
+					        // economics; the question the dashboard answers is whether its
+					        // reliability is acceptable, not whether to replace it.
+					        IsVolumeAnchor && BelowFirmOTD, "Volume anchor - reliability below firm average, monitor",
+					        IsVolumeAnchor, "Recommended default service",
+					        Rank = 1 && Tier <> "Premium", "Recommended default service",
+					        Rank = 1, "Best overall performer",
+					        BestPremiumRank = 1, "Recommended premium service",
+					        Volatile, "Service to monitor - inconsistent month to month",
+					        "Qualified alternative"
+					    )
+				displayFolder: 4 Scoring and Recommendation\4. Recommendation categories
+				lineageTag: 3881f2c7-7537-5fe4-802a-08f55a4c27af
+
+			measure 'Recommendation Callout' =
+					
+					VAR MonthsCovered = [Months with Transit Data]
+					VAR BestService =
+					    CONCATENATEX (
+					        TOPN (
+					            1,
+					            FILTER (
+					                CALCULATETABLE (
+					                    VALUES ( Dim_Service[ServiceGroup] ),
+					                    REMOVEFILTERS ( Dim_Service )
+					                ),
+					                [Annual Qualification Flag] = 1
+					            ),
+					            [Service Consistency Score],
+					            DESC
+					        ),
+					        Dim_Service[ServiceGroup]
+					    )
+					VAR FirmOTD = CALCULATE ( [On-Time Delivery %], REMOVEFILTERS ( Dim_Service ) )
+					RETURN
+					    SWITCH (
+					        TRUE (),
+					        MonthsCovered = 0,
+					            "No Time-in-Transit data loaded. Reliability cannot be assessed and no service recommendation can be made.",
+					        MonthsCovered < 6,
+					            "PROVISIONAL - based on " & MonthsCovered & " month(s) of Time-in-Transit data. "
+					                & "Highest-scoring qualified service: " & BestService & ". "
+					                & "Firm-wide on-time delivery " & FORMAT ( FirmOTD, "0.0%" ) & ". "
+					                & "Do not issue as an annual service policy until at least six completed months are loaded.",
+					        "Highest-scoring qualified service: " & BestService & ". Firm-wide on-time delivery "
+					            & FORMAT ( FirmOTD, "0.0%" ) & " across " & MonthsCovered & " months."
+					    )
+				displayFolder: 4 Scoring and Recommendation\4. Recommendation categories
+				lineageTag: fec5dd20-7de7-5040-8762-2a3ee5e1d4af
+
+			measure 'Months Loaded' =
+					
+					CALCULATE (
+					    DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+					    Dim_Date[IsLoaded] = "Yes",
+					    REMOVEFILTERS ( Dim_Date )
+					)
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: 0c74ba25-ec69-5398-9f19-5966f236215b
+
+			measure 'Completed Months Loaded' =
+					
+					CALCULATE (
+					    DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+					    Dim_Date[IsReportable] = "Yes",
+					    REMOVEFILTERS ( Dim_Date )
+					)
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: de1f3e2e-e7b5-5961-b88e-9cbc6e4525a9
+
+			measure 'Missing Months' =
+					
+					VAR Expected =
+					    CALCULATE (
+					        DISTINCTCOUNT ( Dim_Date[MonthKey] ),
+					        Dim_Date[IsCompletedMonth] = "Yes",
+					        REMOVEFILTERS ( Dim_Date )
+					    )
+					RETURN
+					    Expected - [Completed Months Loaded]
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: 8ffcc82b-d078-573e-8a06-b4809425fb15
+
+			measure 'Missing Months List' =
+					
+					CONCATENATEX (
+					    CALCULATETABLE (
+					        VALUES ( Dim_Date[MonthYearLabel] ),
+					        Dim_Date[IsCompletedMonth] = "Yes",
+					        Dim_Date[IsLoaded] = "No",
+					        REMOVEFILTERS ( Dim_Date )
+					    ),
+					    Dim_Date[MonthYearLabel],
+					    ", ",
+					    Dim_Date[SortOrder],
+					    ASC
+					)
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: cbb8d4dc-4ba8-5f2f-a04e-c3e7d0c86967
+
+			measure 'Annual Completeness %' = DIVIDE ( [Months Loaded], 12 )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: cd017c85-fd80-5f9e-ad1c-9e4017a4a44d
+
+			measure 'Volume Months Covered' =
+					
+					CALCULATE ( DISTINCTCOUNT ( Fact_VolumeSpend[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: d50bdfdb-f6fd-5a1e-8f8e-211fdf310d16
+
+			measure 'Transit Months Covered' =
+					
+					CALCULATE ( DISTINCTCOUNT ( Fact_TimeInTransit[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: 1bb375f0-35ab-5780-804c-63de5a969127
+
+			measure 'Claims Months Covered' =
+					
+					CALCULATE ( DISTINCTCOUNT ( Fact_Claims[MonthKey] ), REMOVEFILTERS ( Dim_Date ) )
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Coverage
+				lineageTag: 9674be06-1a49-5312-abf8-88a4a9171c8a
+
+			measure 'Coverage Summary' =
+					
+					"Volume & Spend: " & [Volume Months Covered] & " mo  |  "
+					    & "Time-in-Transit: " & [Transit Months Covered] & " mo  |  "
+					    & "Claims: " & [Claims Months Covered] & " mo"
+				displayFolder: 5 Data Quality and Narrative\Exclusions
+				lineageTag: 639ecb3a-1d3f-51d8-9233-4fc8ca7cedc3
+
+			measure 'Excluded Adjustment Spend' =
+					
+					CALCULATE (
+					    SUM ( Fact_VolumeSpend[NetSpend] ),
+					    KEEPFILTERS ( Fact_VolumeSpend[IncludeInRanking] = "No" )
+					)
+				formatString: \$#,0
+				displayFolder: 5 Data Quality and Narrative\Exclusions
+				lineageTag: 888bf002-1fdd-527a-addf-1ece5c3e96de
+
+			measure 'Excluded Adjustment Spend %' =
+					
+					DIVIDE (
+					    [Excluded Adjustment Spend],
+					    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
+					)
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 5 Data Quality and Narrative\Exclusions
+				lineageTag: fc935c76-77b5-5dea-896a-d3d5c045b17e
+
+			measure 'Spend-Only Adjustment Rows' =
+					
+					CALCULATE (
+					    COUNTROWS ( Fact_VolumeSpend ),
+					    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = "Yes" )
+					)
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Exclusions
+				lineageTag: 512199bd-0878-5547-a35e-d274e2a7a8c7
+
+			measure 'Spend-Only Adjustment Value' =
+					
+					CALCULATE (
+					    SUM ( Fact_VolumeSpend[NetSpend] ),
+					    KEEPFILTERS ( Fact_VolumeSpend[IsSpendOnlyAdjustment] = "Yes" )
+					)
+				formatString: \$#,0
+				displayFolder: 5 Data Quality and Narrative\Exclusions
+				lineageTag: 944c3493-d14c-5cb5-a2df-b471866507ce
+
+			measure 'Unattributed Spend %' =
+					
+					DIVIDE (
+					    [Spend-Only Adjustment Value],
+					    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
+					)
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 5 Data Quality and Narrative\Exclusions
+				lineageTag: 85a37059-9c45-5eee-beab-2370991795ac
+
+			measure 'Unmapped Product Rows' =
+					
+					CALCULATE (
+					    COUNTROWS ( Fact_VolumeSpend ),
+					    KEEPFILTERS ( Fact_VolumeSpend[ServiceGroup] = "Unmapped - Review" )
+					)
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Exclusions
+				lineageTag: ff5374b0-34b0-54fe-a1eb-b9d59400d3e1
+
+			measure 'Masked Sub-Parent Volume' =
+					
+					CALCULATE (
+					    [Total Shipments],
+					    KEEPFILTERS ( Fact_VolumeSpend[IsMaskedSubParent] = "Yes" )
+					)
+				formatString: #,0
+				displayFolder: 5 Data Quality and Narrative\Reconciliation
+				lineageTag: 13812175-1061-5d01-9e08-21ef0a355a99
+
+			measure 'Accessorial Net Spend' = SUM ( Fact_Accessorial[NetSpend] )
+				formatString: \$#,0
+				displayFolder: 5 Data Quality and Narrative\Reconciliation
+				lineageTag: 28027189-8a3d-5559-ad98-2689c0268fcf
+
+			measure 'Spend Reconciliation Variance' =
+					
+					VAR VolumeSpendTotal =
+					    CALCULATE ( SUM ( Fact_VolumeSpend[NetSpend] ), REMOVEFILTERS ( Dim_Service ) )
+					VAR AccessorialTotal =
+					    CALCULATE ( [Accessorial Net Spend], REMOVEFILTERS ( Dim_Service ) )
+					RETURN
+					    IF ( AccessorialTotal <> 0, VolumeSpendTotal - AccessorialTotal )
+				formatString: \$#,0.00
+				displayFolder: 5 Data Quality and Narrative\Reconciliation
+				lineageTag: a6f0d05c-ed24-52cc-87d9-ea301210d648
+
+			measure 'Reconciliation Status' =
+					
+					VAR Variance = [Spend Reconciliation Variance]
+					RETURN
+					    SWITCH (
+					        TRUE (),
+					        ISBLANK ( Variance ), "No accessorial detail for this period",
+					        ABS ( Variance ) < 1, "Reconciled",
+					        ABS ( Variance ) < 100, "Rounding variance - " & FORMAT ( Variance, "$#,0.00" ),
+					        "VARIANCE - " & FORMAT ( Variance, "$#,0.00" ) & " - investigate before publishing"
+					    )
+				displayFolder: 5 Data Quality and Narrative\Reconciliation
+				lineageTag: 32212800-1316-579d-844a-2bfabbf2aa97
+
+			measure 'Measured vs Billed Coverage %' = DIVIDE ( [Packages Measured], [Rankable Shipments] )
+				formatString: 0.0%;-0.0%;0.0%
+				displayFolder: 5 Data Quality and Narrative\Banner narrative
+				lineageTag: a0c5fbab-b86e-5872-8ede-daac1b8267bf
+
+			measure 'Data Basis Banner' =
+					
+					VAR VolMonths = [Volume Months Covered]
+					VAR TransitMonths = [Transit Months Covered]
+					VAR ClaimsMonths = [Claims Months Covered]
+					VAR Missing = [Missing Months List]
+					VAR Recon = [Reconciliation Status]
+					VAR Severity =
+					    SWITCH (
+					        TRUE (),
+					        TransitMonths = 0, "NO RELIABILITY DATA",
+					        TransitMonths < 6 || ClaimsMonths < 6, "PROVISIONAL",
+					        VolMonths < 12, "PARTIAL YEAR",
+					        "ANNUAL"
+					    )
+					RETURN
+					    Severity & " - " & [Coverage Summary]
+					        & IF ( LEN ( Missing ) > 0, "  |  Not yet loaded: " & Missing, "" )
+					        & IF ( Recon <> "Reconciled" && LEFT ( Recon, 2 ) = "VA", "  |  " & Recon, "" )
+				displayFolder: 5 Data Quality and Narrative\Banner narrative
+				lineageTag: d46e7952-f09f-5377-85e0-b17d9f010de0
+
+			measure 'Data Basis Banner Colour' =
+					
+					SWITCH (
+					    TRUE (),
+					    [Transit Months Covered] = 0, "#B3261E",
+					    [Transit Months Covered] < 6 || [Claims Months Covered] < 6, "#B26B00",
+					    [Volume Months Covered] < 12, "#5B4B8A",
+					    "#1F6F54"
+					)
+				displayFolder: 5 Data Quality and Narrative\Dynamic titles
+				lineageTag: d4896e9e-556c-521d-b694-7ab6d44b6ad2
+
+			measure 'Title - Executive Overview' =
+					
+					VAR Period =
+					    IF (
+					        ISFILTERED ( Dim_Date[MonthYearLabel] ) || ISFILTERED ( Dim_Date[Quarter] ),
+					        CONCATENATEX (
+					            VALUES ( Dim_Date[MonthYearLabel] ),
+					            Dim_Date[MonthYearLabel], ", ", Dim_Date[SortOrder], ASC
+					        ),
+					        SELECTEDVALUE ( Dim_Date[Year], "2025" ) & " full year"
+					    )
+					VAR Scope =
+					    IF (
+					        ISFILTERED ( Dim_Service[Scope] ),
+					        SELECTEDVALUE ( Dim_Service[Scope], "All scopes" ),
+					        "Domestic and international"
+					    )
+					RETURN
+					    "UPS Shipping Performance - " & Period & " - " & Scope
+				displayFolder: 5 Data Quality and Narrative\Dynamic titles
+				lineageTag: d15d733d-06b8-5bd3-8af4-3eb5f161fb55
+
+			measure 'Title - Service Scorecard' =
+					
+					"Service scorecard - " & [Qualified Service Count] & " of "
+					    & CALCULATE (
+					        DISTINCTCOUNT ( Dim_Service[ServiceGroup] ),
+					        REMOVEFILTERS ( Dim_Service ),
+					        Dim_Service[IncludeInRanking] = "Yes"
+					    )
+					    & " services qualify at "
+					    & FORMAT ( [Minimum Shipment Threshold], "#,0" ) & " shipments / "
+					    & FORMAT ( [Minimum Volume Share], "0.0%" ) & " share"
+				displayFolder: 5 Data Quality and Narrative\Dynamic titles
+				lineageTag: 5a00b173-86b2-59f9-b71f-aaedcd0de940
+
+			measure 'Title - Claims' =
+					
+					"Claims and loss risk - account level only ("
+					    & [Claims Months Covered] & " month(s) loaded). "
+					    & "Claims carry no service key."
+				displayFolder: 5 Data Quality and Narrative\Dynamic titles
+				lineageTag: c2abcf63-def0-50a8-ba6a-f6be55e6cb92
+
+			column _
+				dataType: int64
+				isHidden
+				lineageTag: 0fc0f418-2d98-55fe-b0a6-39af2a8c9e05
+				summarizeBy: none
+				sourceColumn: _
+
+				annotation SummarizationSetBy = Automatic
+
+			partition _Measures = m
+				mode: import
+				source =
+						let
+						    Source = #table(type table [_ = Int64.Type], {{0}})
+						in
+						    Source
+
+		table 'Volume Threshold'
+			lineageTag: 8378b835-c90f-5b3d-9f8a-122657d54932
+
+			column 'Volume Threshold'
+				dataType: int64
+				isHidden
+				lineageTag: 42d2c6aa-1f5e-5764-8a50-95940842ce7f
+				summarizeBy: none
+				sourceColumn: [Value]
+				formatString: #,0
+
+				annotation SummarizationSetBy = Automatic
+
+			partition 'Volume Threshold' = calculated
+				mode: import
+				source = GENERATESERIES(0, 10000, 250)
+
+		table 'Share Threshold'
+			lineageTag: a713c02c-7fba-55d2-b294-51474737eddf
+
+			column 'Share Threshold'
+				dataType: double
+				isHidden
+				lineageTag: 03494446-90c8-51e8-83f5-1681bb7245f8
+				summarizeBy: none
+				sourceColumn: [Value]
+				formatString: 0.0%
+
+				annotation SummarizationSetBy = Automatic
+
+			partition 'Share Threshold' = calculated
+				mode: import
+				source = GENERATESERIES(0, 0.1, 0.005)
+
+		relationship 261c642f-cb08-5880-9d8a-d7f269cec03e
+			fromColumn: Fact_VolumeSpend.MonthKey
+			toColumn: Dim_Date.MonthKey
+
+		relationship 41a6c5a9-5ec6-563b-a954-e5f9678d6be0
+			fromColumn: Fact_TimeInTransit.MonthKey
+			toColumn: Dim_Date.MonthKey
+
+		relationship b1fff270-fbb7-5313-90c0-1b61f6be2548
+			fromColumn: Fact_Claims.MonthKey
+			toColumn: Dim_Date.MonthKey
+
+		relationship adf9d332-deee-5cc5-b36d-8d40f2f45b32
+			fromColumn: Fact_Accessorial.MonthKey
+			toColumn: Dim_Date.MonthKey
+
+		relationship 6831ce25-39f6-5344-9d2f-dcaa65cc2390
+			fromColumn: Fact_VolumeSpend.AccountKey
+			toColumn: Dim_Account.AccountKey
+
+		relationship 6ad78bd7-45a0-538b-b441-b564c180c913
+			fromColumn: Fact_TimeInTransit.AccountKey
+			toColumn: Dim_Account.AccountKey
+
+		relationship 51c2962a-1dfb-5477-a849-5aa462519268
+			fromColumn: Fact_Claims.AccountKey
+			toColumn: Dim_Account.AccountKey
+
+		relationship bb28744b-bf58-5932-a2d7-5c1d6d96fd52
+			fromColumn: Fact_Accessorial.AccountKey
+			toColumn: Dim_Account.AccountKey
+
+		relationship f25361a7-b705-5862-a992-cf1939009803
+			fromColumn: Fact_VolumeSpend.ServiceGroup
+			toColumn: Dim_Service.ServiceGroup
+
+		relationship a64f7957-ca4f-54de-bca6-d7b487dbdfe0
+			fromColumn: Fact_TimeInTransit.ServiceGroup
+			toColumn: Dim_Service.ServiceGroup
+
+		relationship 203ef65c-225e-53d1-b86d-c7e9920a74c3
+			fromColumn: Fact_Accessorial.ServiceGroup
+			toColumn: Dim_Service.ServiceGroup

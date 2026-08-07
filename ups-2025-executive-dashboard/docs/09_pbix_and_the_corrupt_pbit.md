@@ -1,6 +1,22 @@
-# Why the .pbit was corrupt, and why there is no .pbix
+# The binary route is abandoned — build the model from TMDL
 
-## The short version
+## Where this ended up
+
+Three hand-authored .pbit packages were rejected by Power BI Desktop: the
+original, one with the encoding and version stamps corrected against a real
+.pbix, and a model-only variant with the report stripped out entirely. The third
+failure is the informative one — it rules out the report schema and says the
+problem is the package itself.
+
+**The binary route is closed.** `dist/UPS_2025_Full_Model.tmdl` replaces it:
+one TMDL paste that builds the whole model — the parameter, 8 tables with their
+Power Query partitions, all 112 measures, both what-if tables, all 11
+relationships, and the sort-by columns. Plain text, so none of the failure modes
+below can apply to it.
+
+---
+
+## The original short version
 
 The .pbit is fixed — it had a byte-order-mark bug and stale version stamps, all
 three found by comparing it against a real Power BI file.
@@ -84,11 +100,23 @@ Desktop-written script in the reference file, not from documentation:
 
 ### How to use it
 
-1. Build the nine queries first (`powerbi/powerquery_standalone/`, or the
-   manual-build PDF). The measures reference those tables, so they must exist.
-2. **Model view → TMDL** (in some builds: View → TMDL view).
-3. Open the script, select all, paste, **Apply**.
-4. Create the 11 relationships and set the two sort-by columns.
+There are two scripts. Prefer the first.
+
+**`UPS_2025_Full_Model.txt` — the whole model, one paste.**
+
+1. New, empty Power BI Desktop file.
+2. **Model view → TMDL view**.
+3. Paste the whole script, **Apply**.
+4. When prompted, point `p_Folder` at the folder holding the four renamed
+   .xlsx extracts, and allow the refresh.
+
+Nothing else: the tables, measures, relationships and sort-by columns all come
+from the script.
+
+**`UPS_2025_Measures.txt` — measures only.** Use this if the tables already
+exist because the nine queries were built by hand. `createOrReplace` is scoped
+to `_Measures`, so it cannot disturb anything else — which also makes it the way
+to update measures later.
 
 `createOrReplace` is scoped to the `_Measures` table alone, so it cannot disturb
 the fact tables, their partitions, or relationships already in place. Re-running
