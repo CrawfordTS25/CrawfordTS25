@@ -72,13 +72,42 @@ can't be emailed **says why in a column** instead of quietly not appearing.
 
 ## Part 2 · The notes list
 
+### The list already exists — the query is pointed at the wrong thing
+
+```
+Trace_Master_Streamlined_
+https://ejprod-my.sharepoint.com/personal/p258239_edwardjones_com/Lists/Trace_Master_Streamlined_
+```
+
+`Trace_Notes` still reads `…\Report Data\QV_Tracing_API_Aligned_Workflow_Optimized.xlsx`.
+The notes moved to the list; the workbook is the abandoned copy. That is the whole
+explanation for **200 rows of which 199 are null in every column**, joining **1 of 95**
+traces — nothing was broken, the query was reading a dead file.
+
+§7 of `model-fixes-v3.pq` repoints it.
+
+> ### ⚠ Move it to a team site before rollout
+>
+> `-my.sharepoint.com/personal/` is **one individual's OneDrive**. For a system of record an
+> ops team depends on, that's a real exposure:
+>
+> - **Deprovisioned when that person leaves or changes roles.** Read-only, then gone,
+>   typically after a 30–93 day retention window. The dashboard stops refreshing and the
+>   notes history goes with it.
+> - **Service refresh has to run on that person's credentials.** It cannot be moved to a
+>   service account, because the site belongs to the human. Every other "use a service
+>   account" note in this build is a policy choice; this one is a structural block.
+> - **Permissions are per-item sharing**, not site membership, so onboarding the next
+>   analyst is manual and easy to get wrong.
+>
+> Copy the list to a team site and change `SiteUrl`. Ten minutes, and every column name
+> survives. Do the same for `tbl_Resolution_Input` while you're there, so both write-backs
+> live somewhere that outlives an individual.
+
 ### Why a list and not the workbook
 
-`Trace_Notes` currently loads **200 rows of which 199 are null in every column**, and joins
-**1 of 95** traces. A sheet range formatted past its data, erroring on nothing.
-
-That's fixable in M. What isn't fixable in a workbook is the thing you actually asked for —
-notes that update as you make changes:
+The blank rows are fixable in M. What isn't fixable in a workbook is the thing you actually
+asked for — notes that update as you make changes:
 
 | | Workbook | SharePoint list |
 |---|---|---|
@@ -87,7 +116,11 @@ notes that update as you make changes:
 | Refresh from the Service | Needs the on-prem gateway | `SharePoint.Tables` needs **none** |
 | History | Whatever the last save happened to contain | Version history per item |
 
-### List: `QV_Trace_Notes`
+### List schema — `Trace_Master_Streamlined_`
+
+Yours already exists, so treat this as the target shape rather than a create script. The
+two that matter are the indexes and the append-on multi-line columns; the rest you probably
+have.
 
 | Column | Type | Settings |
 |---|---|---|
@@ -129,11 +162,20 @@ In `Current_Open_Trace`, replace the single `CASE #` merge with two passes: merg
 `Exception Key`, then merge the still-unmatched rows on `CASE #`. §7 of `model-fixes-v3.pq`
 has the query.
 
-### Seeding it
+**SharePoint returns internal names, not display names.** A column shown as "Trace Status"
+arrives as `Trace_x0020_Status`, and a column renamed after creation keeps whatever it was
+first called. Load the first two steps of §7, look at what you actually get, then correct
+the renames.
 
-Export the 95 open traces to CSV with `Exception Key`, `CASE #`, `Tracking Number` and
-whatever `Last Action` text exists, then import to the list. Confirm one note round-trips —
-edit in the list, refresh, see it on Trace Details — **before** building anything on top.
+### Checking coverage
+
+Once it's repointed, `checks/6-trace-notes-join.dax` tells you how many of the 95 traces
+carry a note. If it's still near zero after the repoint, it's a key problem, not a source
+problem — check that `Exception Key` in the list is the full
+`TRACKING|DESCRIPTION` composite and not just the tracking number.
+
+Confirm one note round-trips — edit in the list, refresh, see it on Trace Details —
+**before** building anything on top.
 
 ---
 

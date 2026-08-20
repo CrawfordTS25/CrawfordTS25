@@ -27,11 +27,14 @@
 //
 // Two changes.
 //
-// (a) READ ARCHIVE ONLY. Folder.Files recurses, so the moment the automation
-//     starts writing into Morning\ and Afternoon\ under QV_Data, the current
-//     query picks up every export THREE times - once from Archive and once from
-//     each copy. Total Shipments triples overnight and nothing errors. Pointing
-//     at Archive is what makes the run folders safe to create.
+// (a) READ ARCHIVE ONLY. Folder.Files recurses, and QV_Data already contains
+//     Morning QV\, Afternoon QV\, Processed\ and Failed\. Pointed at QV_Data,
+//     the query reads every export once per folder it appears in - Total
+//     Shipments multiplies and nothing errors. It would also try to parse
+//     QV_Automation_Helper_Lists.xlsx as a 34-column CSV.
+//
+//     This is not hypothetical: those folders exist on your share today.
+//     Archive-only is what makes the rest of the layout safe.
 //
 // (b) ONE cutoff. QV_RAW splits the day at 17:00 and QV_Output splits it at
 //     13:30 - same rows, same model, two answers. 13:30 wins because that is
@@ -43,8 +46,19 @@
 // which run a file belongs to.
 // -----------------------------------------------------------------------------
 
+// CORRECTED PATH. Your QV_RAW currently points at
+//     ...\Administrative Services-Solutions\Quantum View\QV_Data
+// and the real folder, per your path list, is
+//     ...\Administrative Services-Solutions\Power BI Reporting\Report Data\QV_Data
+// Different parent. Check which one your last successful refresh actually read
+// before you assume this is a typo in one direction or the other - if the old
+// path still resolves, you have two QV_Data folders and only one of them is
+// being fed.
+//
+// UNC, not X:. The Power BI Service and any scheduled task have no mapped drives.
+
 let
-    QVRoot   = "\\nfpgshare-1.edwardjones.com\export\support_services\Administrative Services-Solutions\Quantum View\QV_Data",
+    QVRoot   = "\\nfpgshare-1.edwardjones.com\export\support_services\Administrative Services-Solutions\Power BI Reporting\Report Data\QV_Data",
     Archive  = QVRoot & "\Archive",
 
     CutoffHour   = 13,
@@ -230,12 +244,36 @@ in
 // The two suggestions in the comments are inferences from other rows sharing the
 // same Location, NOT from a system of record. Verify before you trust them.
 //
-// Keep this in the .pbix rather than another workbook: eleven rows that change
-// once a year do not deserve a file, a path and a refresh dependency.
+// WHERE TO KEEP IT. You already have QV_Automation_Helper_Lists.xlsx sitting in
+// QV_Data, which is the obvious home for a lookup list somebody else may need to
+// edit. So this reads a sheet named "Home_Office_Contacts" from that workbook IF
+// it exists, and falls back to the inline seed below if it does not.
+//
+// That means it works today, unedited, and starts using the workbook the moment
+// you add the sheet - without anyone touching M. Add a sheet with columns
+// Code / Location / Email / Status and it takes over.
 // -----------------------------------------------------------------------------
 
 let
-    Source = Table.FromRows(
+    HelperBook =
+        "\\nfpgshare-1.edwardjones.com\export\support_services\Administrative Services-Solutions\Power BI Reporting\Report Data\QV_Data\QV_Automation_Helper_Lists.xlsx",
+
+    FromWorkbook =
+        try
+            let
+                wb    = Excel.Workbook( File.Contents( HelperBook ), null, true ),
+                sheet = Table.SelectRows( wb, each Text.Lower( [Name] ) = "home_office_contacts" ),
+                data  = if Table.IsEmpty( sheet ) then null else sheet{0}[Data],
+                head  = if data = null then null
+                        else Table.PromoteHeaders( data, [PromoteAllScalars = true] ),
+                live  = if head = null then null
+                        else Table.SelectRows( head,
+                                 each [Code] <> null and Text.Trim( Text.From( [Code] ) ) <> "" )
+            in
+                live
+        otherwise null,
+
+    Seed = Table.FromRows(
         {
             // Code      Location                        Email                                   Status
             { "H00175", "World Ship, Kimler",            "douglas.rushing@edwardjones.com",       "Confirmed" },
@@ -253,11 +291,17 @@ let
         type table [ Code = text, Location = text, Email = nullable text, Status = text ]
     ),
 
+    // workbook wins if the sheet is there, seed if it is not
+    Source = if FromWorkbook = null then Seed else FromWorkbook,
+
     Typed = Table.TransformColumnTypes( Source,
                 {{"Code", type text}, {"Location", type text},
-                 {"Email", type text}, {"Status", type text}} )
+                 {"Email", type text}, {"Status", type text}} ),
+
+    // never let a duplicate code through - this is the one side of a relationship
+    Unique = Table.Distinct( Typed, {"Code"} )
 in
-    Typed
+    Unique
 
 
 // -----------------------------------------------------------------------------
@@ -278,8 +322,39 @@ in
 //   * Two people can write at once. A workbook on a share cannot.
 //   * Version history per item, for free.
 //
-// CREATE THE LIST FIRST - schema is in WRITEBACK-AND-MAILMERGE.md. Then set the
-// two constants below and replace the query.
+// YOUR LIST ALREADY EXISTS AND THE QUERY IS NOT POINTED AT IT. That is the real
+// story here. Trace_Notes still reads
+//     ...\Report Data\QV_Tracing_API_Aligned_Workflow_Optimized.xlsx
+// while the notes moved to Trace_Master_Streamlined_. The workbook is the
+// abandoned copy - which is exactly why it returns 199 blank rows out of 200 and
+// joins 1 of 95 traces. Nothing was broken; the query was reading a dead file.
+//
+// ---------------------------------------------------------------------------
+// BEFORE YOU BUILD ON IT: THE LIST IS ON A PERSONAL ONEDRIVE, NOT A TEAM SITE
+// ---------------------------------------------------------------------------
+//     https://ejprod-my.sharepoint.com/personal/p258239_edwardjones_com/...
+//                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+// "-my.sharepoint.com/personal/" is one individual's OneDrive. For a system of
+// record that an ops team depends on, that is a real exposure and not a
+// nitpick:
+//
+//   * It is deprovisioned when that person leaves or changes roles. The site
+//     goes read-only, then away, typically after a 30-93 day retention window.
+//     The dashboard stops refreshing and the notes history goes with it.
+//   * Service refresh has to run on THAT person's credentials. It cannot be
+//     moved to a service account, because the site belongs to the human.
+//   * Permissions are per-item sharing rather than site membership, so
+//     onboarding the next analyst is manual and easy to get wrong.
+//
+// The query below works against it today - I am not going to hold your build up
+// over this. But move the list to a TEAM SITE before rollout, and it is a
+// 10-minute job now versus a data-loss incident later. Copy the list to the
+// team site, change SiteUrl, done - the schema and every column name survive.
+//
+// After moving, this is also the moment to point tbl_Resolution_Input at the
+// same team site (WRITEBACK-AND-MAILMERGE.md), so both write-backs live
+// somewhere that outlives an individual.
+// ---------------------------------------------------------------------------
 //
 // The key discipline matters more than the source. Exception Key is the stable
 // key and CASE # is the human one; notes get written against whichever the
@@ -289,15 +364,24 @@ in
 // -----------------------------------------------------------------------------
 
 let
-    SiteUrl  = "https://<tenant>.sharepoint.com/sites/<site>",
-    ListName = "QV_Trace_Notes",
+    // YOUR LIST, from the path sheet.
+    SiteUrl  = "https://ejprod-my.sharepoint.com/personal/p258239_edwardjones_com",
+    ListName = "Trace_Master_Streamlined_",
 
     Source = SharePoint.Tables( SiteUrl, [ApiVersion = 15] ),
     Items  = Source{[Title = ListName]}[Items],
 
+    // Rename whatever is actually there to the names the model already uses.
+    // MissingField.Ignore means a name you have spelled differently is skipped
+    // rather than erroring - so this loads on the first try and you correct the
+    // left-hand side against what you see. Internal names, not display names:
+    // a column shown as "Trace Status" is usually Trace_x0020_Status.
     #"Renamed" = Table.RenameColumns( Items,
         { {"ExceptionKey",     "Exception Key"},
+          {"Exception_x0020_Key", "Exception Key"},
           {"CaseNumber",       "CASE #"},
+          {"CASE_x0020__x0023_", "CASE #"},
+          {"Title",            "CASE #"},
           {"TraceStatus",      "Trace Status"},
           {"LastAction",       "Last Action"},
           {"NextFollowUpDate", "Next Follow-up Date"},
@@ -333,15 +417,24 @@ let
 in
     #"Newest First"
 
-// IF THE LIST IS NOT READY YET, keep reading the workbook but add the blank-row
-// filter and the key normalisation - those two steps alone are worth having:
+// FIRST RUN: paste just the first two steps, load, and look at the column names
+// Power Query gives you. SharePoint returns INTERNAL names, so "Trace Status"
+// arrives as Trace_x0020_Status and a column added after the list was created
+// keeps whatever it was first called even if it has since been renamed. Correct
+// the left-hand side of #"Renamed" against what you see, then paste the rest.
 //
-//     Source = Excel.Workbook( File.Contents( "<path>" ), null, true ),
-//     Sheet  = Source{[Item = "Trace_Notes", Kind = "Sheet"]}[Data],
-//     ...PromoteHeaders, then the #"Non-blank" and #"Normalised Keys" steps above.
+// THEN, IN Current_Open_Trace: replace the single CASE # merge with two passes -
+// merge on Exception Key Norm first, then merge the still-unmatched rows on
+// Case Key Norm. One key is stable and the other is the one analysts actually
+// type; you need both, normalised, or you get today's 1 of 95.
 //
-// Then in Current_Open_Trace, replace the CASE # merge with a two-pass join:
-// merge on Exception Key first, then merge the still-unmatched rows on CASE #.
+//     #"Notes by Exception" =
+//         Table.NestedJoin( <prev>, {"Exception Key"}, Trace_Notes,
+//                           {"Exception Key Norm"}, "n1", JoinKind.LeftOuter ),
+//     #"Notes by Case" =
+//         Table.NestedJoin( #"Expanded n1", {"CASE #"}, Trace_Notes,
+//                           {"Case Key Norm"}, "n2", JoinKind.LeftOuter ),
+//     ... then COALESCE each field: n1 wins, n2 fills the gaps.
 
 
 // -----------------------------------------------------------------------------

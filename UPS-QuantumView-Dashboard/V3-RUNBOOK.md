@@ -67,10 +67,18 @@ Possible once (c) removes the ambiguity.
 
 **§1 `QV_RAW`** — replace. Reads `Archive\` only and computes the run window once, at 13:30.
 
-Two things this prevents. `Folder.Files` **recurses**, so the moment the automation starts
-writing into `Morning\` and `Afternoon\` under `QV_Data`, every export is read three times
-and Total Shipments triples with no error anywhere. And `QV_RAW` currently splits the day at
-17:00 while `QV_Output` splits it at 13:30 — same rows, two answers.
+**The path also changes.** Your `QV_RAW` points at
+`…\Administrative Services-Solutions\Quantum View\QV_Data`; your path list says
+`…\Administrative Services-Solutions\Power BI Reporting\Report Data\QV_Data`. Different
+parent. Check which one your last successful refresh actually read — if the old path still
+resolves, you have two `QV_Data` folders and only one of them is being fed.
+
+Three things Archive-only prevents. `Folder.Files` **recurses**, and `QV_Data` already
+contains `Morning QV\`, `Afternoon QV\`, `Processed\` and `Failed\` — pointed at `QV_Data`
+it reads every export once per folder it appears in, and Total Shipments multiplies with no
+error anywhere. It would also try to parse `QV_Automation_Helper_Lists.xlsx` as a 34-column
+CSV. And `QV_RAW` currently splits the day at 17:00 while `QV_Output` splits it at 13:30 —
+same rows, two answers.
 
 **§2 `QV_Output`** — delete two steps. `#"QV Run Time"` and `#"QV Run Date"` now come from
 §1. Rename `Run Window` → `Run Time` so no visual needs rebinding.
@@ -100,6 +108,10 @@ I-prefixed rows match.
 
 **§6 `Home_Office_Contacts`** — new. Eleven `H#####` department codes the roster can't
 reach; seven already answered by addresses sitting in your own `CONTACT INFO` column.
+
+It reads a `Home_Office_Contacts` sheet from `QV_Automation_Helper_Lists.xlsx` if one
+exists, and falls back to the inline seed if not — so it works unedited today and starts
+using the workbook the moment you add the sheet, without anyone touching M.
 
 `Close & Apply`.
 
@@ -169,23 +181,32 @@ table range to `A1:L25`. It's still the entire unmatched remainder: 755 manifest
 
 ## Step 8 · The file automation · 15 min, once
 
-`tools/qv-file-automation.ps1`.
+`tools/qv-file-automation.ps1`, using the folders you already have:
 
 ```
-QV_Data\
-    Archive\      <- exports land here. The model reads THIS and only this.
-    Morning\      <- copies, for people
-    Afternoon\    <- copies, for people
-    _logs\
+Report Data\QV_Data\
+    Archive\                        <- exports land here. The model reads THIS, only this.
+    Morning QV\                     <- copies, before 13:30
+    Afternoon QV\                   <- copies, at or after
+    Processed\_processed.csv        <- state, so re-runs are cheap
+    Failed\                         <- a COPY of anything unhandled, plus a .reason.txt
+    _logs\                          <- one log per month
+    QV_Automation_Helper_Lists.xlsx <- not touched
 ```
 
-It **copies, never moves**. Archive stays the source of truth, so if the script fails, is
-disabled, or double-fires, the dashboard is unaffected. That's the whole design.
+It **copies, never moves**, and never writes to Archive at all. Archive stays the source of
+truth, so if the script fails, is disabled, or double-fires, the dashboard is unaffected.
+That's the whole design — and it's why even a corrupt file gets *copied* to `Failed\` rather
+than moved out of Archive.
 
 1. `.\qv-file-automation.ps1 -WhatIf` — see what it would do
 2. Run it for real, check `_logs\`
-3. Schedule it — Task Scheduler, twice daily at 09:00 and 15:00, repeating every 30 min for
-   2 hours so a late export gets picked up. Full instructions in the script's footer.
+3. Schedule it — Task Scheduler, 09:00 and 15:00, repeating every 30 min for 2 hours so a
+   late export gets picked up. Full instructions in the script's footer.
+
+**Use UNC, not `X:`.** Drive letters are mapped per logon session. A task running as the
+service account with nobody logged on has no `X:`, and it fails instantly with a
+path-not-found that looks like a permissions problem and isn't.
 
 **Use the service account, not your login** — same rule as the gateway credentials.
 
@@ -195,13 +216,44 @@ disabled, or double-fires, the dashboard is unaffected. That's the whole design.
 
 ---
 
-## Step 9 · Notes and the mail merge
+## Step 9 · Notes · 5 min, then the flows
 
-`TRACE-NOTES-AND-MAILMERGE.md` — the SharePoint list schema, both flow definitions, the
-templates, and the blocked-tenant fallback.
+**Your list already exists and the query isn't pointed at it.** `Trace_Notes` still reads
+`QV_Tracing_API_Aligned_Workflow_Optimized.xlsx` while the notes moved to
+`Trace_Master_Streamlined_`. The workbook is the abandoned copy — which is exactly why it
+returns 199 blank rows out of 200 and joins 1 of 95 traces. Nothing was broken; the query
+was reading a dead file.
 
-**Check first whether your tenant permits Flows and Lists.** It decides whether this is two
-days or two weeks.
+**§7** repoints it. Paste the first two steps, load, look at the column names SharePoint
+gives you — they're **internal** names, so "Trace Status" arrives as `Trace_x0020_Status` —
+correct the renames, then paste the rest.
+
+> ### Move the list off the personal OneDrive before rollout
+>
+> ```
+> https://ejprod-my.sharepoint.com/personal/p258239_edwardjones_com/...
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+> ```
+>
+> That's one individual's OneDrive, not a team site. For a system of record an ops team
+> depends on:
+>
+> - it's **deprovisioned when that person leaves or changes roles** — read-only, then gone,
+>   typically after 30–93 days. The dashboard stops refreshing and the notes history goes
+>   with it
+> - Service refresh has to run on **that person's credentials**. It cannot be moved to a
+>   service account, because the site belongs to the human
+> - permissions are per-item sharing rather than site membership
+>
+> The query works against it today and I'm not holding your build up over this. But copy the
+> list to a team site and change `SiteUrl` — 10 minutes now versus a data-loss incident
+> later. Every column name survives the move.
+
+Then `TRACE-NOTES-AND-MAILMERGE.md` for both flow definitions, the templates, and the
+blocked-tenant fallback.
+
+**Check first whether your tenant permits Flows.** It decides whether this is two days or
+two weeks.
 
 Steps 2–4 above are worth doing even if the flows never happen. They take the trace page
 from "nobody knows who to contact" to a named FA, a named BOA, and a reason when neither

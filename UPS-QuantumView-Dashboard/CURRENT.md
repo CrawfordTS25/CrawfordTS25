@@ -4,6 +4,7 @@
 machine. Keep using it; there is no new `.pbix` this round and there shouldn't be.
 **Guide:** `V3-RUNBOOK.md` — 9 steps, about 50 minutes
 **Validation:** `QUERY-VALIDATION.md` — all 14 queries, measured
+**Locations:** `PATHS.md` — your path sheet reconciled against what the queries read
 
 Everything outstanding is model-layer, so handing you back a label-stripped copy of a file
 that already opens would cost you the sensitivity marking and gain you nothing.
@@ -36,8 +37,10 @@ would have given you 19.7%. `Trace_Contact_By_FA` is untouched by every script h
 
 | | |
 |---|---|
-| `QV_RAW` reads `Archive\` only | `Folder.Files` recurses — once Morning\ and Afternoon\ exist under QV_Data, every export loads three times and Total Shipments triples silently |
+| `QV_RAW` path corrected | it points at `…\Quantum View\QV_Data`; your path sheet says `…\Power BI Reporting\Report Data\QV_Data` |
+| `QV_RAW` reads `Archive\` only | `Folder.Files` recurses, and QV_Data already holds Morning QV\, Afternoon QV\, Processed\ and Failed\ — every export loads once per folder and Total Shipments multiplies silently |
 | One 13:30 cutoff | `QV_RAW` said 17:00, `QV_Output` said 13:30. Same rows, two answers |
+| `Trace_Notes` repointed at `Trace_Master_Streamlined_` | it was reading the abandoned workbook, which is the entire reason for 199 blank rows and a 1-of-95 join |
 | Two account relationships reactivated | the Vendor Acct # slicer on ACTIVE TRACES currently filters nothing |
 | `Dim Date` built | two date slicers are bound to a table that doesn't exist |
 | `QV_Manifest` dedupe | still keeping the oldest row per shipment |
@@ -49,6 +52,7 @@ would have given you 19.7%. `Trace_Contact_By_FA` is untouched by every script h
 | File | Purpose |
 |---|---|
 | **`V3-RUNBOOK.md`** | **the current guide — follow this** |
+| `PATHS.md` | every location, and the three that disagree with the model |
 | `QUERY-VALIDATION.md` | all 14 queries and every relationship, measured |
 | `TRACE-NOTES-AND-MAILMERGE.md` | the notes list, both flows, FA/BOA addressing |
 | `tools/model-fixes-v3.pq` | Power Query — archive source, contact keys, home office, notes, send queue |

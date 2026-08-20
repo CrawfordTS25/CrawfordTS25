@@ -105,15 +105,21 @@ shipments. Only **11 distinct codes**, and **7 of them already have a confirmed 
 sitting in `CONTACT INFO` on their own trace rows. `Home_Office_Contacts` (§6 of
 `model-fixes-v3.pq`) seeds those seven; four need somebody to fill in an address.
 
-### ❌ `Trace_Notes` — 200 rows, **199 of them blank**
+### ❌ `Trace_Notes` — 200 rows, **199 of them blank** — pointed at a dead file
 Joins **1 of 95** traces on `CASE #`, 0 on `Exception Key`, 0 on `Tracking Number`. Every
 merged `Trace_Notes.*` column on `Current_Open_Trace` is populated on exactly one row.
 
-Same failure shape as the old `Branch_Contacts`: a sheet range formatted well past its
-data, loading as nulls, erroring on nothing. Moving to a SharePoint list fixes the
-blank-row problem structurally and is the only version that delivers "notes update as we
-make changes" — a workbook physically cannot record *when* a note was written, because an
-Excel `NOW()` recalculates on open.
+**The cause is not the query.** It reads
+`…\Report Data\QV_Tracing_API_Aligned_Workflow_Optimized.xlsx` while the notes moved to the
+SharePoint list `Trace_Master_Streamlined_`. The workbook is the abandoned copy — 199 blank
+rows is what an abandoned sheet looks like once someone formats past the data.
+
+Repointing at the list also fixes the blank rows structurally and is the only version that
+records *when* a note was written: an Excel `NOW()` recalculates on open, so a workbook
+physically cannot.
+
+⚠ The list is on a **personal OneDrive** (`-my.sharepoint.com/personal/…`), which cannot be
+refreshed by a service account and is deprovisioned when that person leaves. See `PATHS.md`.
 
 ### ⚠️ `QV_Manifest` — 91,232 rows
 `Latest per Shipment` still does the opposite of its name. `Table.Distinct` does not honour
@@ -123,15 +129,23 @@ The `Table.Buffer` fix landed on `Resolutions Table` but not here.
 `Account Key` is a DAX calculated column here and an M column everywhere else. Move it to M
 for consistency and to keep it off the calculation engine.
 
-### ⚠️ `QV_RAW` — two problems, both about the run window
+### ⚠️ `QV_RAW` — three problems
+**The path.** It reads `…\Administrative Services-Solutions\`**`Quantum View`**`\QV_Data`;
+your path sheet says `…\Administrative Services-Solutions\`**`Power BI Reporting\Report
+Data`**`\QV_Data`. Different parent. If the old path still resolves you have two `QV_Data`
+folders and only one is being fed.
+
+**The folder.** `Folder.Files` **recurses**, and `QV_Data` already contains `Morning QV\`,
+`Afternoon QV\`, `Processed\` and `Failed\`. Pointed at `QV_Data` it reads every export once
+per folder it appears in, and Total Shipments multiplies with nothing erroring. It would
+also try to parse `QV_Automation_Helper_Lists.xlsx` as a 34-column CSV.
+
+**The cutoff.**
 ```
 QV_RAW    Run Type   splits the day at 17:00
 QV_Output Run Time   splits the day at 13:30
 ```
-Same rows, same model, two answers. And `QV_RAW` uses `Folder.Files`, which **recurses** —
-the moment the automation writes into `Morning\` and `Afternoon\` under `QV_Data`, every
-export is read three times and Total Shipments triples with no error anywhere. Pointing at
-`Archive\` is what makes the run folders safe to create.
+Same rows, same model, two answers.
 
 ### ⚠️ `Exception Reason Map` — 14 rows, loaded twice
 It is both a loaded table *and* the source of `Dim_ExceptionReason`, so the same 14 rows
