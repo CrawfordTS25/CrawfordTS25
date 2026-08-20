@@ -1,0 +1,80 @@
+// Check - can every trace actually reach somebody?
+//
+// Run before the fix and after. The number that moves is "Contactable".
+//
+//   before   0 via roster    every contact measure returns "No contact on file",
+//                            because Current_Open_Trace[FA #] is "I287748" and
+//                            Trace_Contact_By_FA[FA #] is "287748"
+//   after   90 of 95         66 through the FA roster, 24 through the home-office
+//                            map, 5 still blocked and each one says why
+
+EVALUATE
+	ROW(
+		"Total active traces",   [Total Active Traces],
+		"Contactable",           [Contactable Traces],
+		"Unreachable",           [Unreachable Traces],
+		"-- cc reach --",        BLANK(),
+		"BOA coverage",          [BOA Coverage],
+		"-- still blocked --",   BLANK(),
+		"Home office codes with no address", [Home Office Trace Codes],
+		"-- the send queue --",  BLANK(),
+		"Sendable",              [Sendable Traces],
+		"Blocked",               [Blocked Traces],
+		"Sendable with a BOA cc",[Sendable With BOA Cc],
+		"Top block reason",      [Top Block Reason]
+	)
+
+// Expect after the fix: Contactable 90, Unreachable 5, BOA coverage 61,
+// Sendable + Blocked = 95.
+
+
+// How every trace routes, and how many get there each way.
+EVALUATE
+	SUMMARIZECOLUMNS(
+		Current_Open_Trace[Contact Route],
+		"Traces",       COUNTROWS( Current_Open_Trace ),
+		"With address", [Contactable Traces]
+	)
+	ORDER BY [Traces] DESC
+
+// Expect four rows: Case contact, FA roster, Home office, Unroutable.
+// "Unroutable" should be exactly 1 - the trace whose FA # is the literal "0".
+
+
+// The BOA-to-FA pairing, which is the thing that has to be right for the cc line
+// to mean anything. One row per FA that owns an open trace.
+EVALUATE
+	SELECTCOLUMNS(
+		FILTER( Current_Open_Trace, NOT ISBLANK( Current_Open_Trace[FA Key] ) ),
+		"CASE #",     Current_Open_Trace[CASE #],
+		"FA #",       Current_Open_Trace[FA Key],
+		"FA name",    RELATED( Trace_Contact_By_FA[FA Name] ),
+		"To (FA)",    RELATED( Trace_Contact_By_FA[FA Email] ),
+		"Cc (BOAs)",  RELATED( Trace_Contact_By_FA[BOA Emails] ),
+		"BOA names",  RELATED( Trace_Contact_By_FA[BOA Names] ),
+		"Branch",     RELATED( Trace_Contact_By_FA[Branch Number] )
+	)
+	ORDER BY [FA name]
+
+// Any row with a blank "To (FA)" is an FA number the current roster does not
+// carry - a leaver, or a roster that has not refreshed. Blank "Cc (BOAs)" is
+// normal: 26% of FAs are solo and have no BOA. That is not an error.
+
+
+// The blocked worklist. This is the page worth building - it is short, it is
+// actionable, and every row names its own fix.
+EVALUATE
+	SELECTCOLUMNS(
+		FILTER( Mail_Merge_Queue, NOT ISBLANK( Mail_Merge_Queue[Blocked Reason] ) ),
+		"CASE #",         Mail_Merge_Queue[CASE #],
+		"Tracking",       Mail_Merge_Queue[Tracking Number],
+		"Route",          Mail_Merge_Queue[Contact Route],
+		"Home office",    Mail_Merge_Queue[Home Office Code],
+		"Location",       Mail_Merge_Queue[HO Location],
+		"Why",            Mail_Merge_Queue[Blocked Reason],
+		"Days open",      Mail_Merge_Queue[Days Open]
+	)
+	ORDER BY [Days open] DESC
+
+// Expect 5 rows: four home-office codes with no address in Home_Office_Contacts
+// (H03130, H05057, H05150, H44804) and the one trace whose FA # is "0".

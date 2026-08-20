@@ -1,0 +1,397 @@
+// =============================================================================
+// Quantum View - model updates, v3
+//
+// APPLY model-fixes-v3.pq FIRST. This references Current_Open_Trace[FA Key],
+// [Home Office Code], [Contact Route] and the Home_Office_Contacts table, none
+// of which exist until that file has been through Close & Apply.
+//
+// AND DO THE FOUR MODEL-VIEW EDITS BELOW BEFORE APPLYING. TMDL cannot safely
+// script them: Power BI allows only one ACTIVE relationship between a given pair
+// of tables, so scripting a new one while the old one is still active either
+// errors or silently deactivates something you wanted.
+//
+// -----------------------------------------------------------------------------
+// DO THESE FOUR BY HAND FIRST - Model view, about 3 minutes
+// -----------------------------------------------------------------------------
+//
+// 1. DELETE  Current_Open_Trace[FA #] -> Trace_Contact_By_FA[FA #]
+//    It matches 0 of 95 rows. §4 of the .pq replaces it with [FA Key], and the
+//    two cannot both be active between the same pair of tables.
+//
+// 2. SET INACTIVE  Current_Open_Trace[Exception Key] -> 'Resolutions Table'
+//    SET INACTIVE  Trace_Active[Exception Key]       -> 'Resolutions Table'
+//
+//    Then SET ACTIVE  Current_Open_Trace[Account Key] -> Dim_Account
+//         SET ACTIVE  Trace_Active[Account Key]       -> Dim_Account
+//
+//    Both account relationships are inactive right now, which is why the
+//    Vendor Acct # slicer on ACTIVE TRACES filters nothing. Power BI deactivated
+//    them: adding Trace -> Resolutions created a second path to Dim_Account
+//    (Trace -> Resolutions -> Dim_Account) and two paths are ambiguous.
+//
+//    The direct account path is the one to keep, measured on your data:
+//        Account Key -> Dim_Account       95 of 95 traces
+//        via Exception Key -> Resolutions 60 of 95
+//    The Exception Key link stays in the model, inactive, for USERELATIONSHIP
+//    when you genuinely want "traces for the exceptions I have selected".
+//
+// 3. UNTICK ENABLE LOAD on Branch_Contacts_All
+//    46,080 staging rows, referenced by no visual. It is also the third side of
+//    a triangle - Branch_Contacts_All -> Branch_Contacts directly AND
+//    Branch_Contacts_All -> Trace_Contact_By_FA -> Branch_Contacts - which is
+//    why Trace_Contact_By_FA[Branch Number] -> Branch_Contacts is stuck
+//    inactive. Stop loading it and the triangle disappears.
+//
+// 4. SET ACTIVE  Trace_Contact_By_FA[Branch Number] -> Branch_Contacts
+//    Possible once step 3 removes the ambiguity.
+//
+// Then apply this script.
+// =============================================================================
+
+createOrReplace
+
+// -----------------------------------------------------------------------------
+// 1. THE CONTACT RELATIONSHIPS
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		/// FA-number traces resolve through the roster. 66 of 95 today.
+		relationship Trace_to_RosterFA
+			fromColumn: Current_Open_Trace.'FA Key'
+			toColumn: Trace_Contact_By_FA.'FA #'
+
+		/// Home-office traces resolve through the hand-kept map. 28 of 95.
+		relationship Trace_to_HomeOffice
+			fromColumn: Current_Open_Trace.'Home Office Code'
+			toColumn: Home_Office_Contacts.Code
+
+// -----------------------------------------------------------------------------
+// 2. CONTACT RESOLUTION - rewritten onto the working keys
+//
+//    Every one of these currently returns nothing, because they look up
+//    Trace_Contact_By_FA[FA #] using Current_Open_Trace[FA #] - "I287748"
+//    against "287748". Same names, same home table, so no visual needs
+//    rebinding; only the key changes.
+//
+//    The precedence is deliberate and the same everywhere: the case contact
+//    beats the roster. Somebody typed it against THIS case having looked at it.
+//    The roster is the fallback, not the authority.
+// -----------------------------------------------------------------------------
+
+	ref table Current_Open_Trace
+
+		/// Who to email for the selected trace. Case contact, else roster, else
+		/// home office.
+		measure 'Selected Branch Email' =
+
+				VAR Direct = TRIM ( COALESCE ( SELECTEDVALUE ( Current_Open_Trace[CONTACT INFO] ), "" ) )
+				VAR Fa     = SELECTEDVALUE ( Current_Open_Trace[FA Key] )
+				VAR Ho     = SELECTEDVALUE ( Current_Open_Trace[Home Office Code] )
+				VAR Roster = LOOKUPVALUE ( Trace_Contact_By_FA[FA Email],
+				                           Trace_Contact_By_FA[FA #], Fa )
+				VAR Dept   = LOOKUPVALUE ( Home_Office_Contacts[Email],
+				                           Home_Office_Contacts[Code], Ho )
+				RETURN
+				IF (
+				    Direct <> "", Direct,
+				    COALESCE ( Roster, Dept, "No contact on file" )
+				)
+
+		/// The FA specifically, ignoring the case contact. Use this when you want
+		/// to know who OWNS the relationship, not who was emailed last time.
+		measure 'Selected FA Email' =
+
+				VAR Fa = SELECTEDVALUE ( Current_Open_Trace[FA Key] )
+				RETURN
+				COALESCE (
+				    LOOKUPVALUE ( Trace_Contact_By_FA[FA Email], Trace_Contact_By_FA[FA #], Fa ),
+				    "Not an FA-routed trace"
+				)
+
+		/// The BOAs who support that FA - the cc line. Semicolon separated, which
+		/// is what the Outlook connector's Cc field takes directly.
+		measure 'Selected BOA Emails' =
+
+				VAR Fa = SELECTEDVALUE ( Current_Open_Trace[FA Key] )
+				RETURN
+				COALESCE (
+				    LOOKUPVALUE ( Trace_Contact_By_FA[BOA Emails], Trace_Contact_By_FA[FA #], Fa ),
+				    "No BOA on the roster for this FA"
+				)
+
+		/// Named BOAs, for the body of the email rather than the header.
+		measure 'Selected BOA Names' =
+
+				VAR Fa = SELECTEDVALUE ( Current_Open_Trace[FA Key] )
+				RETURN
+				COALESCE (
+				    LOOKUPVALUE ( Trace_Contact_By_FA[BOA Names], Trace_Contact_By_FA[FA #], Fa ),
+				    BLANK ()
+				)
+
+		/// How this trace gets addressed. Put it on the trace table as a column of
+		/// its own - a queue that says WHY it cannot reach somebody is worth far
+		/// more than one that silently drops the row.
+		measure 'Selected Contact Route' =
+				SELECTEDVALUE ( Current_Open_Trace[Contact Route], "Multiple" )
+
+// -----------------------------------------------------------------------------
+// 3. COVERAGE - the numbers that tell you the roster is working
+//
+//    These iterate the trace table, so RELATED resolves through the
+//    relationships from section 1 rather than repeating the lookup.
+//
+//    Expected on today's data once §4 and §6 of the .pq are in:
+//        Total Active Traces  95
+//        Contactable Traces   90    (66 FA roster + 24 home office)
+//        Unreachable Traces    5    (4 home-office codes with no address yet,
+//                                    plus the one row whose FA # is "0")
+//        BOA Coverage         61 of the 66 FA-routed traces
+//
+//    Unreachable reads 95 right now, because nothing resolves at all.
+// -----------------------------------------------------------------------------
+
+	ref table Current_Open_Trace
+
+		/// Traces we can actually email, by any route.
+		measure 'Contactable Traces' =
+
+				COUNTROWS (
+				    FILTER (
+				        Current_Open_Trace,
+				        NOT ISBLANK ( Current_Open_Trace[CONTACT INFO] )
+				            || NOT ISBLANK ( RELATED ( Trace_Contact_By_FA[FA Email] ) )
+				            || NOT ISBLANK ( RELATED ( Home_Office_Contacts[Email] ) )
+				    )
+				)
+			formatString: #,0
+
+		/// Traces with no address by any route. Should trend to zero, and the
+		/// remainder is a worklist, not a mystery - see Blocked Reason on
+		/// Mail_Merge_Queue.
+		measure 'Unreachable Traces' =
+				COALESCE ( [Total Active Traces] - [Contactable Traces], 0 )
+			formatString: #,0
+
+		/// FA-routed traces that also have a BOA to cc.
+		measure 'BOA Coverage' =
+
+				COUNTROWS (
+				    FILTER (
+				        Current_Open_Trace,
+				        NOT ISBLANK ( RELATED ( Trace_Contact_By_FA[BOA Emails] ) )
+				    )
+				)
+			formatString: #,0
+
+		/// Home-office traces the map still cannot address. Four today - fill them
+		/// in and this reads zero.
+		measure 'Home Office Trace Codes' =
+
+				CONCATENATEX (
+				    FILTER (
+				        VALUES ( Current_Open_Trace[Home Office Code] ),
+				        NOT ISBLANK ( Current_Open_Trace[Home Office Code] )
+				            && ISBLANK (
+				                   LOOKUPVALUE ( Home_Office_Contacts[Email],
+				                                 Home_Office_Contacts[Code],
+				                                 Current_Open_Trace[Home Office Code] ) )
+				    ),
+				    Current_Open_Trace[Home Office Code], ", ",
+				    Current_Open_Trace[Home Office Code], ASC
+				)
+
+// -----------------------------------------------------------------------------
+// 4. THE MAIL MERGE QUEUE - what the flow actually reads
+//
+//    Sendable is the count the preview gate shows before anything dispatches.
+//    Blocked is the number somebody has to fix. Neither is a subset of a filter
+//    somebody might forget to apply.
+// -----------------------------------------------------------------------------
+
+	ref table Mail_Merge_Queue
+
+		/// Traces ready to email right now.
+		measure 'Sendable Traces' =
+				COALESCE (
+				    COUNTROWS ( FILTER ( Mail_Merge_Queue, NOT ISBLANK ( Mail_Merge_Queue[Send To] ) ) ),
+				    0 )
+			formatString: #,0
+
+		/// Traces that cannot be addressed, and therefore a worklist.
+		measure 'Blocked Traces' =
+				COALESCE (
+				    COUNTROWS ( FILTER ( Mail_Merge_Queue, NOT ISBLANK ( Mail_Merge_Queue[Blocked Reason] ) ) ),
+				    0 )
+			formatString: #,0
+
+		/// The single most common reason sends are blocked. Fix this one first.
+		measure 'Top Block Reason' =
+
+				VAR Grouped =
+				    ADDCOLUMNS (
+				        VALUES ( Mail_Merge_Queue[Blocked Reason] ),
+				        "@n", CALCULATE ( COUNTROWS ( Mail_Merge_Queue ) )
+				    )
+				VAR Worst = TOPN ( 1, FILTER ( Grouped, NOT ISBLANK ( Mail_Merge_Queue[Blocked Reason] ) ), [@n], DESC )
+				RETURN
+				CONCATENATEX ( Worst, Mail_Merge_Queue[Blocked Reason] & " (" & [@n] & ")", "; " )
+
+		/// Cc reach across the sendable queue.
+		measure 'Sendable With BOA Cc' =
+				COALESCE (
+				    COUNTROWS ( FILTER ( Mail_Merge_Queue,
+				        NOT ISBLANK ( Mail_Merge_Queue[Send To] )
+				            && NOT ISBLANK ( Mail_Merge_Queue[Send Cc] ) ) ),
+				    0 )
+			formatString: #,0
+
+// -----------------------------------------------------------------------------
+// 5. DIM DATE - the two date slicers are bound to a table that does not exist
+//
+//    OVERVIEW slot 6 and RESOLUTION QUEUE slot 7 are both bound to
+//    'Dim Date'[Date]. There is no Dim Date in the model. Those two slicers are
+//    broken today - the repoint from step 9 of the last runbook happened, but
+//    the section that creates the table did not.
+//
+//    Auto Date/Time is already off, so nothing competes with this.
+//
+//    Bounds derive from the data, so the calendar grows on its own.
+// -----------------------------------------------------------------------------
+
+	ref table 'Dim Date'
+		dataCategory: Time
+
+		partition 'Dim Date' = calculated
+			mode: import
+			source =
+
+					VAR lo = MIN ( QV_Manifest[Manifest Date] )
+					VAR hi = MAX (
+					             MAX ( QV_Manifest[Manifest Date] ),
+					             MAX ( QV_Manifest[Scheduled Delivery] )
+					         )
+					RETURN
+					ADDCOLUMNS (
+					    CALENDAR ( DATE ( YEAR ( lo ), 1, 1 ), DATE ( YEAR ( hi ), 12, 31 ) ),
+					    "Date Key",        FORMAT ( [Date], "YYYYMMDD" ) + 0,
+					    "Year",            YEAR ( [Date] ),
+					    "Quarter No",      QUARTER ( [Date] ),
+					    "Quarter",         "Q" & QUARTER ( [Date] ),
+					    "Month No",        MONTH ( [Date] ),
+					    "Month",           FORMAT ( [Date], "MMMM" ),
+					    "Month Year",      FORMAT ( [Date], "MMM YYYY" ),
+					    "Month Year Sort", YEAR ( [Date] ) * 100 + MONTH ( [Date] ),
+					    "Day",             DAY ( [Date] ),
+					    "Day of Week No",  WEEKDAY ( [Date], 2 ),
+					    "Day of Week",     FORMAT ( [Date], "dddd" ),
+					    "Is Workday",      WEEKDAY ( [Date], 2 ) <= 5
+					)
+
+		column Date
+			dataType: dateTime
+			formatString: Short Date
+			isKey
+			summarizeBy: none
+
+		column 'Date Key'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column Year
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column 'Quarter No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column Quarter
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Quarter No'
+
+		column 'Month No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column Month
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Month No'
+
+		column 'Month Year Sort'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column 'Month Year'
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Month Year Sort'
+
+		column Day
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+
+		column 'Day of Week No'
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			isHidden
+
+		column 'Day of Week'
+			dataType: string
+			summarizeBy: none
+			sortByColumn: 'Day of Week No'
+
+		column 'Is Workday'
+			dataType: boolean
+			summarizeBy: none
+
+// -----------------------------------------------------------------------------
+// 6. DATE RELATIONSHIPS
+//
+//    Manifest Date is the ACTIVE role. Scheduled Delivery is inactive - reach it
+//    with USERELATIONSHIP rather than building a second calendar.
+//
+//    Not related to QV_Output directly: it already reaches Dim Date through
+//    Resolutions Table, and a second path would be ambiguous - the same thing
+//    that deactivated the account relationships.
+// -----------------------------------------------------------------------------
+
+	ref model Model
+
+		relationship DimDate_to_QV_Manifest_Manifest
+			fromColumn: QV_Manifest.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_Resolutions_Manifest
+			fromColumn: 'Resolutions Table'.'Manifest Date'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_QV_Manifest_Delivery
+			isActive: false
+			fromColumn: QV_Manifest.'Scheduled Delivery'
+			toColumn: 'Dim Date'.Date
+
+		relationship DimDate_to_Resolutions_Delivery
+			isActive: false
+			fromColumn: 'Resolutions Table'.'Scheduled Delivery'
+			toColumn: 'Dim Date'.Date
+
+// After applying: Dim Date > Table tools > Mark as date table > column Date.
+//
+// The trace side still cannot join the calendar - every date column on
+// Current_Open_Trace and Trace_Active is still TEXT. That block is section 10 of
+// model-fixes-v2.pq and remains the last thing standing between you and date
+// coverage on the page whose entire job is SLA.

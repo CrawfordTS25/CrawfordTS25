@@ -1,85 +1,68 @@
 # Start here
 
-**Deliverable:** `NEWQuantum_View_Exceptions_Dashboard_fixed.pbix`
-**Guide:** `UPS_QuantumView_Build_Instructions.pdf` — 21 pages, print it
-**Same thing in markdown:** `NEW-BUILD-FIXES.md` — 12 ordered Desktop steps, ~55 min
-**Script pack:** `quantum-view-scripts.zip` — copy code from these, never from the PDF
+**Your working file:** `QuantumView_Checkpoint_DateSlicersPassed.pbix` — the one on your
+machine. Keep using it; there is no new `.pbix` this round and there shouldn't be.
+**Guide:** `V3-RUNBOOK.md` — 9 steps, about 50 minutes
+**Validation:** `QUERY-VALIDATION.md` — all 14 queries, measured
 
-Built from your `NEWQuantum_View_Exceptions_Dashboard.pbix` upload — the one with
-`Dim_Account` and `Dim_ExceptionReason` in it. **`DataModel` is byte-identical to that
-upload**; every change in the file itself is in the report layer. The sensitivity label
-is removed so it opens — re-apply *Internal Use Only · Standard* before it leaves your
-machine.
+Everything outstanding is model-layer, so handing you back a label-stripped copy of a file
+that already opens would cost you the sensitivity marking and gain you nothing.
 
-## The four things that were actually broken
+## The one thing that's broken
 
-| | |
-|---|---|
-| **The next refresh fails** | an unapplied query edit calls `fnClassifyException`, which doesn't exist anywhere in the model |
-| **`Shipper Match Key` can't carry a relationship** | 5 accounts share the name "EDWARD JONES MAIL SERVICES" — 23 accounts, 17 keys, so the "one" side isn't unique. This is the dimension error you hit |
-| **`Dim_ExceptionReason` loses 16% of the queue** | 1,406 rows have a null Exception Type and land on the blank member |
-| **The resolution queue shows each exception's *oldest* state** | `Table.Distinct` ignores the unbuffered `Table.Sort` — on all 4,075 repeat exceptions the oldest row survived, not the newest |
+```
+Current_Open_Trace[FA #]        I287748
+Trace_Contact_By_FA[FA #]        287748
+```
 
-Full evidence and row counts in `NEW-BUILD-FIXES.md`.
+The relationship is active and matches **0 of 95**. Every contact measure returns nothing
+because of that one character. Strip the prefix and 66 of 66 FA-numbered traces resolve —
+an FA email on all 66, a BOA cc on 61.
 
-## What's already done inside the file
+| | Now | After |
+|---|---|---|
+| Traces with a resolvable address | **0** via roster | **90 of 95** |
+| — via FA roster | 0 | 66 |
+| — via home-office map | 0 | 24 |
+| With a BOA cc | 0 | 61 |
+| Still blocked | 95 | 5, each naming its own reason |
 
-| | Where |
-|---|---|
-| 5 visuals repointed at `Dim_ExceptionReason` | OVERVIEW · RESOLUTION QUEUE · Exception Details |
-| RESOLUTION QUEUE slicer → Category → Type hierarchy | matches OVERVIEW exactly |
-| 3 baked-in selections cleared (2 slicers, 1 stuck drill-through) | file-wide |
-| OVERVIEW filter rail snapped back to the 68px pitch | all three rails now identical |
-| Page titles, FILTERS labels, slicer header text squared up | all 5 visible pages |
-| Sensitivity label removed | file-wide |
+## What you got right
 
-Verified: 180 field references resolve · 0 overlaps · nothing off-canvas · 106 report JSON
-parts parse · `DataModel` SHA-256 unchanged.
+The BOA→FA join is on the correct key — `BOA[FA ID] → FA[EMPLID]`, **99.9%**. Name-matching
+would have given you 19.7%. `Trace_Contact_By_FA` is untouched by every script here.
 
-## Two additions
+## Also fixed this round
 
 | | |
 |---|---|
-| **`Branch_Contacts` rebuilt** | it was loading 500 rows of pure nulls — row 1 of the sheet isn't the header row. Now finds the header, detects the email column by content, keys on `FA #`, and can't silently return empty again |
-| **Per-source refresh stamps** | `Refresh Status` carries the last-modified time of all five source files. `[Data As Of]` renders it in the title bar and names any source that's past its own SLA; the trace pages get the tracing workbook's stamp instead of the QV export's |
-
-One structural finding that changes the mail-merge plan: **the roster can only reach the
-trace side.** The exceptions queue carries no FA identity to join to — `Ship To Name` is
-"EDWARD JONES" on 35,126 of 46,594 rows. Exception recipients have to come from the
-SharePoint List's `Owner`.
-
-## What's still ahead — all of it in `NEW-BUILD-FIXES.md` §9
-
-Turn off Auto Date/Time · delete 4 fields · work `tools/model-fixes-v2.pq` §1–9 · add
-`A25T52` to the workbook · apply `tools/model-updates-v2.tmdl` · type the trace dates ·
-relate the calendar · run `tools/contacts-and-freshness.pq` + `.tmdl` · repoint the 5
-title-bar cards and the date slicers · verify · re-apply the label.
+| `QV_RAW` reads `Archive\` only | `Folder.Files` recurses — once Morning\ and Afternoon\ exist under QV_Data, every export loads three times and Total Shipments triples silently |
+| One 13:30 cutoff | `QV_RAW` said 17:00, `QV_Output` said 13:30. Same rows, two answers |
+| Two account relationships reactivated | the Vendor Acct # slicer on ACTIVE TRACES currently filters nothing |
+| `Dim Date` built | two date slicers are bound to a table that doesn't exist |
+| `QV_Manifest` dedupe | still keeping the oldest row per shipment |
+| 28 home-office `H#####` codes | route to their own map; the roster has none of them |
+| `Trace_Notes` | 199 of 200 rows blank, joins 1 of 95 — moving to a SharePoint list |
 
 ## Document map
 
 | File | Purpose |
 |---|---|
-| **`UPS_QuantumView_Build_Instructions.pdf`** | **the printable guide — follow this** |
-| `NEW-BUILD-FIXES.md` | the same content in markdown |
-| `WRITEBACK-AND-MAILMERGE.md` | List schema, Power Apps formulas, both flows, the blocked-tenant fallback |
-| `PBIT-GUIDE.md` | using a `.pbit` template with a `.pbix` |
-| `quantum-view-scripts.zip` | the scripts and checks, packaged for copy-paste |
-| `tools/build_instructions_pdf.py` | regenerates the PDF |
-| `tools/model-fixes-v2.pq` | Power Query: the missing function, the taxonomy, the dedupe fix, account keys, trace dates |
-| `tools/model-updates-v2.tmdl` | the one model script — measures, relationships, `Dim Date` |
-| `tools/contacts-and-freshness.pq` | roster discovery + rebuild, and the `Refresh Status` source scan |
-| `tools/contacts-and-freshness.tmdl` | the roster relationship and the nine freshness / contact measures |
-| `tools/fix_new_dashboard.py` | the report-layer pass, re-runnable against the original |
-| `tools/checks/*.dax` | 7 read-only verification queries |
-| `UPS_Acct_Info_.xlsx` | 24 accounts, `A25T52` added, table range extended |
+| **`V3-RUNBOOK.md`** | **the current guide — follow this** |
+| `QUERY-VALIDATION.md` | all 14 queries and every relationship, measured |
+| `TRACE-NOTES-AND-MAILMERGE.md` | the notes list, both flows, FA/BOA addressing |
+| `tools/model-fixes-v3.pq` | Power Query — archive source, contact keys, home office, notes, send queue |
+| `tools/model-updates-v3.tmdl` | contact measures, coverage measures, `Dim Date` |
+| `tools/qv-file-automation.ps1` | morning/afternoon sorting, PowerShell + Task Scheduler |
+| `tools/checks/10-contact-routing.dax` | can every trace reach somebody |
 
-### Earlier passes — kept for the reasoning, superseded as instructions
+### Earlier rounds — reasoning kept, instructions superseded
 
 | File | |
 |---|---|
-| `RUNBOOK.md` | the v5 Desktop guide. `NEW-BUILD-FIXES.md` §8 replaces it |
-| `MEASURE-SWEEP.md` | all 25 measures audited, rate-grain reasoning, SharePoint/API sourcing |
-| `ACCOUNT-DRILLDOWN.md` | why the account derives from the tracking number; the `A25T52` decision |
-| `BUILD_NOTES.md` | layout/theme rationale from the first pass |
-| `Quantum_View_Exceptions_Dashboard_v5.pbix` | the 31 July deliverable |
-| `tools/model-updates.tmdl` · `tools/model-fixes.pq` | the v5 scripts — **don't run these and the v2 pair** |
+| `UPS_QuantumView_Build_Instructions.pdf` · `NEW-BUILD-FIXES.md` | the v2 pass. `V3-RUNBOOK.md` continues from it |
+| `WRITEBACK-AND-MAILMERGE.md` | the **exceptions queue** write-back — a different list from the tracing notes |
+| `PBIT-GUIDE.md` | using a `.pbit` template with a `.pbix` |
+| `MEASURE-SWEEP.md` · `ACCOUNT-DRILLDOWN.md` · `BUILD_NOTES.md` | measure audit, account derivation, layout rationale |
+| `tools/model-fixes-v2.pq` | **§10 is still outstanding** — the trace date columns |
+| `tools/model-updates-v2.tmdl` · `tools/model-fixes.pq` · `tools/model-updates.tmdl` | applied or superseded. Don't re-run |
