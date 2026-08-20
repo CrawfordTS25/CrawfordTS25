@@ -2,7 +2,8 @@
 
 **Your working file:** `QuantumView_Checkpoint_DateSlicersPassed.pbix` — the one on your
 machine. Keep using it; there is no new `.pbix` this round and there shouldn't be.
-**Guide:** `V3-RUNBOOK.md` — 9 steps, about 50 minutes
+**Guide:** `UPS_QuantumView_v3_Instructions.pdf` — 10 pages, print it
+**Same in markdown:** `V3-RUNBOOK.md` — 9 steps, about 50 minutes
 **Validation:** `QUERY-VALIDATION.md` — all 14 queries, measured
 **Locations:** `PATHS.md` — your path sheet reconciled against what the queries read
 
@@ -51,7 +52,8 @@ would have given you 19.7%. `Trace_Contact_By_FA` is untouched by every script h
 
 | File | Purpose |
 |---|---|
-| **`V3-RUNBOOK.md`** | **the current guide — follow this** |
+| **`UPS_QuantumView_v3_Instructions.pdf`** | **the current guide — follow this** |
+| `V3-RUNBOOK.md` | the same content in markdown |
 | `PATHS.md` | every location, and the three that disagree with the model |
 | `QUERY-VALIDATION.md` | all 14 queries and every relationship, measured |
 | `TRACE-NOTES-AND-MAILMERGE.md` | the notes list, both flows, FA/BOA addressing |
@@ -64,7 +66,7 @@ would have given you 19.7%. `Trace_Contact_By_FA` is untouched by every script h
 
 | File | |
 |---|---|
-| `UPS_QuantumView_Build_Instructions.pdf` · `NEW-BUILD-FIXES.md` | the v2 pass. `V3-RUNBOOK.md` continues from it |
+| `UPS_QuantumView_Build_Instructions.pdf` · `NEW-BUILD-FIXES.md` | the v2 pass, both now banner-marked **superseded**. Keep for the reasoning behind the classifier, the dedupe direction and the account key; don't follow as instructions |
 | `WRITEBACK-AND-MAILMERGE.md` | the **exceptions queue** write-back — a different list from the tracing notes |
 | `PBIT-GUIDE.md` | using a `.pbit` template with a `.pbix` |
 | `MEASURE-SWEEP.md` · `ACCOUNT-DRILLDOWN.md` · `BUILD_NOTES.md` | measure audit, account derivation, layout rationale |

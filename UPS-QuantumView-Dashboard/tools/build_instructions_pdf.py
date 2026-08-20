@@ -232,7 +232,18 @@ def story():
     s = []
 
     # ============================================================ COVER
-    s += [gap(4), eyebrow('Build and remediation instructions'),
+    s += [gap(4), callout(
+        'SUPERSEDED — this is the v2 pack. Do not follow it as instructions.',
+        'It describes NEWQuantum_View_Exceptions_Dashboard_fixed.pbix and a 12-step runbook '
+        'whose model work you have already applied. <b>The current guide is '
+        'UPS_QuantumView_v3_Instructions.pdf / V3-RUNBOOK.md.</b><br/><br/>'
+        'Keep this for the reasoning behind the exception classifier, the dedupe direction, '
+        'the account key derivation and the Shipper Match Key finding — that analysis still '
+        'holds. But do not re-run model-fixes-v2.pq sections 1 to 9 or model-updates-v2.tmdl. '
+        'The only part of v2 still outstanding is <b>section 10, the trace date columns</b>.',
+        'warn')]
+
+    s += [eyebrow('Build and remediation instructions · v2'),
           h1('NEWQuantum_View_Exceptions_Dashboard_fixed.pbix'),
           lede('Everything you need to take the attached file from "opens but will not '
                'refresh" to production-ready. Twelve Desktop steps, about 55 minutes. '

@@ -1,5 +1,17 @@
 # `NEWQuantum_View_Exceptions_Dashboard.pbix` — what was wrong and what I changed
 
+> ## ⚠ Superseded — this is the v2 pass
+>
+> It describes a **different file** and a 12-step runbook whose model work you have already
+> applied. **The current guide is [`V3-RUNBOOK.md`](V3-RUNBOOK.md)** (or
+> `UPS_QuantumView_v3_Instructions.pdf`).
+>
+> Keep this for the reasoning behind the exception classifier, the dedupe direction, the
+> account key derivation and the `Shipper Match Key` finding — that analysis still holds and
+> nothing has replaced it. But **do not re-run `model-fixes-v2.pq` §1–§9 or
+> `model-updates-v2.tmdl`**. The only part of v2 still outstanding is **§10, the trace date
+> columns**.
+
 **Deliverable:** `NEWQuantum_View_Exceptions_Dashboard_fixed.pbix` — opens, label
 removed. `DataModel` is byte-identical to your upload; every change in the file itself
 is in the report layer. The model work is in two scripts and takes about 40 minutes in
